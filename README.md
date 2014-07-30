@@ -1,6 +1,7 @@
 # hapi-swaggered
 
 ## TODO
+* Proper(more strict) filter for apis and routes
 * Find a way to support authorizations
 * Descriptions & infos based on server?
 * Response messages & codes
