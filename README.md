@@ -1,7 +1,6 @@
 # hapi-swaggered
 
 [![Build Status](https://travis-ci.org/z0mt3c/hapi-swaggered.png)](https://travis-ci.org/z0mt3c/hapi-swaggered)
-[![Coverage Status](https://coveralls.io/repos/z0mt3c/hapi-swaggered/badge.png?branch=master)](https://coveralls.io/r/z0mt3c/hapi-swaggered?branch=master)
 [![Dependency Status](https://gemnasium.com/z0mt3c/hapi-swaggered.png)](https://gemnasium.com/z0mt3c/hapi-swaggered)
 
 
