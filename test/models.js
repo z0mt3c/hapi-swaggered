@@ -20,17 +20,36 @@ describe('generator', function () {
             className: 'SwaggerModel'
         });
 
-        var asserts = generator.fromJoiSchema(schema);
-        console.log(asserts);
-        Lab.expect(asserts).to.equal({
-            id: 'SwaggerModel',
-            type: 'object',
+        var models = {};
+        Lab.expect(generator.fromJoiSchema(schema, null, models)).to.eql({
             required: true,
+            description: undefined,
+            type: 'SwaggerModel'
+        });
+
+        Lab.expect(models['SwaggerModel']).to.eql({ id: 'SwaggerModel',
+            type: 'object',
             properties: {
                 name: {
-                    type: 'string',
+                    required: true,
                     description: 'test',
-                    required: true
+                    type: 'string',
+                    enum: undefined,
+                    defaultValue: undefined
+                },
+                number: {
+                    required: true,
+                    description: 'numberDescription',
+                    type: 'number',
+                    minimum: undefined,
+                    maximum: undefined
+                },
+                integer: {
+                    required: true,
+                    description: 'numberDescription',
+                    type: 'integer',
+                    minimum: 1,
+                    maximum: 3
                 }
             }
         });

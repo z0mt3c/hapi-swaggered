@@ -1,5 +1,5 @@
 
 test:
-	./node_modules/.bin/lab
+	./node_modules/.bin/lab -c
 
 .PHONY: test

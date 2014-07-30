@@ -2,12 +2,12 @@
 
 ## TODO
 * Remove attributes from shema which don't fit to the swagger specifications... look for // TODO: remove!
-* Proper(more strict) filter for apis and routes
+* ~~Proper(more strict) filter for apis and routes~~
 * cache apiDeclaration and apiListing through plugin methods
 * Find a way to support authorizations
 * Descriptions & infos based on server?
 * Response messages & codes
-* handle model name collisions: if equal same name otherwise new type!
+* ~~handle model name collisions: if equal same name otherwise new type!~~
 * Support "deprecated"
 * Support Joi.any()
 * Check produces and consumes for proper behavior
