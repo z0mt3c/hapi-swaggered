@@ -7,6 +7,7 @@
 * Find a way to support authorizations
 * Descriptions & infos based on server?
 * Response messages & codes
+* handle model name collisions: if equal same name otherwise new type!
 * Support "deprecated"
 * Support Joi.any()
 * Check produces and consumes for proper behavior
