@@ -1,11 +1,14 @@
 # hapi-swaggered
 
 ## TODO
+* Remove attributes from shema which don't fit to the swagger specifications... look for // TODO: remove!
 * Proper(more strict) filter for apis and routes
+* cache apiDeclaration and apiListing through plugin methods
 * Find a way to support authorizations
 * Descriptions & infos based on server?
 * Response messages & codes
 * Support "deprecated"
+* Support Joi.any()
 * Check produces and consumes for proper behavior
 * Write tests
 * Base path support (overall prefix e.g. api)
@@ -15,8 +18,9 @@
 
 What else?
 
-
 ## Example Configuration
+
+Swagger ui should be configured to use /api2/swagger2 in this example ;-)
 
 ```js
 'hapi-swaggered': [
