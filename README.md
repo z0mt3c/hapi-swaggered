@@ -1,5 +1,10 @@
 # hapi-swaggered
 
+[![Build Status](https://travis-ci.org/z0mt3c/hapi-swaggered.png)](https://travis-ci.org/z0mt3c/hapi-swaggered)
+[![Coverage Status](https://coveralls.io/repos/z0mt3c/hapi-swaggered/badge.png?branch=master)](https://coveralls.io/r/z0mt3c/hapi-swaggered?branch=master)
+[![Dependency Status](https://gemnasium.com/z0mt3c/hapi-swaggered.png)](https://gemnasium.com/z0mt3c/hapi-swaggered)
+
+
 ## TODO
 * Remove attributes from shema which don't fit to the swagger specifications... look for // TODO: remove!
 * ~~Proper(more strict) filter for apis and routes~~
