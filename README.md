@@ -1,6 +1,7 @@
 # hapi-swaggered
 
 ## TODO
+* Remove attributes from shema which don't fit to the swagger specifications... look for // TODO: remove!
 * Proper(more strict) filter for apis and routes
 * cache apiDeclaration and apiListing through plugin methods
 * Find a way to support authorizations
