@@ -20,6 +20,8 @@ What else?
 
 ## Example Configuration
 
+Swagger ui should be configured to use /api2/swagger2 in this example ;-)
+
 ```js
 'hapi-swaggered': [
     {
