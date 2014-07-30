@@ -8,6 +8,7 @@
 * Support "deprecated"
 * Check produces and consumes for proper behavior
 * Write tests
+* Base path support (overall prefix e.g. api)
 * support property format (https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#431-primitives)
 * file upload?
 * Setup hapi-swagger-ui project sharing endpoints and stuff through plugin.expose
