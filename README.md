@@ -6,6 +6,7 @@
 * Descriptions & infos based on server?
 * Response messages & codes
 * Support "deprecated"
+* Support Joi.any()
 * Check produces and consumes for proper behavior
 * Write tests
 * Base path support (overall prefix e.g. api)
