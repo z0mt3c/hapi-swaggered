@@ -2,6 +2,7 @@
 
 ## TODO
 * Proper(more strict) filter for apis and routes
+* cache apiDeclaration and apiListing through plugin methods
 * Find a way to support authorizations
 * Descriptions & infos based on server?
 * Response messages & codes
@@ -15,7 +16,6 @@
 * Setup hapi-swagger-ui project sharing endpoints and stuff through plugin.expose
 
 What else?
-
 
 ## Example Configuration
 
