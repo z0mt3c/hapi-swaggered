@@ -25,7 +25,8 @@
   },
   "devDependencies": {
     "lab": "^3.2.1",
-    "nipple": "^2.5.3"
+    "nipple": "^2.5.3",
+    "sinon": "^1.10.3"
   },
   "scripts": {
     "test": "make test"
