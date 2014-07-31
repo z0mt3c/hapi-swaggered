@@ -282,7 +282,7 @@ describe('generator', function () {
                     expect(primitiveArray).to.exist;
                     expect(primitiveArray).to.eql({ required: false, type: 'array', items: { 'type': 'string' } });
 
-                    var modelArray = generator.fromJoiSchema(Joi.array().includes(Joi.string()), null, models);
+                    var modelArray = generator.fromJoiSchema(Joi.array().includes(Joi.object()), null, models);
 
                     expect(modelArray).to.exist;
                     expect(modelArray).to.eql({ required: false, type: 'array', items: { '$ref': 'test' } });
@@ -291,14 +291,13 @@ describe('generator', function () {
                 });
             });
 
-            it('#6: any', function (done) {
-                // TODO: how to deal with any stuff?
+            it('#6: boolea, date & any ', function (done) {
                 var models = {};
-                var schema = generator.fromJoiSchema(Joi.any(), null, models);
-
-                expect(schema).to.exist;
+                // TODO: how to deal with any stuff?
                 // TODO: but this is not a valid object type? May switch to object? But if thats the case we might have to create a new AnyModel?
-                expect(schema).to.eql({ required: false, type: 'any' });
+                expect(generator.fromJoiSchema(Joi.any(), null, models)).to.eql({ required: false, type: 'any' });
+                expect(generator.fromJoiSchema(Joi.boolean(), null, models)).to.eql({ required: false, type: 'boolean' });
+                expect(generator.fromJoiSchema(Joi.date(), null, models)).to.eql({ required: false, type: 'date' });
                 done();
             });
         });
