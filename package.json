@@ -24,7 +24,8 @@
     "lodash": "^2.4.1"
   },
   "devDependencies": {
-    "lab": "^3.2.1"
+    "lab": "^3.2.1",
+    "nipple": "^2.5.3"
   },
   "scripts": {
     "test": "make test"

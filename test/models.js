@@ -23,7 +23,6 @@ describe('generator', function () {
         var models = {};
         Lab.expect(generator.fromJoiSchema(schema, null, models)).to.eql({
             required: true,
-            description: undefined,
             type: 'SwaggerModel'
         });
 
@@ -33,16 +32,12 @@ describe('generator', function () {
                 name: {
                     required: true,
                     description: 'test',
-                    type: 'string',
-                    enum: undefined,
-                    defaultValue: undefined
+                    type: 'string'
                 },
                 number: {
                     required: true,
                     description: 'numberDescription',
-                    type: 'number',
-                    minimum: undefined,
-                    maximum: undefined
+                    type: 'number'
                 },
                 integer: {
                     required: true,

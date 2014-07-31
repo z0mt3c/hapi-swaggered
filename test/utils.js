@@ -7,6 +7,7 @@ var before = Lab.before;
 var after = Lab.after;
 var Joi = require('joi');
 var utils = require('../lib/utils');
+var _ = require('lodash');
 
 describe('utils', function () {
     describe('getDescription', function () {
@@ -169,6 +170,30 @@ describe('utils', function () {
             Lab.expect(utils.generateFallbackName('Model_2')).to.equal('Model_3');
             Lab.expect(utils.generateFallbackName('Model_999999')).to.equal('Model_1000000');
 
+            done();
+        });
+    });
+    describe('isPrimitiveSwaggerType', function () {
+        it('#1', function (done) {
+            _.each(['integer', 'number', 'string', 'boolean', 'string'], function(type) {
+                Lab.expect(utils.isPrimitiveSwaggerType(type)).to.equal(true);
+            });
+
+            Lab.expect(utils.isPrimitiveSwaggerType(null)).to.equal(false);
+            Lab.expect(utils.isPrimitiveSwaggerType(undefined)).to.equal(false);
+            Lab.expect(utils.isPrimitiveSwaggerType('')).to.equal(false);
+            Lab.expect(utils.isPrimitiveSwaggerType('asdf123')).to.equal(false);
+
+            done();
+        });
+    });
+    describe('setNotEmpty', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.setNotEmpty({}, 'key', 'value')).to.have.property('key', 'value');
+            Lab.expect(utils.setNotEmpty({}, 'key', 'value')).to.have.property('key', 'value');
+            Lab.expect(utils.setNotEmpty({}, 'key', undefined)).not.to.have.property('key');
+            Lab.expect(utils.setNotEmpty({}, 'key', null)).not.to.have.property('key');
+            Lab.expect(utils.setNotEmpty({}, 'key', [])).not.to.have.property('key');
             done();
         });
     });
