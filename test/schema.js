@@ -6,7 +6,7 @@ var expect = Lab.expect;
 var before = Lab.before;
 var after = Lab.after;
 var Joi = require('joi');
-var Nipple = require('Nipple');
+var Nipple = require('nipple');
 
 var schema = require('../lib/schema');
 var generator = require('../lib/generator');
