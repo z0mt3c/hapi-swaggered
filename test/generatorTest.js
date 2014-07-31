@@ -236,9 +236,11 @@ describe('generator', function () {
             });
 
             describe('#4: object', function () {
+                var newModelStub;
+
                 Lab.before(function (done) {
-                    var stub = sinon.stub(generator, 'newModel');
-                    stub.returns({ test: true });
+                    newModelStub = sinon.stub(generator, 'newModel');
+                    newModelStub.returns({ test: true });
                     done();
                 });
 
@@ -252,6 +254,7 @@ describe('generator', function () {
                     var swaggerSchema = generator.fromJoiSchema(Joi.object(), null, models);
 
                     expect(swaggerSchema).to.exist;
+                    expect(newModelStub.calledWith(Joi.object(), null, models)).to.be.ok;
                     expect(swaggerSchema).to.have.property('test', true);
                     expect(swaggerSchema).to.eql({
                         required: false,
@@ -263,14 +266,16 @@ describe('generator', function () {
             })
 
             describe('#5: array', function () {
-                Lab.before(function (done) {
-                    var stub = sinon.stub(generator, 'newModel');
-                    stub.onCall(0).returns({ type: 'string' });
-                    stub.onCall(1).returns({ type: 'test' });
+                var newModelStub;
+
+                Lab.beforeEach(function (done) {
+                    newModelStub = sinon.stub(generator, 'newModel');
+                    newModelStub.onCall(0).returns({ type: 'string' });
+                    newModelStub.onCall(1).returns({ type: 'test' });
                     done();
                 });
 
-                Lab.after(function (done) {
+                Lab.afterEach(function (done) {
                     generator.newModel.restore();
                     done();
                 });
@@ -281,11 +286,14 @@ describe('generator', function () {
 
                     expect(primitiveArray).to.exist;
                     expect(primitiveArray).to.eql({ required: false, type: 'array', items: { 'type': 'string' } });
+                    expect(newModelStub.callCount).to.be.eql(1);
+                    expect(newModelStub.calledWith(Joi.string(), null, models)).to.be.ok;
 
                     var modelArray = generator.fromJoiSchema(Joi.array().includes(Joi.object()), null, models);
 
                     expect(modelArray).to.exist;
                     expect(modelArray).to.eql({ required: false, type: 'array', items: { '$ref': 'test' } });
+                    expect(newModelStub.calledWith(Joi.object(), null, models)).to.be.ok;
 
                     done();
                 });

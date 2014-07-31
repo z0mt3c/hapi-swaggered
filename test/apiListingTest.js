@@ -57,7 +57,7 @@ describe('apiListing', function () {
         expect(list).to.be.eql([ { path: 'hapi', description: 'MyTestDescription' } ]);
 
         //TODO: joi validate!
-        
+
         done();
     });
 });
