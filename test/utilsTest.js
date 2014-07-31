@@ -15,6 +15,7 @@ describe('utils', function () {
             Lab.expect(utils.getDescription(null, 'test')).to.equal(undefined);
             Lab.expect(utils.getDescription(null, null)).to.equal(undefined);
             Lab.expect(utils.getDescription({ descriptions: null }, 'Test')).to.equal(undefined);
+            Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, '/test')).to.equal('Test');
             Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, 'test')).to.equal('Test');
             Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, null)).to.equal(undefined);
             done();
