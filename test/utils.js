@@ -6,18 +6,83 @@ var expect = Lab.expect;
 var before = Lab.before;
 var after = Lab.after;
 var Joi = require('joi');
-
 var utils = require('../lib/utils');
 
 describe('utils', function () {
-    describe('generateFallbackName', function () {
+    describe('getDescription', function () {
         it('#1', function (done) {
-            Lab.expect(utils.generateFallbackName(null)).to.equal(null);
-            Lab.expect(utils.generateFallbackName(undefined)).to.equal(null);
-            Lab.expect(utils.generateFallbackName('')).to.equal(null);
-            Lab.expect(utils.generateFallbackName('Model')).to.equal('Model_2');
-            Lab.expect(utils.generateFallbackName('Model_2')).to.equal('Model_3');
-            Lab.expect(utils.generateFallbackName('Model_999999')).to.equal('Model_1000000');
+            Lab.expect(utils.getDescription(null, 'test')).to.equal(undefined);
+            Lab.expect(utils.getDescription(null, null)).to.equal(undefined);
+            Lab.expect(utils.getDescription({ descriptions: null }, 'Test')).to.equal(undefined);
+            Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, 'test')).to.equal('Test');
+            Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, null)).to.equal(undefined);
+            done();
+        });
+    });
+
+    describe('extractBaseHost', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { host: 'localhost' }})).to.equal('hapi://localhost');
+            Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { host: 'localhost:9000' }})).to.equal('hapi://localhost:9000');
+            Lab.expect(utils.extractBaseHost({ protocol: null }, { headers: { host: 'localhost:9000' } })).to.equal('http://localhost:9000');
+            Lab.expect(utils.extractBaseHost({ protocol: null }, { server: { info: { protocol: 'hapi' } }, headers: { host: 'localhost:9000' } })).to.equal('hapi://localhost:9000');
+            done();
+        });
+    });
+
+    describe('generateNameFromSchema', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.generateNameFromSchema({ _inner: { children: [
+                { key: 'test' },
+                { key: 'test2' }
+            ]}})).to.eql('TestTest2Model');
+
+            Lab.expect(utils.generateNameFromSchema({ _inner: { children: [
+                { key: 'test' }
+            ]}})).to.eql('TestModel');
+
+            Lab.expect(utils.generateNameFromSchema({})).to.eql('EmptyModel');
+            Lab.expect(utils.generateNameFromSchema(null)).to.eql('EmptyModel');
+
+            done();
+        });
+
+        it('#2 Integration', function (done) {
+            var schema = Joi.object().keys({
+                name: Joi.string(),
+                email: Joi.string()
+            });
+
+            Lab.expect(utils.generateNameFromSchema(schema)).to.eql('NameEmailModel');
+            Lab.expect(utils.generateNameFromSchema(Joi.object().keys({}))).to.eql('EmptyModel');
+            Lab.expect(utils.generateNameFromSchema(Joi.object())).to.eql('EmptyModel');
+
+            done();
+        })
+    });
+
+    describe('filterRoutesByTags', function () {
+        it('#1', function (done) {
+            var routes = [
+                { path: '/dev/null', method: 'get', settings: { tags: ['Hapi'] } },
+                { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Hapi'] } },
+                { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Joi'] } },
+                { path: '/dev/null', method: 'get', settings: { tags: 'Joi' } },
+                { path: '/dev', method: 'post', settings: {}},
+                { path: '/dev', method: 'get'}
+            ];
+
+            Lab.expect(utils.filterRoutesByTags({ requiredTag: 'api' }, ['Hapi'], routes)).to.have.length(1);
+            Lab.expect(utils.filterRoutesByTags({}, ['Hapi'], routes)).to.have.length(2);
+            Lab.expect(utils.filterRoutesByTags({}, 'Hapi,api', routes)).to.have.length(3);
+            Lab.expect(utils.filterRoutesByTags({}, ['Hapi', 'api'], routes)).to.have.length(3);
+            Lab.expect(utils.filterRoutesByTags({}, ['Joi'], routes)).to.have.length(1);
+            Lab.expect(utils.filterRoutesByTags({}, ['api'], routes)).to.have.length(2);
+            Lab.expect(utils.filterRoutesByTags({}, ['api'], routes)).to.have.length(2);
+            Lab.expect(utils.filterRoutesByTags(null, ['api'], routes)).to.have.length(2);
+            Lab.expect(utils.filterRoutesByTags(null, null, routes)).to.have.length(6);
+            Lab.expect(utils.filterRoutesByTags(null, [], routes)).to.have.length(4);
+            Lab.expect(utils.filterRoutesByTags({ requiredTag: 'api' }, null, routes)).to.have.length(2);
 
             done();
         });
@@ -91,6 +156,19 @@ describe('utils', function () {
             ]);
 
             Lab.expect(extractAPIKeys).to.eql(['/asdf', '/dev', '/zdsa']);
+            done();
+        });
+    });
+
+    describe('generateFallbackName', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.generateFallbackName(null)).to.equal(null);
+            Lab.expect(utils.generateFallbackName(undefined)).to.equal(null);
+            Lab.expect(utils.generateFallbackName('')).to.equal(null);
+            Lab.expect(utils.generateFallbackName('Model')).to.equal('Model_2');
+            Lab.expect(utils.generateFallbackName('Model_2')).to.equal('Model_3');
+            Lab.expect(utils.generateFallbackName('Model_999999')).to.equal('Model_1000000');
+
             done();
         });
     });
