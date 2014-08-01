@@ -5,21 +5,22 @@
 
 
 ## TODO
-* Remove attributes from shema which don't fit to the swagger specifications... look for // TODO: remove!
 * ~~Proper(more strict) filter for apis and routes~~
-* cache apiDeclaration and apiListing through plugin methods
-* Find a way to support authorizations
-* Descriptions & infos based on server?
-* Response messages & codes
 * ~~handle model name collisions: if equal same name otherwise new type!~~
-* Support "deprecated"
-* Support Joi.any()
+* ~~Write tests~~ 
+* ~~Descriptions & infos based on server?~~
+* ~~Support "deprecated"~~ through route tag deprecated 
 * Check produces and consumes for proper behavior
-* Write tests
+* Response messages & codes
+* Write tests for index.js 
+* cache apiDeclaration and apiListing through plugin methods
 * Base path support (overall prefix e.g. api)
-* support property format (https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#431-primitives)
-* file upload?
+* Find a way to support authorizations
+* Support Joi.any()
+* Support property format e.g. int64/int32 but i didn't see any ui impact yet? (https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#431-primitives)
 * Setup hapi-swagger-ui project sharing endpoints and stuff through plugin.expose
+* Remove attributes from shema which don't fit to the swagger specifications but it's wired? May not? look for // TODO: remove!
+* file upload?
 
 What else?
 
@@ -41,14 +42,43 @@ Swagger ui should be configured to use /api2/swagger2 in this example ;-)
                 token: 'Test description'
             },
             info: {
-                title: "Swagger Sample App",
-                description: "This is a sample server Petstore server.  You can find out more about Swagger \n    at <a href=\"http://swagger.wordnik.com\">http://swagger.wordnik.com</a> or on irc.freenode.net, #swagger.  For this sample,\n    you can use the api key \"special-key\" to test the authorization filters",
-                termsOfServiceUrl: "http://helloreverb.com/terms/",
-                contact: "apiteam@wordnik.com",
-                license: "Apache 2.0",
-                licenseUrl: "http://www.apache.org/licenses/LICENSE-2.0.html"
+                title: "Title",
+                description: "Description",
+                termsOfServiceUrl: "http://hapijs.com/",
+                contact: "xxx@xxx.com",
+                license: "XXX",
+                licenseUrl: "http://XXX"
             }
         }
     }
 ]
+```
+
+Overwrite api descriptions and info on server level! e.g.:
+
+```js
+servers: [
+    {
+        port: 8000,
+        options: {
+            labels: ['api'],
+            app: {
+                swagger: {
+                    descriptions: {
+                        'dev': 'description',
+                        'null': 'overwritten'
+                    },
+                    info: {
+                        title: "Overwritten",
+                        description: "Description",
+                        termsOfServiceUrl: "http://hapijs.com/",
+                        contact: "xxx@xxx.com",
+                        license: "XXX",
+                        licenseUrl: "http://XXX"
+                    }
+                }
+            }
+        }
+    }
+],
 ```
