@@ -11,6 +11,7 @@ var apiListing = require('../lib/apiListing');
 var schema = require('../lib/schema');
 var utils = require('../lib/utils');
 var generator = require('../lib/generator');
+var schemas = require('../lib/schema');
 var sinon = require('sinon');
 
 describe('apiListing', function () {
@@ -27,7 +28,12 @@ describe('apiListing', function () {
             var tags = null;
             var list = apiListing(settings)(routes, tags, swaggerServerSettings);
             expect(list).to.exist.and.to.have.length(2).and.to.have.deep.property('[0].path').that.to.eql('/dev');
-            done();
+
+            Joi.validate(list, Joi.array().includes(schemas.APIReference), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
         });
 
         it('#2', function (done) {
@@ -40,7 +46,12 @@ describe('apiListing', function () {
             var tags = null;
             var list = apiListing(settings)(routes, tags, swaggerServerSettings);
             expect(list).to.exist.and.to.have.length(1).and.to.have.deep.property('[0].path').that.to.eql('/test');
-            done();
+
+            Joi.validate(list, Joi.array().includes(schemas.APIReference), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
         });
 
         it('#3', function (done) {
@@ -56,10 +67,15 @@ describe('apiListing', function () {
                 .to.exist.and.to.have.length(1).and.to.have.deep.property('[0].path').that.to.eql('/zong');
             expect(apiListing(settings)(routes, 'test', swaggerServerSettings))
                 .to.exist.and.to.have.length(1).and.to.have.deep.property('[0].path').that.to.eql('/zong');
-            expect(apiListing(settings)(routes, 'api', swaggerServerSettings))
+            var list = apiListing(settings)(routes, 'api', swaggerServerSettings);
+            expect(list)
                 .to.exist.and.to.have.length(2);
 
-            done();
+            Joi.validate(list, Joi.array().includes(schemas.APIReference), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
         });
 
         it('description', function (done) {
@@ -76,11 +92,16 @@ describe('apiListing', function () {
                 .to.exist.and.to.have.length(1)
                 .and.to.have.deep.property('[0]').that.to.eql({ path: '/test', description: 'mep' });
 
-            expect(apiListing(settings)(routes, null, { descriptions: { test: 'mep2' }}))
+            var list = apiListing(settings)(routes, null, { descriptions: { test: 'mep2' }});
+            expect(list)
                 .to.exist.and.to.have.length(1)
                 .and.to.have.deep.property('[0]').that.to.eql({ path: '/test', description: 'mep2' });
 
-            done();
+            Joi.validate(list, Joi.array().includes(schemas.APIReference), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
         });
     });
 
@@ -123,6 +144,7 @@ describe('apiListing', function () {
             expect(apiLister([], {})).to.exist.and.to.be.eql([
                 { path: 'hapi', description: 'MyTestDescription' }
             ]);
+
             done();
         });
     });

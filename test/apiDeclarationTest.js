@@ -10,11 +10,17 @@ var sinon = require('sinon');
 
 var apiDeclaration = require('../lib/apiDeclaration');
 var utils = require('../lib/utils');
+var generator = require('../lib/generator');
+var schemas = require('../lib/schema');
+
+var simpleJoiSchema = Joi.object().keys({ string: Joi.string() }).options({ className: 'SimpleTestModel'});
 
 describe('apiDeclaration', function () {
-    var filterRoutesByTags, filterRoutesByPrefix, groupRoutesByPath;
+    var filterRoutesByTags, filterRoutesByPrefix, groupRoutesByPath, createProperties, fromJoiSchema;
 
     Lab.beforeEach(function (done) {
+        createProperties = sinon.spy(generator, 'createProperties');
+        fromJoiSchema = sinon.spy(generator, 'fromJoiSchema');
         filterRoutesByTags = sinon.spy(utils, 'filterRoutesByTags');
         filterRoutesByPrefix = sinon.spy(utils, 'filterRoutesByPrefix');
         groupRoutesByPath = sinon.spy(utils, 'groupRoutesByPath');
@@ -25,7 +31,130 @@ describe('apiDeclaration', function () {
         utils.filterRoutesByTags.restore();
         utils.filterRoutesByPrefix.restore();
         utils.groupRoutesByPath.restore();
+        generator.createProperties.restore();
+        generator.fromJoiSchema.restore();
         done();
+    });
+
+    describe('parameters', function () {
+        it('params', function (done) {
+            var settings = { requiredTag: 'apis' };
+            var apiDeclarator = apiDeclaration(settings);
+
+            var apis = apiDeclarator([
+                { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { params: simpleJoiSchema }}}
+            ], 'dev', null, null);
+
+            expect(apis).to.have.length(1);
+            expect(apis[0]).to.have.deep.property('path', '/dev');
+            expect(apis[0]).to.have.deep.property('operations[0].method', 'POST');
+            expect(apis[0]).to.have.deep.property('operations[0].type', 'void');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'path');
+
+            Joi.validate(apis, Joi.array().includes(schemas.API), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
+        });
+
+        it('query', function (done) {
+            var settings = { requiredTag: 'apis' };
+            var apiDeclarator = apiDeclaration(settings);
+
+            var apis = apiDeclarator([
+                { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { query: simpleJoiSchema }}}
+            ], 'dev', null, null);
+
+            expect(apis).to.have.length(1);
+            expect(apis[0]).to.have.deep.property('path', '/dev');
+            expect(apis[0]).to.have.deep.property('operations[0].method', 'POST');
+            expect(apis[0]).to.have.deep.property('operations[0].type', 'void');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'query');
+
+            Joi.validate(apis, Joi.array().includes(schemas.API), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
+        });
+
+        it('payload', function (done) {
+            var settings = { requiredTag: 'apis' };
+            var apiDeclarator = apiDeclaration(settings);
+            var models = {};
+
+            var apis = apiDeclarator([
+                { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { payload: simpleJoiSchema }}}
+            ], 'dev', models, null);
+
+            expect(apis).to.have.length(1);
+            expect(apis[0]).to.have.deep.property('path', '/dev');
+            expect(apis[0]).to.have.deep.property('operations[0].method', 'POST');
+            expect(apis[0]).to.have.deep.property('operations[0].type', 'void');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'SimpleTestModel');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'body');
+            expect(models).to.exist.and.to.have.property('SimpleTestModel').that.to.eql({
+                id: "SimpleTestModel",
+                type: "object",
+                properties: {
+                    string: {
+                        required: false,
+                        type: "string"
+                    }
+                }
+            });
+
+            Joi.validate(apis, Joi.array().includes(schemas.API), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+
+                Joi.validate(models, schemas.Models, function (err, value) {
+                    expect(err).to.be.null;
+                    expect(value).to.exist;
+                    done();
+                });
+            });
+        });
+
+        it('response', function (done) {
+            var settings = { requiredTag: 'apis' };
+            var apiDeclarator = apiDeclaration(settings);
+            var models = {};
+
+            var apis = apiDeclarator([
+                { path: '/dev', method: 'post', settings: { tags: ['apis'], response: { schema: simpleJoiSchema }}}
+            ], 'dev', models, null);
+
+            expect(apis).to.have.length(1);
+            expect(apis[0]).to.have.deep.property('path', '/dev');
+            expect(apis[0]).to.have.deep.property('operations[0].method', 'POST');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters').that.have.length(0);
+            expect(apis[0]).to.have.deep.property('operations[0].type', 'SimpleTestModel');
+            expect(models).to.exist.and.to.have.property('SimpleTestModel').that.to.eql({
+                id: "SimpleTestModel",
+                type: "object",
+                properties: {
+                    string: {
+                        required: false,
+                        type: "string"
+                    }
+                }
+            });
+
+            Joi.validate(apis, Joi.array().includes(schemas.API), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+
+                Joi.validate(models, schemas.Models, function (err, value) {
+                    expect(err).to.be.null;
+                    expect(value).to.exist;
+                    done();
+                });
+            });
+        });
     });
 
     it('empty', function (done) {
@@ -95,9 +224,14 @@ describe('apiDeclaration', function () {
             ]}
         ]);
 
+
         expect(list).to.have.length(2);
 
-        done();
+        Joi.validate(list, Joi.array().includes(schemas.API), function (err, value) {
+            expect(err).to.be.null;
+            expect(value).to.exist;
+            done();
+        });
     });
 
     it('deprecation tag', function (done) {
@@ -208,12 +342,17 @@ describe('apiDeclaration', function () {
         ], 'dev', null, ['dev', 'api']))
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        expect(apiDeclarator([
+        var apiDeclarations = apiDeclarator([
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
-        ], 'dev', null, 'dev,api'))
+        ], 'dev', null, 'dev,api');
+        expect(apiDeclarations)
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        done();
+        Joi.validate(apiDeclarations, Joi.array().includes(schemas.API), function (err, value) {
+            expect(err).to.be.null;
+            expect(value).to.exist;
+            done();
+        });
     });
 });

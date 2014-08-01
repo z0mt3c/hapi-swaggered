@@ -10,8 +10,8 @@ var Joi = require('joi');
 var schema = require('../lib/schema');
 var generator = require('../lib/generator');
 
-describe('generator', function () {
-    it('simple model', function (done) {
+describe('model constellations', function () {
+    it('Just an example', function (done) {
         var schema = Joi.object().keys({
             name: Joi.string().description('test').required(),
             number: Joi.number().description('numberDescription').required(),
@@ -21,12 +21,14 @@ describe('generator', function () {
         });
 
         var models = {};
+
         Lab.expect(generator.fromJoiSchema(schema, null, models)).to.eql({
             required: true,
             type: 'SwaggerModel'
         });
 
-        Lab.expect(models['SwaggerModel']).to.eql({ id: 'SwaggerModel',
+        Lab.expect(models).to.have.property('SwaggerModel').that.eql({
+            id: 'SwaggerModel',
             type: 'object',
             properties: {
                 name: {
