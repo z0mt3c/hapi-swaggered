@@ -1,5 +1,5 @@
 {
-  "name": "hapi-swaggererd",
+  "name": "hapi-swaggered",
   "description": "A swagger documentation UI generator plugin for hapi",
   "version": "1.0.0",
   "author": "Timo Behrmann",
@@ -24,6 +24,7 @@
     "lodash": "^2.4.1"
   },
   "devDependencies": {
+    "hapi": "^6.2.1",
     "lab": "^3.2.1",
     "nipple": "^2.5.3",
     "sinon": "^1.10.3"

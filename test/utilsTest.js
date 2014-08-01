@@ -24,6 +24,8 @@ describe('utils', function () {
 
     describe('extractBaseHost', function () {
         it('#1', function (done) {
+            Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { }})).to.equal('hapi://localhost');
+            Lab.expect(utils.extractBaseHost({ protocol: 'hapi', host: 'abc' }, { headers: { host: 'localhost' }})).to.equal('hapi://abc');
             Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { host: 'localhost' }})).to.equal('hapi://localhost');
             Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { host: 'localhost:9000' }})).to.equal('hapi://localhost:9000');
             Lab.expect(utils.extractBaseHost({ protocol: null }, { headers: { host: 'localhost:9000' } })).to.equal('http://localhost:9000');
@@ -176,7 +178,7 @@ describe('utils', function () {
     });
     describe('isPrimitiveSwaggerType', function () {
         it('#1', function (done) {
-            _.each(['integer', 'number', 'string', 'boolean', 'string'], function(type) {
+            _.each(['integer', 'number', 'string', 'boolean', 'string'], function (type) {
                 Lab.expect(utils.isPrimitiveSwaggerType(type)).to.equal(true);
             });
 

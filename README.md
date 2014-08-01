@@ -10,6 +10,7 @@
 * ~~Write tests~~ 
 * ~~Descriptions & infos based on server?~~
 * ~~Support "deprecated"~~ through route tag deprecated 
+* Improve path variable handling / mapping to swagger
 * Check produces and consumes for proper behavior
 * Response messages & codes
 * Write tests for index.js 
