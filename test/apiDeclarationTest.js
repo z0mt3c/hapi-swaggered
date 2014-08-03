@@ -97,12 +97,12 @@ describe('apiDeclaration', function () {
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'SimpleTestModel');
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'body');
             expect(models).to.exist.and.to.have.property('SimpleTestModel').that.to.eql({
-                id: "SimpleTestModel",
-                type: "object",
+                id: 'SimpleTestModel',
+                type: 'object',
                 properties: {
                     string: {
                         required: false,
-                        type: "string"
+                        type: 'string'
                     }
                 }
             });
@@ -134,12 +134,12 @@ describe('apiDeclaration', function () {
             expect(apis[0]).to.have.deep.property('operations[0].parameters').that.have.length(0);
             expect(apis[0]).to.have.deep.property('operations[0].type', 'SimpleTestModel');
             expect(models).to.exist.and.to.have.property('SimpleTestModel').that.to.eql({
-                id: "SimpleTestModel",
-                type: "object",
+                id: 'SimpleTestModel',
+                type: 'object',
                 properties: {
                     string: {
                         required: false,
-                        type: "string"
+                        type: 'string'
                     }
                 }
             });
@@ -186,8 +186,7 @@ describe('apiDeclaration', function () {
     it('only routes: no params, no query, no payload, no response', function (done) {
         var settings = { mySettings: true };
         var apiDeclarator = apiDeclaration(settings);
-        var routes = [],
-            apiKey = 'dev',
+        var apiKey = 'dev',
             models = {},
             tags = null;
 
@@ -215,12 +214,12 @@ describe('apiDeclaration', function () {
         expect(groupRoutesByPath.calledWithExactly(filteredRoutes)).to.be.ok;
 
         expect(list).to.be.eql([
-            { path: "/dev", operations: [
-                { method: "GET", nickname: "get_dev", parameters: [], type: "void" },
-                { method: "POST", nickname: "post_dev", parameters: [], type: "void" }
+            { path: '/dev', operations: [
+                { method: 'GET', nickname: 'get_dev', parameters: [], type: 'void' },
+                { method: 'POST', nickname: 'post_dev', parameters: [], type: 'void' }
             ]},
-            { path: "/dev/null", operations: [
-                { method: "GET", nickname: "get_dev_null", parameters: [], type: "void" }
+            { path: '/dev/null', operations: [
+                { method: 'GET', nickname: 'get_dev_null', parameters: [], type: 'void' }
             ]}
         ]);
 

@@ -263,7 +263,7 @@ describe('generator', function () {
 
                     done();
                 });
-            })
+            });
 
             describe('#5: array', function () {
                 var newModelStub;

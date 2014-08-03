@@ -62,7 +62,7 @@ describe('utils', function () {
             Lab.expect(utils.generateNameFromSchema(Joi.object())).to.eql('EmptyModel');
 
             done();
-        })
+        });
     });
 
     describe('filterRoutesByTags', function () {

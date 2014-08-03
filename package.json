@@ -1,38 +1,47 @@
 {
-  "name": "hapi-swaggered",
-  "description": "A swagger documentation UI generator plugin for hapi",
-  "version": "1.0.0",
-  "author": "Timo Behrmann",
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/z0mt3c/hapi-swaggered.git"
-  },
-  "main": "index",
-  "keywords": [
-    "docs",
-    "swagger",
-    "swaggered",
-    "hapi"
-  ],
-  "engines": {
-    "node": "0.10.x"
-  },
-  "dependencies": {
-    "boom": "^2.4.2",
-    "hoek": "^2.3.0",
-    "joi": "^4.6.1",
-    "lodash": "^2.4.1"
-  },
-  "devDependencies": {
-    "hapi": "^6.2.1",
-    "lab": "^3.2.1",
-    "nipple": "^2.5.3",
-    "sinon": "^1.10.3"
-  },
-  "scripts": {
-    "test": "make test"
-  },
-  "peerDependencies": {
-    "hapi": ">= 6.x < 7.x"
-  }
+    "name": "hapi-swaggered",
+    "description": "A swagger documentation UI generator plugin for hapi",
+    "version": "1.0.0",
+    "author": "Timo Behrmann",
+    "repository": {
+        "type": "git",
+        "url": "http://github.com/z0mt3c/hapi-swaggered.git"
+    },
+    "bugs": {
+        "url": "https://github.com/z0mt3c/hapi-swaggered/issues"
+    },
+    "license": "MIT",
+    "main": "index",
+    "keywords": [
+        "docs",
+        "swagger",
+        "swaggered",
+        "hapi"
+    ],
+    "engines": {
+        "node": "0.10.x"
+    },
+    "dependencies": {
+        "boom": "^2.4.2",
+        "hoek": "^2.3.0",
+        "joi": "^4.6.1",
+        "lodash": "^2.4.1"
+    },
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-contrib-jshint": "^0.10.0",
+        "grunt-contrib-watch": "^0.6.1",
+        "grunt-lab": "^1.0.3",
+        "grunt-release": "^0.7.0",
+        "hapi": "^6.2.1",
+        "lab": "^3.2.1",
+        "nipple": "^2.5.3",
+        "sinon": "^1.10.3"
+    },
+    "scripts": {
+        "test": "make test"
+    },
+    "peerDependencies": {
+        "hapi": ">= 6.x < 7.x"
+    }
 }

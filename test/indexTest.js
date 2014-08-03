@@ -88,12 +88,12 @@ describe('hapi plugin tests', function () {
                 plugin: index,
                 options: {
                     info: {
-                        title: "Overwritten",
-                        description: "Description",
-                        termsOfServiceUrl: "http://hapijs.com/",
-                        contact: "xxx@xxx.com",
-                        license: "XXX",
-                        licenseUrl: "http://XXX"
+                        title: 'Overwritten',
+                        description: 'Description',
+                        termsOfServiceUrl: 'http://hapijs.com/',
+                        contact: 'xxx@xxx.com',
+                        license: 'XXX',
+                        licenseUrl: 'http://XXX'
                     }
                 }
             };
@@ -132,7 +132,7 @@ describe('hapi plugin tests', function () {
             server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
 
             server.inject('/swagger', function (res) {
-                expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2')
+                expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
                 expect(res.result).not.to.have.deep.property('apis[0].description');
                 done();
@@ -145,7 +145,7 @@ describe('hapi plugin tests', function () {
             server.settings.app = { swagger: { descriptions: { 'testEndpoint': 'myDesc' }}};
 
             server.inject('/swagger', function (res) {
-                expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2')
+                expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
                 expect(res.result).to.have.deep.property('apis[0].description', 'myDesc');
                 done();
@@ -157,7 +157,7 @@ describe('hapi plugin tests', function () {
             pluginOptions.descriptions = { 'testEndpoint': 'myDesc' };
 
             server.inject('/swagger', function (res) {
-                expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2')
+                expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.deep.property('apis[0].path', '/serverDescription');
                 expect(res.result).to.have.deep.property('apis[0].description', 'myDesc2');
                 done();
