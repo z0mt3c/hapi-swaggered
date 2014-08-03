@@ -2,6 +2,7 @@ module.exports = function (grunt) {
     // load grunt tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-release');
     grunt.loadNpmTasks('grunt-lab');
 
     // Project configuration.
