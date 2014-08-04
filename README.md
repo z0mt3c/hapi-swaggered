@@ -5,6 +5,10 @@ Yet another hapi plugin providing swagger compliant API specifications based on 
 [![Dependency Status](https://gemnasium.com/z0mt3c/hapi-swaggered.png)](https://gemnasium.com/z0mt3c/hapi-swaggered)
 
 
+## Swagger-UI
+This plugin does not include a [swagger-ui](https://github.com/wordnik/swagger-ui) interface. It just serves the bare swagger 1.2 compliant json feed. 
+Looking for an easy swagger-ui plugin to drop-in? Have a look at: [hapi-swaggered-ui](https://github.com/z0mt3c/hapi-swaggered-ui)!
+ 
 ## Install
 Through npm...
 
