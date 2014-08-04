@@ -21,6 +21,8 @@
     "expr": true,
     "predef": [
         "require",
+        "module",
+        "exports",
         "console"
     ]
 }

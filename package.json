@@ -33,7 +33,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-lab": "^1.0.3",
     "grunt-release": "^0.7.0",
-    "hapi": "^6.2.1",
+    "hapi": "^6.3.0",
     "lab": "^3.2.1",
     "nipple": "^2.5.3",
     "sinon": "^1.10.3"
