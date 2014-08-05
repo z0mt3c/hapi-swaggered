@@ -76,6 +76,29 @@ servers: [
 ],
 ```
 
+## Examples
+### Forms & file-upload
+```js 
+plugin.route({
+    method: 'POST',
+    path: '/test/fileUpload',
+    config: {
+        tags: ['api'],
+        validate: {
+            payload: Joi.object().keys({ name: Joi.string(), file: Joi.any().options({ swaggerType: 'file' }) })
+        },
+        handler: function (request, reply) {
+            // handle file upload as specified in payload.output
+            reply({ name: request.payload.name });
+        },
+        payload: {
+            allow: 'multipart/form-data'
+            output: 'data'|'stream'|'file'
+        }
+    }
+});
+```
+
 ## Topics
 ### TODO
 * Improve path variable handling / mapping to swagger
