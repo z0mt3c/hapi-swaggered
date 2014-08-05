@@ -106,11 +106,9 @@ plugin.route({
 * Response messages & codes
 * Base path support (overall prefix e.g. api)
 * Find a way to support authorizations
-* Support Joi.any()
+* Support Joi.any() ( currently only partial... e.g. options({ swaggerType: 'file' }) 
 * Support property format e.g. int64/int32 but i didn't see any ui impact yet? (https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#431-primitives)
-* Setup hapi-swagger-ui project sharing endpoints and stuff through plugin.expose
 * Remove attributes from shema which don't fit to the swagger specifications but it's wired? May not? look for // TODO: remove!
-* file upload? (forms)
 * custom api sorting?
 
 Anything else? Ideas and pull requests are welcome ;-)
@@ -123,3 +121,5 @@ Anything else? Ideas and pull requests are welcome ;-)
 * ~~Support "deprecated"~~ through route tag deprecated 
 * ~~Write tests for index.js~~ 
 * ~~cache apiDeclaration and apiListing through plugin methods~~
+* ~~'file' upload? (forms)~~
+* ~~Setup hapi-swagger-ui project sharing endpoints and stuff through plugin.expose~~
