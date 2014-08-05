@@ -119,6 +119,52 @@ describe('apiDeclaration', function () {
             });
         });
 
+        it('payload: application/x-www-form-urlencoded', function (done) {
+            var settings = { requiredTag: 'apis' };
+            var apiDeclarator = apiDeclaration(settings);
+            var models = {};
+
+            var apis = apiDeclarator([
+                { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { payload: simpleJoiSchema }, payload: { allow: ['application/x-www-form-urlencoded'] }}}
+            ], 'dev', models, null);
+
+            expect(apis).to.have.length(1);
+            expect(apis[0]).to.have.deep.property('path', '/dev');
+            expect(apis[0]).to.have.deep.property('operations[0].method', 'POST');
+            expect(apis[0]).to.have.deep.property('operations[0].type', 'void');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'form');
+
+            Joi.validate(apis, Joi.array().includes(schemas.API), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
+        });
+
+        it('payload: multipart/form-data', function (done) {
+            var settings = { requiredTag: 'apis' };
+            var apiDeclarator = apiDeclaration(settings);
+            var models = {};
+
+            var apis = apiDeclarator([
+                { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { payload: simpleJoiSchema }, payload: { allow: ['multipart/form-data'] }}}
+            ], 'dev', models, null);
+
+            expect(apis).to.have.length(1);
+            expect(apis[0]).to.have.deep.property('path', '/dev');
+            expect(apis[0]).to.have.deep.property('operations[0].method', 'POST');
+            expect(apis[0]).to.have.deep.property('operations[0].type', 'void');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
+            expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'form');
+
+            Joi.validate(apis, Joi.array().includes(schemas.API), function (err, value) {
+                expect(err).to.be.null;
+                expect(value).to.exist;
+                done();
+            });
+        });
+
         it('response', function (done) {
             var settings = { requiredTag: 'apis' };
             var apiDeclarator = apiDeclaration(settings);

@@ -21,6 +21,15 @@ describe('utils', function () {
             done();
         });
     });
+    describe('firstCharToUpperCase', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.firstCharToUpperCase(null)).to.equal(null);
+            Lab.expect(utils.firstCharToUpperCase('')).to.equal('');
+            Lab.expect(utils.firstCharToUpperCase('a')).to.equal('A');
+            Lab.expect(utils.firstCharToUpperCase('joi')).to.equal('Joi');
+            done();
+        });
+    });
 
     describe('extractBaseHost', function () {
         it('#1', function (done) {
