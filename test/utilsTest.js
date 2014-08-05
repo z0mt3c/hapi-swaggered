@@ -2,9 +2,6 @@ var Lab = require('lab');
 
 var describe = Lab.experiment;
 var it = Lab.test;
-var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
 var Joi = require('joi');
 var utils = require('../lib/utils');
 var _ = require('lodash');
@@ -76,29 +73,63 @@ describe('utils', function () {
         });
     });
 
-    describe('filterRoutesByTags', function () {
+    it('filterRoutesByRequiredTags', function (done) {
+        var routes = [
+            { path: '/dev/null', method: 'get', settings: { tags: ['Hapi'] } },
+            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Hapi'] } },
+            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Joi'] } },
+            { path: '/dev/null', method: 'get', settings: { tags: 'Joi' } },
+            { path: '/dev', method: 'post', settings: {}},
+            { path: '/dev', method: 'get'}
+        ];
+
+        Lab.expect(utils.filterRoutesByRequiredTags(routes, ['Hapi'])).to.have.length(2);
+        Lab.expect(utils.filterRoutesByRequiredTags(routes, ['Hapi', 'api'])).to.have.length(1);
+        //TODO: hm?
+        Lab.expect(utils.filterRoutesByRequiredTags(routes, [])).to.have.length(6);
+        Lab.expect(utils.filterRoutesByRequiredTags(routes, null)).to.have.length(6);
+
+        done();
+    });
+
+
+    it('filterRoutesByTagSelection', function (done) {
+        var routes = [
+            { path: '/dev/null', method: 'get', settings: { tags: ['Hapi'] } },
+            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Hapi'] } },
+            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Joi'] } },
+            { path: '/dev/null', method: 'get', settings: { tags: 'Joi' } },
+            { path: '/dev', method: 'post', settings: {}},
+            { path: '/dev', method: 'get'}
+        ];
+
+        Lab.expect(utils.filterRoutesByTagSelection(routes, [], [])).to.have.length(6);
+        Lab.expect(utils.filterRoutesByTagSelection(routes, null, [])).to.have.length(6);
+        Lab.expect(utils.filterRoutesByTagSelection(routes, [], null)).to.have.length(6);
+        Lab.expect(utils.filterRoutesByTagSelection(routes, null, null)).to.have.length(6);
+        Lab.expect(utils.filterRoutesByTagSelection(routes, ['Hapi'], [])).to.have.length(2);
+        Lab.expect(utils.filterRoutesByTagSelection(routes, ['Hapi'], ['api'])).to.have.length(1);
+        Lab.expect(utils.filterRoutesByTagSelection(routes, [], ['api'])).to.have.length(4);
+
+        done();
+    });
+
+
+    describe('parseTags', function () {
         it('#1', function (done) {
-            var routes = [
-                { path: '/dev/null', method: 'get', settings: { tags: ['Hapi'] } },
-                { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Hapi'] } },
-                { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Joi'] } },
-                { path: '/dev/null', method: 'get', settings: { tags: 'Joi' } },
-                { path: '/dev', method: 'post', settings: {}},
-                { path: '/dev', method: 'get'}
-            ];
-
-            Lab.expect(utils.filterRoutesByTags({ requiredTag: 'api' }, ['Hapi'], routes)).to.have.length(1);
-            Lab.expect(utils.filterRoutesByTags({}, ['Hapi'], routes)).to.have.length(2);
-            Lab.expect(utils.filterRoutesByTags({}, 'Hapi,api', routes)).to.have.length(3);
-            Lab.expect(utils.filterRoutesByTags({}, ['Hapi', 'api'], routes)).to.have.length(3);
-            Lab.expect(utils.filterRoutesByTags({}, ['Joi'], routes)).to.have.length(1);
-            Lab.expect(utils.filterRoutesByTags({}, ['api'], routes)).to.have.length(2);
-            Lab.expect(utils.filterRoutesByTags({}, ['api'], routes)).to.have.length(2);
-            Lab.expect(utils.filterRoutesByTags(null, ['api'], routes)).to.have.length(2);
-            Lab.expect(utils.filterRoutesByTags(null, null, routes)).to.have.length(6);
-            Lab.expect(utils.filterRoutesByTags(null, [], routes)).to.have.length(4);
-            Lab.expect(utils.filterRoutesByTags({ requiredTag: 'api' }, null, routes)).to.have.length(2);
-
+            Lab.expect(utils.parseTags(null)).to.eql(null);
+            Lab.expect(utils.parseTags('')).to.eql(null);
+            Lab.expect(utils.parseTags([])).to.eql(null);
+            Lab.expect(utils.parseTags(['api'])).to.eql({ included: ['api'], excluded: [] });
+            Lab.expect(utils.parseTags(['api'].join(','))).to.eql({ included: ['api'], excluded: [] });
+            Lab.expect(utils.parseTags(['+api'])).to.eql({ included: ['api'], excluded: [] });
+            Lab.expect(utils.parseTags(['+api'].join(','))).to.eql({ included: ['api'], excluded: [] });
+            Lab.expect(utils.parseTags(['-api'])).to.eql({ included: [], excluded: ['api'] });
+            Lab.expect(utils.parseTags(['-api'].join(','))).to.eql({ included: [], excluded: ['api'] });
+            Lab.expect(utils.parseTags(['-api','+beta'])).to.eql({ included: ['beta'], excluded: ['api'] });
+            Lab.expect(utils.parseTags(['-api','+beta'].join(','))).to.eql({ included: ['beta'], excluded: ['api'] });
+            Lab.expect(utils.parseTags(['+api','+beta'])).to.eql({ included: ['api','beta'], excluded: [] });
+            Lab.expect(utils.parseTags(['+api','+beta'].join(','))).to.eql({ included: ['api','beta'], excluded: [] });
             done();
         });
     });

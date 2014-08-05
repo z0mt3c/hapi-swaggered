@@ -3,8 +3,6 @@ var Lab = require('lab');
 var describe = Lab.experiment;
 var it = Lab.test;
 var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
 var Joi = require('joi');
 
 var apiListing = require('../lib/apiListing');
@@ -13,16 +11,22 @@ var utils = require('../lib/utils');
 var generator = require('../lib/generator');
 var schemas = require('../lib/schema');
 var sinon = require('sinon');
+var Hapi = require('hapi');
 
 describe('apiListing', function () {
-    var filterRoutesByTags, extractAPIKeys, getDescription;
+    var filterRoutesByTagSelection, filterRoutesByRequiredTags, extractAPIKeys, getDescription;
 
-    describe('integration', function() {
+    describe('integration', function () {
         it('#1', function (done) {
-            var routes = [
-                { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
-                { path: '/test', method: 'get', settings: { tags: ['dev', 'api'] }}
-            ];
+
+            var handler = function () {};
+            var server = Hapi.createServer('localhost', 8000);
+            server.route([
+                { path: '/dev', method: 'post', config: { tags: ['dev'], handler: handler }},
+                { path: '/test', method: 'get', config: { tags: ['dev', 'api'], handler: handler }}
+            ]);
+
+            var routes = server.table();
             var settings = {};
             var swaggerServerSettings = {};
             var tags = null;
@@ -37,11 +41,15 @@ describe('apiListing', function () {
         });
 
         it('#2', function (done) {
-            var routes = [
-                { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
-                { path: '/test', method: 'get', settings: { tags: ['dev', 'api'] }}
-            ];
-            var settings = { requiredTag: 'api' };
+            var handler = function () {};
+            var server = Hapi.createServer('localhost', 8000);
+            server.route([
+                { path: '/dev', method: 'post', config: { tags: ['dev'], handler: handler }},
+                { path: '/test', method: 'get', config: { tags: ['dev', 'api'], handler: handler }}
+            ]);
+
+            var routes = server.table();
+            var settings = { requiredTags: ['api'] };
             var swaggerServerSettings = {};
             var tags = null;
             var list = apiListing(settings)(routes, tags, swaggerServerSettings);
@@ -55,11 +63,15 @@ describe('apiListing', function () {
         });
 
         it('#3', function (done) {
-            var routes = [
-                { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
-                { path: '/test', method: 'get', settings: { tags: ['dev', 'api'] }},
-                { path: '/zong', method: 'get', settings: { tags: ['dev', 'api', 'test'] }}
-            ];
+            var handler = function () {};
+            var server = Hapi.createServer('localhost', 8000);
+            server.route([
+                { path: '/dev', method: 'post', config: { tags: ['dev'], handler: handler}},
+                { path: '/test', method: 'get', config: { tags: ['dev', 'api'], handler: handler}},
+                { path: '/zong', method: 'get', config: { tags: ['dev', 'api', 'test'], handler: handler}}
+            ]);
+
+            var routes = server.table();
             var settings = { requiredTag: 'api' };
             var swaggerServerSettings = {};
 
@@ -79,20 +91,22 @@ describe('apiListing', function () {
         });
 
         it('description', function (done) {
-            var routes = [
-                { path: '/test', method: 'get', settings: { tags: ['api'] }}
-            ];
+            var handler = function () {};
+            var server = Hapi.createServer('localhost', 8000);
+            server.route([
+                { path: '/test', method: 'get', config: { tags: ['api'], handler: handler }}
+            ]);
 
             var settings = {
                 requiredTag: 'api',
                 descriptions: { test: 'mep' }
             };
 
-            expect(apiListing(settings)(routes, null, {}))
+            expect(apiListing(settings)(server.table(), null, {}))
                 .to.exist.and.to.have.length(1)
                 .and.to.have.deep.property('[0]').that.to.eql({ path: '/test', description: 'mep' });
 
-            var list = apiListing(settings)(routes, null, { descriptions: { test: 'mep2' }});
+            var list = apiListing(settings)(server.table(), null, { descriptions: { test: 'mep2' }});
             expect(list)
                 .to.exist.and.to.have.length(1)
                 .and.to.have.deep.property('[0]').that.to.eql({ path: '/test', description: 'mep2' });
@@ -107,14 +121,16 @@ describe('apiListing', function () {
 
     describe('flow', function () {
         Lab.beforeEach(function (done) {
-            filterRoutesByTags = sinon.stub(utils, 'filterRoutesByTags');
-            extractAPIKeys = sinon.stub(utils, 'extractAPIKeys');
-            getDescription = sinon.stub(utils, 'getDescription');
+            filterRoutesByTagSelection = sinon.spy(utils, 'filterRoutesByTagSelection');
+            filterRoutesByRequiredTags = sinon.spy(utils, 'filterRoutesByRequiredTags');
+            extractAPIKeys = sinon.spy(utils, 'extractAPIKeys');
+            getDescription = sinon.spy(utils, 'getDescription');
             done();
         });
 
         Lab.afterEach(function (done) {
-            utils.filterRoutesByTags.restore();
+            utils.filterRoutesByTagSelection.restore();
+            utils.filterRoutesByRequiredTags.restore();
             utils.extractAPIKeys.restore();
             utils.getDescription.restore();
             done();
@@ -128,21 +144,26 @@ describe('apiListing', function () {
             done();
         });
 
-        it('filterRoutesByTags', function (done) {
-            var settings = {};
-            var routeList = [
-                { path: '/dev/null', method: 'get', settings: { tags: ['Hapi'] } },
-                { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Hapi'] } }
-            ];
+        it('filterRoutesByTagSelection', function (done) {
+            var settings = {
+                descriptions: {
+                    'status': 'MyTestDescription',
+                    'user': 'MyTestDescription'
+                }
+            };
 
-            var apiKeys = [ 'hapi' ];
-            filterRoutesByTags.returns(routeList);
-            extractAPIKeys.withArgs(routeList).returns(apiKeys);
-            getDescription.withArgs(settings, apiKeys[0]).returns('MyTestDescription');
+            var handler = function () {};
+
+            var server = Hapi.createServer('localhost', 8000);
+            server.route([
+                { method: 'GET', path: '/status/test', config: { tags: ['Hapi'], handler: handler }},
+                { method: 'GET', path: '/user/test', config: { tags: ['api', 'Hapi'], handler: handler }}
+            ]);
 
             var apiLister = apiListing(settings);
-            expect(apiLister([], {})).to.exist.and.to.be.eql([
-                { path: 'hapi', description: 'MyTestDescription' }
+            expect(apiLister(server.table(), {})).to.exist.and.to.be.eql([
+                { path: '/status', description: 'MyTestDescription' },
+                { path: '/user', description: 'MyTestDescription' }
             ]);
 
             done();

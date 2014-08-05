@@ -3,8 +3,6 @@ var Lab = require('lab');
 var describe = Lab.experiment;
 var it = Lab.test;
 var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
 var Joi = require('joi');
 var sinon = require('sinon');
 
@@ -16,23 +14,29 @@ var schemas = require('../lib/schema');
 var simpleJoiSchema = Joi.object().keys({ string: Joi.string() }).options({ className: 'SimpleTestModel'});
 
 describe('apiDeclaration', function () {
-    var filterRoutesByTags, filterRoutesByPrefix, groupRoutesByPath, createProperties, fromJoiSchema;
+    var filterRoutesByPrefix, groupRoutesByPath, createProperties, fromJoiSchema, filterRoutesByRequiredTags, filterRoutesByTagSelection;
 
     Lab.beforeEach(function (done) {
         createProperties = sinon.spy(generator, 'createProperties');
         fromJoiSchema = sinon.spy(generator, 'fromJoiSchema');
-        filterRoutesByTags = sinon.spy(utils, 'filterRoutesByTags');
+
+        filterRoutesByTagSelection = sinon.spy(utils, 'filterRoutesByTagSelection');
+        filterRoutesByRequiredTags = sinon.spy(utils, 'filterRoutesByRequiredTags');
         filterRoutesByPrefix = sinon.spy(utils, 'filterRoutesByPrefix');
         groupRoutesByPath = sinon.spy(utils, 'groupRoutesByPath');
+
         done();
     });
 
     Lab.afterEach(function (done) {
-        utils.filterRoutesByTags.restore();
-        utils.filterRoutesByPrefix.restore();
-        utils.groupRoutesByPath.restore();
         generator.createProperties.restore();
         generator.fromJoiSchema.restore();
+
+        utils.filterRoutesByTagSelection.restore();
+        utils.filterRoutesByRequiredTags.restore();
+        utils.filterRoutesByPrefix.restore();
+        utils.groupRoutesByPath.restore();
+
         done();
     });
 
@@ -216,14 +220,16 @@ describe('apiDeclaration', function () {
         expect(list).to.exist;
         expect(list).to.be.empty;
 
-        //TODO: joi validate!
+        expect(filterRoutesByRequiredTags.callCount).to.be.eql(1);
+        expect(filterRoutesByRequiredTags.calledWithExactly(routingTable, tags)).to.be.ok;
 
-        expect(filterRoutesByTags.callCount).to.be.eql(1);
-        expect(filterRoutesByTags.calledWithExactly(settings, tags, routingTable)).to.be.ok;
+        expect(filterRoutesByTagSelection.callCount).to.be.eql(0);
+
         expect(filterRoutesByPrefix.callCount).to.be.eql(1);
         expect(filterRoutesByPrefix.calledWithExactly(routingTable, apiKey)).to.be.ok;
+
         expect(apiDeclarator.bind(apiDeclarator, routingTable, null, models, tags)).to.throw('apiKey not allowed to be null nor empty');
-        expect(filterRoutesByTags.callCount).to.be.eql(1);
+        expect(filterRoutesByTagSelection.callCount).to.be.eql(0);
         expect(filterRoutesByPrefix.callCount).to.be.eql(1);
 
         done();
@@ -245,10 +251,9 @@ describe('apiDeclaration', function () {
 
         var list = apiDeclarator(routes, apiKey, models, tags);
 
-        expect(filterRoutesByTags.callCount).to.be.eql(1);
-        expect(filterRoutesByTags.calledWithExactly(settings, tags, routes)).to.be.ok;
+        expect(filterRoutesByRequiredTags.callCount).to.be.eql(1);
+        expect(filterRoutesByTagSelection.callCount).to.be.eql(0);
         expect(filterRoutesByPrefix.callCount).to.be.eql(1);
-        expect(filterRoutesByPrefix.calledWithExactly(routes, apiKey)).to.be.ok;
         expect(groupRoutesByPath.callCount).to.be.eql(1);
 
         var filteredRoutes = [
@@ -268,7 +273,6 @@ describe('apiDeclaration', function () {
                 { method: 'GET', nickname: 'get_dev_null', parameters: [], type: 'void' }
             ]}
         ]);
-
 
         expect(list).to.have.length(2);
 
@@ -354,7 +358,7 @@ describe('apiDeclaration', function () {
     });
 
     it('requiredTag', function (done) {
-        var settings = { requiredTag: 'api' };
+        var settings = { requiredTags: ['api'] };
         var apiDeclarator = apiDeclaration(settings);
 
         expect(apiDeclarator([

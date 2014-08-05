@@ -3,8 +3,6 @@ var Lab = require('lab');
 var describe = Lab.experiment;
 var it = Lab.test;
 var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
 var Joi = require('joi');
 
 var Hapi = require('hapi');
