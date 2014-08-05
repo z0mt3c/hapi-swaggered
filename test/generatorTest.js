@@ -301,9 +301,8 @@ describe('generator', function () {
 
             it('#6: boolea, date & any ', function (done) {
                 var models = {};
-                // TODO: how to deal with any stuff?
-                // TODO: but this is not a valid object type? May switch to object? But if thats the case we might have to create a new AnyModel?
                 expect(generator.fromJoiSchema(Joi.any(), null, models)).to.eql({ required: false, type: 'any' });
+                expect(generator.fromJoiSchema(Joi.any().options({ swaggerType: 'file' }), null, models)).to.eql({ required: false, type: 'file' });
                 expect(generator.fromJoiSchema(Joi.boolean(), null, models)).to.eql({ required: false, type: 'boolean' });
                 expect(generator.fromJoiSchema(Joi.date(), null, models)).to.eql({ required: false, type: 'date' });
                 done();

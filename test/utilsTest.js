@@ -60,6 +60,8 @@ describe('utils', function () {
             Lab.expect(utils.generateNameFromSchema(schema)).to.eql('NameEmailModel');
             Lab.expect(utils.generateNameFromSchema(Joi.object().keys({}))).to.eql('EmptyModel');
             Lab.expect(utils.generateNameFromSchema(Joi.object())).to.eql('EmptyModel');
+            Lab.expect(utils.generateNameFromSchema(Joi.array())).to.eql('ArrayModel');
+            Lab.expect(utils.generateNameFromSchema(Joi.array().includes(Joi.string()))).to.eql('StringArrayModel');
 
             done();
         });
