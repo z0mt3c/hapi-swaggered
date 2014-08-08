@@ -55,9 +55,28 @@ describe('indexTest', function () {
             server.pack.register({
                 plugin: index,
                 route: {
-                    prefix: '/test123'
+                    prefix: '/api/test123'
                 },
-                options: {}
+                options: {
+                    stripPrefix: '/api'
+                }
+            }, function (err) {
+                expect(err).to.not.exist;
+                done();
+            });
+        });
+
+        it('without response validation', function (done) {
+            var server = new Hapi.Server();
+
+            server.pack.register({
+                plugin: index,
+                route: {
+                    prefix: '/api/test123'
+                },
+                options: {
+                    responseValidation: false
+                }
             }, function (err) {
                 expect(err).to.not.exist;
                 done();
@@ -209,7 +228,6 @@ describe('indexTest', function () {
             });
         });
 
-
         it('with models', function (done) {
             var routeConfig = Hoek.merge(Hoek.clone(baseRoute), {
                 method: 'POST',
@@ -236,6 +254,90 @@ describe('indexTest', function () {
                 expect(res.result).to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.property('resourcePath', '/withModels');
                 expect(res.result).to.have.property('basePath', pluginOptions.protocol + '://' + pluginOptions.host);
+                expect(res.result.apis).to.have.length(1);
+                expect(res.result.apis[0].path).to.eql('/withModels/{name}');
+                var operations = res.result.apis[0].operations;
+                expect(operations).to.have.length(1);
+
+                var operation = res.result.apis[0].operations[0];
+                expect(operation).to.have.property('method', 'POST');
+                expect(operation.parameters).to.have.length(3);
+                expect(operation.type).to.be.eql('SimpleTestModel');
+                expect(res.result.models).to.have.property('SimpleTestModel');
+
+                done();
+            });
+        });
+    });
+
+    describe('apiDeclaration with stripPrefix', function () {
+        var server;
+        var pluginOptions = {
+            protocol: 'joi',
+            host: 'hapi:123',
+            stripPrefix: '/api',
+            descriptions: {
+                'serverDescription': 'myDesc2'
+            }
+        };
+
+        lab.beforeEach(function (done) {
+            server = new Hapi.Server();
+            server.pack.register({
+                plugin: index,
+                options: pluginOptions
+            }, function (err) {
+                expect(err).to.not.exist;
+                done();
+            });
+        });
+
+        lab.afterEach(function (done) {
+            done();
+        });
+
+        it('404', function (done) {
+            server.inject('/swagger/404', function (res) {
+                expect(res.statusCode).to.exist.and.to.eql(404);
+                expect(res.result).to.exist.and.to.have.property('statusCode', 404);
+                done();
+            });
+        });
+
+        it('proper config', function (done) {
+            server.route(Hoek.merge(Hoek.clone(baseRoute), { path: '/api' + baseRoute.path }));
+            server.inject('/swagger/testEndpoint', function (res) {
+                expect(res.result).to.have.deep.property('apis[0].operations[0]');
+                done();
+            });
+        });
+
+        it('with models', function (done) {
+            var routeConfig = Hoek.merge(Hoek.clone(baseRoute), {
+                method: 'POST',
+                path: '/api/withModels/{name}',
+                config: {
+                    validate: {
+                        query: simpleSchema,
+                        params: simpleSchema,
+                        payload: simpleSchema
+                    },
+                    handler: function (request, reply) {
+                        reply({ name: 'hapi-swagger' });
+                    },
+                    response: {
+                        schema: simpleSchema
+                    }
+                }
+            });
+
+            server.route(routeConfig);
+
+            server.inject('/swagger/withModels', function (res) {
+                expect(res.result).to.exist;
+                expect(res.result).to.have.property('swaggerVersion', '1.2');
+                expect(res.result).to.have.property('resourcePath', '/withModels');
+                expect(res.result).to.have.property('basePath', pluginOptions.protocol + '://' + pluginOptions.host + '/api');
                 expect(res.result.apis).to.have.length(1);
                 expect(res.result.apis[0].path).to.eql('/withModels/{name}');
                 var operations = res.result.apis[0].operations;

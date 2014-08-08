@@ -27,10 +27,19 @@ Swagger ui should be configured to use /api2/swagger2 in this example ;-)
             prefix: '/api2'
         },
         options: {
-            // default value 15 minutes... hapi caching options
-            cache: { expiresIn: 15 * 60 * 1000 }, 
-            endpoint: '/swagger2',
+            // requiredTags have to be present for all routes exposed through hapi-swaggered
+            requiredTags: ['api'],
+            produces: [ 'application/json' ],
+            consumes: [ 'application/json' ],
             apiVersion: require('./package.json').version,
+            endpoint: '/swagger',
+            routeTags: ['swagger'],
+            // responseValidation for hapi-swaggered routes
+            responseValidation: false,
+            cache: {
+                // default value 15 minutes... hapi caching options
+                expiresIn: 15 * 60 * 1000
+            },
             descriptions: {
                 token: 'Test description'
             },
@@ -47,7 +56,7 @@ Swagger ui should be configured to use /api2/swagger2 in this example ;-)
 ]
 ```
 
-Overwrite api descriptions and info on server level! e.g.:
+Overwrite app properties on server level except the route and cache configuration (endpoint, routeTags, cache, responseValidation)! e.g.:
 
 ```js
 servers: [
@@ -57,6 +66,7 @@ servers: [
             labels: ['api'],
             app: {
                 swagger: {
+                    stripPrefix: '/api',
                     descriptions: {
                         'dev': 'description',
                         'null': 'overwritten'
@@ -101,25 +111,29 @@ plugin.route({
 
 ## Topics
 ### TODO
-* Improve path variable handling / mapping to swagger
+* proper tag filtering for apiListings
 * Check produces and consumes for proper behavior
 * Response messages & codes
-* Base path support (overall prefix e.g. api)
 * Find a way to support authorizations
-* Support Joi.any() ( currently only partial... e.g. options({ swaggerType: 'file' }) 
 * Support property format e.g. int64/int32 but i didn't see any ui impact yet? (https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#431-primitives)
 * Remove attributes from shema which don't fit to the swagger specifications but it's wired? May not? look for // TODO: remove!
 * custom api sorting?
 
 Anything else? Ideas and pull requests are welcome ;-)
 
+### Maybe later
+* ~~Improve path variable handling / mapping to swagger~~ not possible due to swagger sepcs
+** https://github.com/wordnik/swagger-spec/issues/93
+
 ### Completed
 * ~~Proper(more strict) filter for apis and routes~~
 * ~~handle model name collisions: if equal same name otherwise new type!~~
-* ~~Write tests~~ 
+* ~~Write tests~~
 * ~~Descriptions & infos based on server?~~
-* ~~Support "deprecated"~~ through route tag deprecated 
-* ~~Write tests for index.js~~ 
+* ~~Support "deprecated"~~ through route tag deprecated
+* ~~Write tests for index.js~~
 * ~~cache apiDeclaration and apiListing through plugin methods~~
 * ~~'file' upload? (forms)~~
 * ~~Setup hapi-swagger-ui project sharing endpoints and stuff through plugin.expose~~
+* ~~Base path support (overall prefix e.g. api)~~
+* ~~Support Joi.any()~~ currently only partial... e.g. options({ swaggerType: 'file' }) any other requirements?
