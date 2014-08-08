@@ -7,9 +7,7 @@ var expect = Lab.expect;
 var Joi = require('joi');
 
 var apiListing = require('../lib/apiListing');
-var schema = require('../lib/schema');
 var utils = require('../lib/utils');
-var generator = require('../lib/generator');
 var schemas = require('../lib/schema');
 var sinon = require('sinon');
 var Hapi = require('hapi');

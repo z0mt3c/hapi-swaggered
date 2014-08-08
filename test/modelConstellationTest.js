@@ -4,11 +4,9 @@ var lab = exports.lab = Lab.script();
 var describe = lab.experiment;
 var it = lab.test;
 var expect = Lab.expect;
-var before = lab.before;
-var after = lab.after;
 var Joi = require('joi');
 
-var schema = require('../lib/schema');
+var schemas = require('../lib/schema');
 var generator = require('../lib/generator');
 
 describe('model constellations', function () {
@@ -23,12 +21,12 @@ describe('model constellations', function () {
 
         var models = {};
 
-        Lab.expect(generator.fromJoiSchema(schema, null, models)).to.eql({
+        expect(generator.fromJoiSchema(schema, null, models)).to.eql({
             required: true,
             type: 'SwaggerModel'
         });
 
-        Lab.expect(models).to.have.property('SwaggerModel').that.eql({
+        expect(models).to.have.property('SwaggerModel').that.eql({
             id: 'SwaggerModel',
             type: 'object',
             properties: {
@@ -52,6 +50,9 @@ describe('model constellations', function () {
             }
         });
 
-        done();
+        Joi.validate(models, schemas.Models, function(err) {
+            expect(err).not.to.exist;
+            done();
+        });
     });
 });

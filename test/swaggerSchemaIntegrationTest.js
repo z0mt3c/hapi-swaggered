@@ -4,14 +4,10 @@ var lab = exports.lab = Lab.script();
 var describe = lab.experiment;
 var it = lab.test;
 var expect = Lab.expect;
-var before = lab.before;
-var after = lab.after;
 var Joi = require('joi');
 var Nipple = require('nipple');
 
 var schema = require('../lib/schema');
-var generator = require('../lib/generator');
-
 var petstoreListing = 'http://petstore.swagger.wordnik.com/api/api-docs';
 var petApiDeclaration = 'http://petstore.swagger.wordnik.com/api/api-docs/pet';
 var userApiDeclaration = 'http://petstore.swagger.wordnik.com/api/api-docs/user';
