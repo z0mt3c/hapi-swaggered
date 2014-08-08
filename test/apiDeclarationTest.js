@@ -1,7 +1,8 @@
 var Lab = require('lab');
+var lab = exports.lab = Lab.script();
 
-var describe = Lab.experiment;
-var it = Lab.test;
+var describe = lab.experiment;
+var it = lab.test;
 var expect = Lab.expect;
 var Joi = require('joi');
 var sinon = require('sinon');
@@ -16,7 +17,7 @@ var simpleJoiSchema = Joi.object().keys({ string: Joi.string() }).options({ clas
 describe('apiDeclaration', function () {
     var filterRoutesByPrefix, groupRoutesByPath, createProperties, fromJoiSchema, filterRoutesByRequiredTags, filterRoutesByTagSelection;
 
-    Lab.beforeEach(function (done) {
+    lab.beforeEach(function (done) {
         createProperties = sinon.spy(generator, 'createProperties');
         fromJoiSchema = sinon.spy(generator, 'fromJoiSchema');
 
@@ -28,7 +29,7 @@ describe('apiDeclaration', function () {
         done();
     });
 
-    Lab.afterEach(function (done) {
+    lab.afterEach(function (done) {
         generator.createProperties.restore();
         generator.fromJoiSchema.restore();
 

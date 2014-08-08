@@ -2,8 +2,8 @@ module.exports = function (grunt) {
     // load grunt tasks
     grunt.loadNpmTasks('grunt-contrib-jshint');
     grunt.loadNpmTasks('grunt-contrib-watch');
+    grunt.loadNpmTasks('grunt-shell');
     grunt.loadNpmTasks('grunt-release');
-    grunt.loadNpmTasks('grunt-lab');
 
     // Project configuration.
     grunt.initConfig({
@@ -18,16 +18,25 @@ module.exports = function (grunt) {
                 tasks: ['test']
             }
         },
-        lab: {
-            color: true,
-            coverage: true,
-            minCoverage: 99
-            //reporter: 'html',
-            //reportFile: './coverage.html'
+        shell: {
+            test: {
+                options: {
+                    failOnError: false
+                },
+                command: 'make test'
+            },
+            coverage: {
+                command: 'make coverage'
+            },
+            report: {
+                command: 'make report'
+            }
         },
         jshint: {
             options: {
-                jshintrc: '.jshintrc'
+                jshintrc: '.jshintrc',
+                reporter: require('jshint-stylish'),
+                force: true
             },
             all: [
                 'Gruntfile.js',
@@ -39,6 +48,8 @@ module.exports = function (grunt) {
     });
 
     // Default task.
-    grunt.registerTask('test', ['jshint', 'lab:report']);
+    grunt.registerTask('coverage', ['shell:coverage']);
+    grunt.registerTask('report', ['shell:report']);
+    grunt.registerTask('test', ['jshint', 'shell:test']);
     grunt.registerTask('default', ['test', 'watch']);
 };

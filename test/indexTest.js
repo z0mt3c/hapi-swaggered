@@ -1,7 +1,8 @@
 var Lab = require('lab');
+var lab = exports.lab = Lab.script();
 
-var describe = Lab.experiment;
-var it = Lab.test;
+var describe = lab.experiment;
+var it = lab.test;
 var expect = Lab.expect;
 var Joi = require('joi');
 
@@ -111,7 +112,7 @@ describe('hapi plugin tests', function () {
             }
         };
 
-        Lab.beforeEach(function (done) {
+        lab.beforeEach(function (done) {
             server = new Hapi.Server();
             server.pack.register({
                 plugin: index,
@@ -122,7 +123,7 @@ describe('hapi plugin tests', function () {
             });
         });
 
-        Lab.afterEach(function (done) {
+        lab.afterEach(function (done) {
             done();
         });
 
@@ -174,7 +175,7 @@ describe('hapi plugin tests', function () {
             }
         };
 
-        Lab.beforeEach(function (done) {
+        lab.beforeEach(function (done) {
             server = new Hapi.Server();
             server.pack.register({
                 plugin: index,
@@ -185,7 +186,7 @@ describe('hapi plugin tests', function () {
             });
         });
 
-        Lab.afterEach(function (done) {
+        lab.afterEach(function (done) {
             done();
         });
 

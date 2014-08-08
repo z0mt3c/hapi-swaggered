@@ -1,7 +1,8 @@
 var Lab = require('lab');
+var lab = exports.lab = Lab.script();
 
-var describe = Lab.experiment;
-var it = Lab.test;
+var describe = lab.experiment;
+var it = lab.test;
 var Joi = require('joi');
 var utils = require('../lib/utils');
 var _ = require('lodash');

@@ -1,7 +1,8 @@
 var Lab = require('lab');
+var lab = exports.lab = Lab.script();
 
-var describe = Lab.experiment;
-var it = Lab.test;
+var describe = lab.experiment;
+var it = lab.test;
 var expect = Lab.expect;
 var Joi = require('joi');
 
@@ -120,7 +121,7 @@ describe('apiListing', function () {
     });
 
     describe('flow', function () {
-        Lab.beforeEach(function (done) {
+        lab.beforeEach(function (done) {
             filterRoutesByTagSelection = sinon.spy(utils, 'filterRoutesByTagSelection');
             filterRoutesByRequiredTags = sinon.spy(utils, 'filterRoutesByRequiredTags');
             extractAPIKeys = sinon.spy(utils, 'extractAPIKeys');
@@ -128,7 +129,7 @@ describe('apiListing', function () {
             done();
         });
 
-        Lab.afterEach(function (done) {
+        lab.afterEach(function (done) {
             utils.filterRoutesByTagSelection.restore();
             utils.filterRoutesByRequiredTags.restore();
             utils.extractAPIKeys.restore();

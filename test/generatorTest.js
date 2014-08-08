@@ -1,10 +1,11 @@
 var Lab = require('lab');
+var lab = exports.lab = Lab.script();
 
-var describe = Lab.experiment;
-var it = Lab.test;
+var describe = lab.experiment;
+var it = lab.test;
 var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
+var before = lab.before;
+var after = lab.after;
 var Joi = require('joi');
 var sinon = require('sinon');
 
@@ -39,13 +40,13 @@ describe('generator', function () {
             });
 
             describe('name generator', function () {
-                Lab.before(function (done) {
+                lab.before(function (done) {
                     var stub = sinon.stub(utils, 'generateNameFromSchema');
                     stub.returns('TestModel');
                     done();
                 });
 
-                Lab.after(function (done) {
+                lab.after(function (done) {
                     utils.generateNameFromSchema.restore();
                     done();
                 });
@@ -62,13 +63,13 @@ describe('generator', function () {
             });
 
             describe('duplicate model name', function () {
-                Lab.before(function (done) {
+                lab.before(function (done) {
                     var stub = sinon.stub(utils, 'generateFallbackName');
                     stub.returns('FallbackName');
                     done();
                 });
 
-                Lab.after(function (done) {
+                lab.after(function (done) {
                     utils.generateFallbackName.restore();
                     done();
                 });
@@ -238,13 +239,13 @@ describe('generator', function () {
             describe('#4: object', function () {
                 var newModelStub;
 
-                Lab.before(function (done) {
+                lab.before(function (done) {
                     newModelStub = sinon.stub(generator, 'newModel');
                     newModelStub.returns({ test: true });
                     done();
                 });
 
-                Lab.after(function (done) {
+                lab.after(function (done) {
                     generator.newModel.restore();
                     done();
                 });
@@ -268,14 +269,14 @@ describe('generator', function () {
             describe('#5: array', function () {
                 var newModelStub;
 
-                Lab.beforeEach(function (done) {
+                lab.beforeEach(function (done) {
                     newModelStub = sinon.stub(generator, 'newModel');
                     newModelStub.onCall(0).returns({ type: 'string' });
                     newModelStub.onCall(1).returns({ type: 'test' });
                     done();
                 });
 
-                Lab.afterEach(function (done) {
+                lab.afterEach(function (done) {
                     generator.newModel.restore();
                     done();
                 });

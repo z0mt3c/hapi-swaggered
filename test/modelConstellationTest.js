@@ -1,10 +1,11 @@
 var Lab = require('lab');
+var lab = exports.lab = Lab.script();
 
-var describe = Lab.experiment;
-var it = Lab.test;
+var describe = lab.experiment;
+var it = lab.test;
 var expect = Lab.expect;
-var before = Lab.before;
-var after = Lab.after;
+var before = lab.before;
+var after = lab.after;
 var Joi = require('joi');
 
 var schema = require('../lib/schema');

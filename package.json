@@ -31,10 +31,10 @@
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.10.0",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-lab": "^1.0.3",
     "grunt-release": "^0.7.0",
     "hapi": "^6.3.0",
-    "lab": "^3.2.1",
+    "jshint-stylish": "^0.4.0",
+    "lab": "^4.0.0",
     "nipple": "^2.5.3",
     "sinon": "^1.10.3"
   },
