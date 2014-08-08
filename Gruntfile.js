@@ -26,10 +26,10 @@ module.exports = function (grunt) {
                 command: 'make test'
             },
             coverage: {
-                command: 'make coverage'
+                command: 'make test-cov'
             },
             report: {
-                command: 'make report'
+                command: 'make test-cov-html'
             }
         },
         jshint: {

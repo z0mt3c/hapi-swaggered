@@ -24,7 +24,7 @@ var baseRoute = {
     }
 };
 
-describe('hapi plugin tests', function () {
+describe('indexTest', function () {
     describe('init', function () {
         it('no options', function (done) {
             var server = new Hapi.Server();

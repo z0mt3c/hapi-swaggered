@@ -2,10 +2,10 @@
 test:
 	./node_modules/.bin/lab
 
-coverage:
-	./node_modules/.bin/lab -c -t 99
+test-cov:
+	./node_modules/.bin/lab -t 99
 
-report:
-	./node_modules/.bin/lab -c -t 99 -r html -o ./coverage.html
+test-cov-html:
+	./node_modules/.bin/lab -r html -o ./coverage.html
 
-.PHONY: test
+.PHONY: test test-cov test-cov-html
