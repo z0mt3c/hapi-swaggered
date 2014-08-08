@@ -131,6 +131,7 @@ describe('hapi plugin tests', function () {
             server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
 
             server.inject('/swagger', function (res) {
+                expect(res.statusCode).to.exist.and.to.eql(200);
                 expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
                 expect(res.result).not.to.have.deep.property('apis[0].description');
@@ -144,6 +145,7 @@ describe('hapi plugin tests', function () {
             server.settings.app = { swagger: { descriptions: { 'testEndpoint': 'myDesc' }}};
 
             server.inject('/swagger', function (res) {
+                expect(res.statusCode).to.exist.and.to.eql(200);
                 expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
                 expect(res.result).to.have.deep.property('apis[0].description', 'myDesc');
@@ -156,6 +158,7 @@ describe('hapi plugin tests', function () {
             pluginOptions.descriptions = { 'testEndpoint': 'myDesc' };
 
             server.inject('/swagger', function (res) {
+                expect(res.statusCode).to.exist.and.to.eql(200);
                 expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.deep.property('apis[0].path', '/serverDescription');
                 expect(res.result).to.have.deep.property('apis[0].description', 'myDesc2');
@@ -192,6 +195,7 @@ describe('hapi plugin tests', function () {
 
         it('404', function (done) {
             server.inject('/swagger/404', function (res) {
+                expect(res.statusCode).to.exist.and.to.eql(404);
                 expect(res.result).to.exist.and.to.have.property('statusCode', 404);
                 done();
             });

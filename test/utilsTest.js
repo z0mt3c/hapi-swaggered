@@ -12,13 +12,14 @@ describe('utils', function () {
         it('#1', function (done) {
             Lab.expect(utils.getDescription(null, 'test')).to.equal(undefined);
             Lab.expect(utils.getDescription(null, null)).to.equal(undefined);
-            Lab.expect(utils.getDescription({ descriptions: null }, 'Test')).to.equal(undefined);
-            Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, '/test')).to.equal('Test');
-            Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, 'test')).to.equal('Test');
-            Lab.expect(utils.getDescription({ descriptions: { test: 'Test' }}, null)).to.equal(undefined);
+            Lab.expect(utils.getDescription({descriptions: null}, 'Test')).to.equal(undefined);
+            Lab.expect(utils.getDescription({descriptions: {test: 'Test'}}, '/test')).to.equal('Test');
+            Lab.expect(utils.getDescription({descriptions: {test: 'Test'}}, 'test')).to.equal('Test');
+            Lab.expect(utils.getDescription({descriptions: {test: 'Test'}}, null)).to.equal(undefined);
             done();
         });
     });
+
     describe('firstCharToUpperCase', function () {
         it('#1', function (done) {
             Lab.expect(utils.firstCharToUpperCase(null)).to.equal(null);
@@ -29,28 +30,65 @@ describe('utils', function () {
         });
     });
 
+    describe('getCurrentSettings', function () {
+        it('#1', function (done) {
+            var settings = { source: 'plugin', settings: { plugin: true }};
+            var serverSettings = { source: 'server', settings: { server: true }};
+            Lab.expect(utils.getCurrentSettings(null)).to.equal(null);
+            Lab.expect(utils.getCurrentSettings(settings)).to.equal(settings);
+            Lab.expect(utils.getCurrentSettings(settings, serverSettings)).to.eql({ source: 'server', settings: { plugin: true, server: true }});
+            done();
+        });
+    });
+
+    describe('stripRoutesPrefix', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.stripRoutesPrefix(null)).to.be.null;
+            Lab.expect(utils.stripRoutesPrefix([])).to.have.length(0);
+            Lab.expect(utils.stripRoutesPrefix([{path: '/api/test'}], '/api')).to.have.length(1);
+            Lab.expect(utils.stripRoutesPrefix([{path: '/api/test'}], '/test')).to.have.length(0);
+            // empty route path will be stripped - correct?
+            Lab.expect(utils.stripRoutesPrefix([{path: '/api'}], '/api')).to.have.length(0);
+            done();
+        });
+    });
+
     describe('extractBaseHost', function () {
         it('#1', function (done) {
-            Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { }})).to.equal('hapi://localhost');
-            Lab.expect(utils.extractBaseHost({ protocol: 'hapi', host: 'abc' }, { headers: { host: 'localhost' }})).to.equal('hapi://abc');
-            Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { host: 'localhost' }})).to.equal('hapi://localhost');
-            Lab.expect(utils.extractBaseHost({ protocol: 'hapi' }, { headers: { host: 'localhost:9000' }})).to.equal('hapi://localhost:9000');
-            Lab.expect(utils.extractBaseHost({ protocol: null }, { headers: { host: 'localhost:9000' } })).to.equal('http://localhost:9000');
-            Lab.expect(utils.extractBaseHost({ protocol: null }, { server: { info: { protocol: 'hapi' } }, headers: { host: 'localhost:9000' } })).to.equal('hapi://localhost:9000');
+            Lab.expect(utils.extractBaseHost({protocol: 'hapi'}, {headers: {}})).to.equal('hapi://localhost');
+            Lab.expect(utils.extractBaseHost({
+                protocol: 'hapi',
+                host: 'abc'
+            }, {headers: {host: 'localhost'}})).to.equal('hapi://abc');
+            Lab.expect(utils.extractBaseHost({protocol: 'hapi'}, {headers: {host: 'localhost'}})).to.equal('hapi://localhost');
+            Lab.expect(utils.extractBaseHost({protocol: 'hapi'}, {headers: {host: 'localhost:9000'}})).to.equal('hapi://localhost:9000');
+            Lab.expect(utils.extractBaseHost({protocol: null}, {headers: {host: 'localhost:9000'}})).to.equal('http://localhost:9000');
+            Lab.expect(utils.extractBaseHost({protocol: null}, {
+                server: {info: {protocol: 'hapi'}},
+                headers: {host: 'localhost:9000'}
+            })).to.equal('hapi://localhost:9000');
             done();
         });
     });
 
     describe('generateNameFromSchema', function () {
         it('#1', function (done) {
-            Lab.expect(utils.generateNameFromSchema({ _inner: { children: [
-                { key: 'test' },
-                { key: 'test2' }
-            ]}})).to.eql('TestTest2Model');
+            Lab.expect(utils.generateNameFromSchema({
+                _inner: {
+                    children: [
+                        {key: 'test'},
+                        {key: 'test2'}
+                    ]
+                }
+            })).to.eql('TestTest2Model');
 
-            Lab.expect(utils.generateNameFromSchema({ _inner: { children: [
-                { key: 'test' }
-            ]}})).to.eql('TestModel');
+            Lab.expect(utils.generateNameFromSchema({
+                _inner: {
+                    children: [
+                        {key: 'test'}
+                    ]
+                }
+            })).to.eql('TestModel');
 
             Lab.expect(utils.generateNameFromSchema({})).to.eql('EmptyModel');
             Lab.expect(utils.generateNameFromSchema(null)).to.eql('EmptyModel');
@@ -76,12 +114,12 @@ describe('utils', function () {
 
     it('filterRoutesByRequiredTags', function (done) {
         var routes = [
-            { path: '/dev/null', method: 'get', settings: { tags: ['Hapi'] } },
-            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Hapi'] } },
-            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Joi'] } },
-            { path: '/dev/null', method: 'get', settings: { tags: 'Joi' } },
-            { path: '/dev', method: 'post', settings: {}},
-            { path: '/dev', method: 'get'}
+            {path: '/dev/null', method: 'get', settings: {tags: ['Hapi']}},
+            {path: '/dev/null', method: 'get', settings: {tags: ['api', 'Hapi']}},
+            {path: '/dev/null', method: 'get', settings: {tags: ['api', 'Joi']}},
+            {path: '/dev/null', method: 'get', settings: {tags: 'Joi'}},
+            {path: '/dev', method: 'post', settings: {}},
+            {path: '/dev', method: 'get'}
         ];
 
         Lab.expect(utils.filterRoutesByRequiredTags(routes, ['Hapi'])).to.have.length(2);
@@ -96,12 +134,12 @@ describe('utils', function () {
 
     it('filterRoutesByTagSelection', function (done) {
         var routes = [
-            { path: '/dev/null', method: 'get', settings: { tags: ['Hapi'] } },
-            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Hapi'] } },
-            { path: '/dev/null', method: 'get', settings: { tags: ['api', 'Joi'] } },
-            { path: '/dev/null', method: 'get', settings: { tags: 'Joi' } },
-            { path: '/dev', method: 'post', settings: {}},
-            { path: '/dev', method: 'get'}
+            {path: '/dev/null', method: 'get', settings: {tags: ['Hapi']}},
+            {path: '/dev/null', method: 'get', settings: {tags: ['api', 'Hapi']}},
+            {path: '/dev/null', method: 'get', settings: {tags: ['api', 'Joi']}},
+            {path: '/dev/null', method: 'get', settings: {tags: 'Joi'}},
+            {path: '/dev', method: 'post', settings: {}},
+            {path: '/dev', method: 'get'}
         ];
 
         Lab.expect(utils.filterRoutesByTagSelection(routes, [], [])).to.have.length(6);
@@ -121,16 +159,16 @@ describe('utils', function () {
             Lab.expect(utils.parseTags(null)).to.eql(null);
             Lab.expect(utils.parseTags('')).to.eql(null);
             Lab.expect(utils.parseTags([])).to.eql(null);
-            Lab.expect(utils.parseTags(['api'])).to.eql({ included: ['api'], excluded: [] });
-            Lab.expect(utils.parseTags(['api'].join(','))).to.eql({ included: ['api'], excluded: [] });
-            Lab.expect(utils.parseTags(['+api'])).to.eql({ included: ['api'], excluded: [] });
-            Lab.expect(utils.parseTags(['+api'].join(','))).to.eql({ included: ['api'], excluded: [] });
-            Lab.expect(utils.parseTags(['-api'])).to.eql({ included: [], excluded: ['api'] });
-            Lab.expect(utils.parseTags(['-api'].join(','))).to.eql({ included: [], excluded: ['api'] });
-            Lab.expect(utils.parseTags(['-api','+beta'])).to.eql({ included: ['beta'], excluded: ['api'] });
-            Lab.expect(utils.parseTags(['-api','+beta'].join(','))).to.eql({ included: ['beta'], excluded: ['api'] });
-            Lab.expect(utils.parseTags(['+api','+beta'])).to.eql({ included: ['api','beta'], excluded: [] });
-            Lab.expect(utils.parseTags(['+api','+beta'].join(','))).to.eql({ included: ['api','beta'], excluded: [] });
+            Lab.expect(utils.parseTags(['api'])).to.eql({included: ['api'], excluded: []});
+            Lab.expect(utils.parseTags(['api'].join(','))).to.eql({included: ['api'], excluded: []});
+            Lab.expect(utils.parseTags(['+api'])).to.eql({included: ['api'], excluded: []});
+            Lab.expect(utils.parseTags(['+api'].join(','))).to.eql({included: ['api'], excluded: []});
+            Lab.expect(utils.parseTags(['-api'])).to.eql({included: [], excluded: ['api']});
+            Lab.expect(utils.parseTags(['-api'].join(','))).to.eql({included: [], excluded: ['api']});
+            Lab.expect(utils.parseTags(['-api', '+beta'])).to.eql({included: ['beta'], excluded: ['api']});
+            Lab.expect(utils.parseTags(['-api', '+beta'].join(','))).to.eql({included: ['beta'], excluded: ['api']});
+            Lab.expect(utils.parseTags(['+api', '+beta'])).to.eql({included: ['api', 'beta'], excluded: []});
+            Lab.expect(utils.parseTags(['+api', '+beta'].join(','))).to.eql({included: ['api', 'beta'], excluded: []});
             done();
         });
     });
@@ -138,16 +176,16 @@ describe('utils', function () {
     describe('filterRoutesByPrefix', function () {
         it('#1', function (done) {
             var extractAPIKeys = utils.filterRoutesByPrefix([
-                { path: '/', method: 'get' },
-                { path: '/dev', method: 'post'},
-                { path: '/dev', method: 'get'},
-                { path: '/dev/null', method: 'get' }
+                {path: '/', method: 'get'},
+                {path: '/dev', method: 'post'},
+                {path: '/dev', method: 'get'},
+                {path: '/dev/null', method: 'get'}
             ], 'dev');
 
             Lab.expect(extractAPIKeys).to.eql([
-                { path: '/dev', method: 'post'},
-                { path: '/dev', method: 'get'},
-                { path: '/dev/null', method: 'get' }
+                {path: '/dev', method: 'post'},
+                {path: '/dev', method: 'get'},
+                {path: '/dev/null', method: 'get'}
             ]);
 
             done();
@@ -157,22 +195,22 @@ describe('utils', function () {
     describe('groupRoutesByPath', function () {
         it('#1', function (done) {
             var extractAPIKeys = utils.groupRoutesByPath([
-                { path: '/', method: 'get' },
-                { path: '/dev', method: 'post'},
-                { path: '/dev', method: 'get'},
-                { path: '/dev/null', method: 'get' }
+                {path: '/', method: 'get'},
+                {path: '/dev', method: 'post'},
+                {path: '/dev', method: 'get'},
+                {path: '/dev/null', method: 'get'}
             ]);
 
             Lab.expect(extractAPIKeys).to.eql({
                 '/': [
-                    { path: '/', method: 'get' }
+                    {path: '/', method: 'get'}
                 ],
                 '/dev': [
-                    { path: '/dev', method: 'post'},
-                    { path: '/dev', method: 'get'}
+                    {path: '/dev', method: 'post'},
+                    {path: '/dev', method: 'get'}
                 ],
                 '/dev/null': [
-                    { path: '/dev/null', method: 'get' }
+                    {path: '/dev/null', method: 'get'}
                 ]
             });
             done();
@@ -182,10 +220,10 @@ describe('utils', function () {
     describe('extractAPIKeys', function () {
         it('#1', function (done) {
             var extractAPIKeys = utils.extractAPIKeys([
-                { path: '/', method: 'get' },
-                { path: '/dev', method: 'post'},
-                { path: '/dev', method: 'get'},
-                { path: '/dev/null', method: 'get' }
+                {path: '/', method: 'get'},
+                {path: '/dev', method: 'post'},
+                {path: '/dev', method: 'get'},
+                {path: '/dev/null', method: 'get'}
             ]);
 
             Lab.expect(extractAPIKeys).to.eql(['/dev']);
@@ -194,12 +232,12 @@ describe('utils', function () {
 
         it('#2', function (done) {
             var extractAPIKeys = utils.extractAPIKeys([
-                { path: '/' },
-                { path: '/zdsa' },
-                { path: '/dev' },
-                { path: '/asdf' },
-                { path: '/asdf' },
-                { path: '/dev/null' }
+                {path: '/'},
+                {path: '/zdsa'},
+                {path: '/dev'},
+                {path: '/asdf'},
+                {path: '/asdf'},
+                {path: '/dev/null'}
             ]);
 
             Lab.expect(extractAPIKeys).to.eql(['/asdf', '/dev', '/zdsa']);

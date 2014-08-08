@@ -44,9 +44,7 @@ describe('apiDeclaration', function () {
     describe('parameters', function () {
         it('params', function (done) {
             var settings = { requiredTag: 'apis' };
-            var apiDeclarator = apiDeclaration(settings);
-
-            var apis = apiDeclarator([
+            var apis = apiDeclaration(settings, [
                 { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { params: simpleJoiSchema }}}
             ], 'dev', null, null);
 
@@ -66,9 +64,8 @@ describe('apiDeclaration', function () {
 
         it('query', function (done) {
             var settings = { requiredTag: 'apis' };
-            var apiDeclarator = apiDeclaration(settings);
 
-            var apis = apiDeclarator([
+            var apis = apiDeclaration(settings, [
                 { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { query: simpleJoiSchema }}}
             ], 'dev', null, null);
 
@@ -88,10 +85,9 @@ describe('apiDeclaration', function () {
 
         it('payload', function (done) {
             var settings = { requiredTag: 'apis' };
-            var apiDeclarator = apiDeclaration(settings);
             var models = {};
 
-            var apis = apiDeclarator([
+            var apis = apiDeclaration(settings, [
                 { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { payload: simpleJoiSchema }}}
             ], 'dev', models, null);
 
@@ -126,10 +122,9 @@ describe('apiDeclaration', function () {
 
         it('payload: application/x-www-form-urlencoded', function (done) {
             var settings = { requiredTag: 'apis' };
-            var apiDeclarator = apiDeclaration(settings);
             var models = {};
 
-            var apis = apiDeclarator([
+            var apis = apiDeclaration(settings, [
                 { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { payload: simpleJoiSchema }, payload: { allow: ['application/x-www-form-urlencoded'] }}}
             ], 'dev', models, null);
 
@@ -149,10 +144,9 @@ describe('apiDeclaration', function () {
 
         it('payload: multipart/form-data', function (done) {
             var settings = { requiredTag: 'apis' };
-            var apiDeclarator = apiDeclaration(settings);
             var models = {};
 
-            var apis = apiDeclarator([
+            var apis = apiDeclaration(settings, [
                 { path: '/dev', method: 'post', settings: { tags: ['apis'], validate: { payload: simpleJoiSchema }, payload: { allow: ['multipart/form-data'] }}}
             ], 'dev', models, null);
 
@@ -172,10 +166,9 @@ describe('apiDeclaration', function () {
 
         it('response', function (done) {
             var settings = { requiredTag: 'apis' };
-            var apiDeclarator = apiDeclaration(settings);
             var models = {};
 
-            var apis = apiDeclarator([
+            var apis = apiDeclaration(settings, [
                 { path: '/dev', method: 'post', settings: { tags: ['apis'], response: { schema: simpleJoiSchema }}}
             ], 'dev', models, null);
 
@@ -210,13 +203,12 @@ describe('apiDeclaration', function () {
 
     it('empty', function (done) {
         var settings = {};
-        var apiDeclarator = apiDeclaration(settings);
         var routingTable = [],
             apiKey = 'Test',
             models,
             tags;
 
-        var list = apiDeclarator(routingTable, apiKey, models, tags);
+        var list = apiDeclaration(settings, routingTable, apiKey, models, tags);
 
         expect(list).to.exist;
         expect(list).to.be.empty;
@@ -229,7 +221,7 @@ describe('apiDeclaration', function () {
         expect(filterRoutesByPrefix.callCount).to.be.eql(1);
         expect(filterRoutesByPrefix.calledWithExactly(routingTable, apiKey)).to.be.ok;
 
-        expect(apiDeclarator.bind(apiDeclarator, routingTable, null, models, tags)).to.throw('apiKey not allowed to be null nor empty');
+        expect(apiDeclaration.bind(apiDeclaration, routingTable, null, models, tags)).to.throw('apiKey not allowed to be null nor empty');
         expect(filterRoutesByTagSelection.callCount).to.be.eql(0);
         expect(filterRoutesByPrefix.callCount).to.be.eql(1);
 
@@ -238,7 +230,6 @@ describe('apiDeclaration', function () {
 
     it('only routes: no params, no query, no payload, no response', function (done) {
         var settings = { mySettings: true };
-        var apiDeclarator = apiDeclaration(settings);
         var apiKey = 'dev',
             models = {},
             tags = null;
@@ -250,7 +241,56 @@ describe('apiDeclaration', function () {
             { path: '/dev/null', method: 'get' }
         ];
 
-        var list = apiDeclarator(routes, apiKey, models, tags);
+        var list = apiDeclaration(settings, routes, apiKey, models, tags);
+
+        expect(filterRoutesByRequiredTags.callCount).to.be.eql(1);
+        expect(filterRoutesByTagSelection.callCount).to.be.eql(0);
+        expect(filterRoutesByPrefix.callCount).to.be.eql(1);
+        expect(groupRoutesByPath.callCount).to.be.eql(1);
+
+        var filteredRoutes = [
+            { path: '/dev', method: 'post' },
+            { path: '/dev', method: 'get' },
+            { path: '/dev/null', method: 'get' }
+        ];
+
+        expect(groupRoutesByPath.calledWithExactly(filteredRoutes)).to.be.ok;
+
+        expect(list).to.be.eql([
+            { path: '/dev', operations: [
+                { method: 'GET', nickname: 'get_dev', parameters: [], type: 'void' },
+                { method: 'POST', nickname: 'post_dev', parameters: [], type: 'void' }
+            ]},
+            { path: '/dev/null', operations: [
+                { method: 'GET', nickname: 'get_dev_null', parameters: [], type: 'void' }
+            ]}
+        ]);
+
+        expect(list).to.have.length(2);
+
+        Joi.validate(list, Joi.array().includes(schemas.API), function (err, value) {
+            expect(err).to.be.null;
+            expect(value).to.exist;
+            done();
+        });
+    });
+
+
+    it('only routes: no params, no query, no payload, no response with stripPrefix', function (done) {
+        var settings = { mySettings: true, stripPrefix: '/api' };
+        var apiKey = 'dev',
+            models = {},
+            tags = null;
+
+        var routes = [
+            { path: '/', method: 'get' },
+            { path: '/api', method: 'post'},
+            { path: '/api/dev', method: 'post'},
+            { path: '/api/dev', method: 'get'},
+            { path: '/api/dev/null', method: 'get' }
+        ];
+
+        var list = apiDeclaration(settings, routes, apiKey, models, tags);
 
         expect(filterRoutesByRequiredTags.callCount).to.be.eql(1);
         expect(filterRoutesByTagSelection.callCount).to.be.eql(0);
@@ -286,8 +326,7 @@ describe('apiDeclaration', function () {
 
     it('deprecation tag', function (done) {
         var settings = { mySettings: true };
-        var apiDeclarator = apiDeclaration(settings);
-        var list = apiDeclarator([
+        var list = apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['deprecated'] }},
             { path: '/dev/normal', method: 'post' }
         ], 'dev', null, null);
@@ -298,28 +337,22 @@ describe('apiDeclaration', function () {
     });
 
     it('api description', function (done) {
-        expect(apiDeclaration({})([
+        expect(apiDeclaration({}, [
             { path: '/dev', method: 'post' }
         ], 'dev', null, null))
             .to.have.length(1).and.not.to.have.deep.property('[0].description');
 
-        expect(apiDeclaration({ descriptions: { dev: 'test' }})([
+        expect(apiDeclaration({ descriptions: { dev: 'test' }}, [
             { path: '/dev', method: 'post' }
         ], 'dev', null, null))
             .to.have.length(1).and.to.have.deep.property('[0].description').that.to.eql('test');
-
-        expect(apiDeclaration({ descriptions: { dev: 'test' }})([
-            { path: '/dev', method: 'post' }
-        ], 'dev', null, null, { descriptions: { dev: 'test2'}}))
-            .to.have.length(1).and.to.have.deep.property('[0].description').that.to.eql('test2');
 
         done();
     });
 
     it('operation grouping', function (done) {
         var settings = { mySettings: true };
-        var apiDeclarator = apiDeclaration(settings);
-        var list = apiDeclarator([
+        var list = apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['deprecated'] }},
             { path: '/dev', method: 'get' }
         ], 'dev', null, null);
@@ -329,27 +362,26 @@ describe('apiDeclaration', function () {
 
     it('tag filtering', function (done) {
         var settings = { mySettings: true };
-        var apiDeclarator = apiDeclaration(settings);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get' }
         ], 'dev', null, 'dev'))
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
         ], 'dev', null, ['dev']))
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
         ], 'dev', null, ['dev', 'api']))
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(2);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
         ], 'dev', null, 'dev,api'))
@@ -360,39 +392,38 @@ describe('apiDeclaration', function () {
 
     it('requiredTag', function (done) {
         var settings = { requiredTags: ['api'] };
-        var apiDeclarator = apiDeclaration(settings);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get' }
         ], 'dev', null, 'dev'))
             .to.have.length(0);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev', 'api'] }},
             { path: '/dev', method: 'get' }
         ], 'dev', null, 'dev'))
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
         ], 'dev', null, ['dev']))
             .to.have.length(0);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev', 'api'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
         ], 'dev', null, ['dev']))
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        expect(apiDeclarator([
+        expect(apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
         ], 'dev', null, ['dev', 'api']))
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        var apiDeclarations = apiDeclarator([
+        var apiDeclarations = apiDeclaration(settings, [
             { path: '/dev', method: 'post', settings: { tags: ['dev'] }},
             { path: '/dev', method: 'get', settings: { tags: ['api'] } }
         ], 'dev', null, 'dev,api');
