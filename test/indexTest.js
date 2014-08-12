@@ -158,6 +158,19 @@ describe('indexTest', function () {
             });
         });
 
+        it('apiListing contains tags', function (done) {
+            server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
+
+            server.inject('/swagger?tags=test', function (res) {
+                expect(res.statusCode).to.exist.and.to.eql(200);
+                expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
+                expect(res.result).to.exist.and.to.have.property('basePath', 'http://localhost/swagger/declaration?tags=test&path=');
+                expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
+                expect(res.result).not.to.have.deep.property('apis[0].description');
+                done();
+            });
+        });
+
         it('apiListing with server descriptions', function (done) {
             server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
 
@@ -213,7 +226,7 @@ describe('indexTest', function () {
         });
 
         it('404', function (done) {
-            server.inject('/swagger/404', function (res) {
+            server.inject('/swagger/declaration?path=/404', function (res) {
                 expect(res.statusCode).to.exist.and.to.eql(404);
                 expect(res.result).to.exist.and.to.have.property('statusCode', 404);
                 done();
@@ -222,7 +235,7 @@ describe('indexTest', function () {
 
         it('proper config', function (done) {
             server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
-            server.inject('/swagger/testEndpoint', function (res) {
+            server.inject('/swagger/declaration?path=/testEndpoint', function (res) {
                 expect(res.result).to.have.deep.property('apis[0].operations[0]');
                 done();
             });
@@ -249,7 +262,7 @@ describe('indexTest', function () {
 
             server.route(routeConfig);
 
-            server.inject('/swagger/withModels', function (res) {
+            server.inject('/swagger/declaration?path=/withModels', function (res) {
                 expect(res.result).to.exist;
                 expect(res.result).to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.property('resourcePath', '/withModels');
@@ -297,7 +310,7 @@ describe('indexTest', function () {
         });
 
         it('404', function (done) {
-            server.inject('/swagger/404', function (res) {
+            server.inject('/swagger/declaration?path=/404', function (res) {
                 expect(res.statusCode).to.exist.and.to.eql(404);
                 expect(res.result).to.exist.and.to.have.property('statusCode', 404);
                 done();
@@ -306,7 +319,31 @@ describe('indexTest', function () {
 
         it('proper config', function (done) {
             server.route(Hoek.merge(Hoek.clone(baseRoute), { path: '/api' + baseRoute.path }));
-            server.inject('/swagger/testEndpoint', function (res) {
+            server.inject('/swagger/declaration?path=/testEndpoint', function (res) {
+                expect(res.result).to.have.deep.property('apis[0].operations[0]');
+                done();
+            });
+        });
+
+        it('with not existing tags', function (done) {
+            server.route(Hoek.merge(Hoek.clone(baseRoute), { path: '/api' + baseRoute.path }));
+            server.inject('/swagger/declaration?tags=abc&path=/testEndpoint', function (res) {
+                expect(res.result).to.have.property('statusCode', 404);
+                done();
+            });
+        });
+
+        it('with existing tags', function (done) {
+            server.route(Hoek.merge(Hoek.clone(baseRoute), { path: '/api' + baseRoute.path }));
+            server.inject('/swagger/declaration?tags=test&path=/testEndpoint', function (res) {
+                expect(res.result).to.have.deep.property('apis[0].operations[0]');
+                done();
+            });
+        });
+
+        it('proper config', function (done) {
+            server.route(Hoek.merge(Hoek.clone(baseRoute), { path: '/api' + baseRoute.path }));
+            server.inject('/swagger/declaration?path=/testEndpoint', function (res) {
                 expect(res.result).to.have.deep.property('apis[0].operations[0]');
                 done();
             });
@@ -333,7 +370,7 @@ describe('indexTest', function () {
 
             server.route(routeConfig);
 
-            server.inject('/swagger/withModels', function (res) {
+            server.inject('/swagger/declaration?path=/withModels', function (res) {
                 expect(res.result).to.exist;
                 expect(res.result).to.have.property('swaggerVersion', '1.2');
                 expect(res.result).to.have.property('resourcePath', '/withModels');
