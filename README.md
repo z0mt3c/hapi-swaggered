@@ -109,6 +109,15 @@ plugin.route({
 });
 ```
 
+## Features
+### Tag filtering
+Routes can be filtered for tags through the tags query parameter beside the requiredTags property which is always required to be present.
+
+For example:
+
+?tags=public,beta (equal to ?tags=+public,+beta) will only show apis and routes with tag public AND/OR beta.
+?tags=public,-beta (equal to ?tags=+public,-beta) will only show apis and routes with tag public AND NOT beta.
+
 ## Topics
 ### TODO
 * proper tag filtering for apiListings
