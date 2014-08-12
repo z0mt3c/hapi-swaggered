@@ -119,8 +119,7 @@ For example:
 ?tags=public,-beta (equal to ?tags=+public,-beta) will only show apis and routes with tag public AND NOT beta.
 
 ## Topics
-### TODO
-* proper tag filtering for apiListings
+### TODO (Feel free to contribute)
 * Check produces and consumes for proper behavior
 * Response messages & codes
 * Find a way to support authorizations
@@ -135,6 +134,7 @@ Anything else? Ideas and pull requests are welcome ;-)
 ** https://github.com/wordnik/swagger-spec/issues/93
 
 ### Completed
+* ~~proper tag filtering for apiListings~~
 * ~~Proper(more strict) filter for apis and routes~~
 * ~~handle model name collisions: if equal same name otherwise new type!~~
 * ~~Write tests~~
