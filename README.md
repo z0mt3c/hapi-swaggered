@@ -118,31 +118,3 @@ For example:
 ?tags=public,beta (equal to ?tags=+public,+beta) will only show apis and routes with tag public AND/OR beta.
 ?tags=public,-beta (equal to ?tags=+public,-beta) will only show apis and routes with tag public AND NOT beta.
 
-## Topics
-### TODO (Feel free to contribute)
-* Check produces and consumes for proper behavior
-* Response messages & codes
-* Find a way to support authorizations
-* Support property format e.g. int64/int32 but i didn't see any ui impact yet? (https://github.com/wordnik/swagger-spec/blob/master/versions/1.2.md#431-primitives)
-* Remove attributes from shema which don't fit to the swagger specifications but it's wired? May not? look for // TODO: remove!
-* custom api sorting?
-
-Anything else? Ideas and pull requests are welcome ;-)
-
-### Maybe later
-* ~~Improve path variable handling / mapping to swagger~~ not possible due to swagger sepcs
-** https://github.com/wordnik/swagger-spec/issues/93
-
-### Completed
-* ~~proper tag filtering for apiListings~~
-* ~~Proper(more strict) filter for apis and routes~~
-* ~~handle model name collisions: if equal same name otherwise new type!~~
-* ~~Write tests~~
-* ~~Descriptions & infos based on server?~~
-* ~~Support "deprecated"~~ through route tag deprecated
-* ~~Write tests for index.js~~
-* ~~cache apiDeclaration and apiListing through plugin methods~~
-* ~~'file' upload? (forms)~~
-* ~~Setup hapi-swagger-ui project sharing endpoints and stuff through plugin.expose~~
-* ~~Base path support (overall prefix e.g. api)~~
-* ~~Support Joi.any()~~ currently only partial... e.g. options({ swaggerType: 'file' }) any other requirements?
