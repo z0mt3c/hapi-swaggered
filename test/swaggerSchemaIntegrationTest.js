@@ -5,7 +5,7 @@ var describe = lab.experiment;
 var it = lab.test;
 var expect = Lab.expect;
 var Joi = require('joi');
-var Nipple = require('nipple');
+var Wreck = require('wreck');
 
 var schema = require('../lib/schema');
 var petstoreListing = 'http://petstore.swagger.wordnik.com/api/api-docs';
@@ -15,9 +15,9 @@ var storeApiDeclaration = 'http://petstore.swagger.wordnik.com/api/api-docs/stor
 
 describe('Schema integration test against official petstore', function () {
     it('ResourceListing', function (done) {
-        Nipple.request('GET', petstoreListing, { }, function (err, res) {
+        Wreck.request('GET', petstoreListing, { }, function (err, res) {
             expect(err).to.be.null;
-            Nipple.read(res, { json: true }, function (err, specs) {
+            Wreck.read(res, { json: true }, function (err, specs) {
                 expect(err).to.be.null;
                 expect(specs).to.exist;
 
@@ -32,9 +32,9 @@ describe('Schema integration test against official petstore', function () {
 
     describe('APIDeclaration', function () {
         it('Pet', function (done) {
-            Nipple.request('GET', petApiDeclaration, { }, function (err, res) {
+            Wreck.request('GET', petApiDeclaration, { }, function (err, res) {
                 expect(err).to.be.null;
-                Nipple.read(res, { json: true }, function (err, specs) {
+                Wreck.read(res, { json: true }, function (err, specs) {
                     expect(err).to.be.null;
                     expect(specs).to.exist;
 
@@ -48,9 +48,9 @@ describe('Schema integration test against official petstore', function () {
         });
 
         it('User', function (done) {
-            Nipple.request('GET', userApiDeclaration, { }, function (err, res) {
+            Wreck.request('GET', userApiDeclaration, { }, function (err, res) {
                 expect(err).to.be.null;
-                Nipple.read(res, { json: true }, function (err, specs) {
+                Wreck.read(res, { json: true }, function (err, specs) {
                     expect(err).to.be.null;
                     expect(specs).to.exist;
 
@@ -64,9 +64,9 @@ describe('Schema integration test against official petstore', function () {
         });
 
         it('Store', function (done) {
-            Nipple.request('GET', storeApiDeclaration, { }, function (err, res) {
+            Wreck.request('GET', storeApiDeclaration, { }, function (err, res) {
                 expect(err).to.be.null;
-                Nipple.read(res, { json: true }, function (err, specs) {
+                Wreck.read(res, { json: true }, function (err, specs) {
                     expect(err).to.be.null;
                     expect(specs).to.exist;
 
