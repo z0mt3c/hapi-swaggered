@@ -19,6 +19,8 @@ npm install hapi-swaggered --save
 ## Example Configuration
 Swagger ui should be configured to use /api2/swagger2 in this example ;-)
 
+Through manifest:
+
 ```js
 'hapi-swaggered': [
     {
@@ -54,6 +56,46 @@ Swagger ui should be configured to use /api2/swagger2 in this example ;-)
         }
     }
 ]
+```
+
+Or the manual way:
+
+```js
+server.pack.register({
+	plugin: require('hapi-swaggered'),
+	options: {
+		// requiredTags have to be present for all routes exposed through hapi-swaggered
+		requiredTags: ['api'],
+		produces: ['application/json'],
+		consumes: ['application/json'],
+		apiVersion: require('./package.json').version,
+		endpoint: '/swagger',
+		routeTags: ['swagger'],
+		// responseValidation for hapi-swaggered routes
+		responseValidation: false,
+		cache: {
+			// default value 15 minutes... hapi caching options
+			expiresIn: 15 * 60 * 1000
+		},
+		descriptions: {
+			token: 'Test description'
+		},
+		info: {
+			title: "Title",
+			description: "Description",
+			termsOfServiceUrl: "http://hapijs.com/",
+			contact: "xxx@xxx.com",
+			license: "XXX",
+			licenseUrl: "http://XXX"
+		}
+	}
+}, {
+	select: 'api',
+	route: {
+		prefix: '/swagger'
+	}
+}, function (err) {
+});
 ```
 
 Overwrite app properties on server level except the route and cache configuration (endpoint, routeTags, cache, responseValidation)! e.g.:
