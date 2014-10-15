@@ -33,8 +33,8 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-release": "^0.7.0",
     "grunt-shell": "^1.1.1",
-    "hapi": "^6.4.0",
-    "jshint-stylish": "^0.4.0",
+    "hapi": "^7.0.0",
+    "jshint-stylish": "^1.0.0",
     "lab": "^4.0.0",
     "sinon": "^1.10.3",
     "wreck": "^5.0.1"
@@ -43,6 +43,6 @@
     "test": "make test"
   },
   "peerDependencies": {
-    "hapi": ">= 6.x < 7.x"
+    "hapi": ">= 6.x < 8.x"
   }
 }
