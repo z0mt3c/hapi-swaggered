@@ -1,7 +1,7 @@
 {
   "name": "hapi-swaggered",
   "description": "Yet another hapi plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "author": "Timo Behrmann",
   "repository": {
     "type": "git",
