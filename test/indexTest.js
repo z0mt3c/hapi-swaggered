@@ -97,7 +97,7 @@ describe('indexTest', function () {
 
             var reply = function () {
             };
-            expect(server.pack.register.bind(server.pack, options, reply)).to.throw('Swagger info object invalid: ValidationError: title is required');
+            expect(server.pack.register.bind(server.pack, options, reply)).to.throw();
             done();
         });
 
