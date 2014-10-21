@@ -1,5 +1,5 @@
 {
-  "swagger": 2.0,
+  "swagger": "2.0",
   "info": {
     "version": "1.0.0",
     "title": "Swagger Petstore",
@@ -194,17 +194,6 @@
       "allOf": [
         {
           "$ref": "pet"
-        },
-        {
-          "required": [
-            "name"
-          ],
-          "properties": {
-            "id": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
         }
       ]
     },
