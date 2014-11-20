@@ -6,6 +6,9 @@ var it = lab.test;
 var Joi = require('joi');
 var utils = require('../lib/utils');
 var _ = require('lodash');
+var Hapi = require('hapi');
+var dummyHandler = function (request, reply) { return reply('ok'); };
+
 
 describe('utils', function () {
     describe('getDescription', function () {
@@ -16,6 +19,15 @@ describe('utils', function () {
             Lab.expect(utils.getDescription({descriptions: {test: 'Test'}}, '/test')).to.equal('Test');
             Lab.expect(utils.getDescription({descriptions: {test: 'Test'}}, 'test')).to.equal('Test');
             Lab.expect(utils.getDescription({descriptions: {test: 'Test'}}, null)).to.equal(undefined);
+            done();
+        });
+    });
+
+ 	describe('getRequestConnection', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.getRequestConnection({ connection: 'a', server: 'b'})).to.equal('a');
+            Lab.expect(utils.getRequestConnection({ server: 'b'})).to.equal('b');
+            Lab.expect(utils.getRequestConnection({})).to.not.exist;
             done();
         });
     });
@@ -153,6 +165,31 @@ describe('utils', function () {
         done();
     });
 
+	it('filterRoutesByTagSelection (integration)', function (done) {
+		var routes = [
+			{path: '/dev/a', method: 'GET', config: { handler: dummyHandler, tags: ['Hapi']}},
+			{path: '/dev/b', method: 'GET', config: { handler: dummyHandler, tags: ['api', 'Hapi']}},
+			{path: '/dev/c', method: 'GET', config: { handler: dummyHandler, tags: ['api', 'Joi']}},
+			{path: '/dev/d', method: 'GET', config: { handler: dummyHandler, tags: 'Joi'}},
+			{path: '/dev', method: 'POST', config: { handler: dummyHandler }},
+			{path: '/dev', method: 'GET', config: { handler: dummyHandler }}
+		];
+
+		var server = new Hapi.Server();
+		server.connection({ port: 80 });
+		server.route(routes);
+
+		Lab.expect(utils.filterRoutesByTagSelection(server.connections[0].table(), [], [])).to.have.length(6);
+		Lab.expect(utils.filterRoutesByTagSelection(server.connections[0].table(), null, [])).to.have.length(6);
+		Lab.expect(utils.filterRoutesByTagSelection(server.connections[0].table(), [], null)).to.have.length(6);
+		Lab.expect(utils.filterRoutesByTagSelection(server.connections[0].table(), null, null)).to.have.length(6);
+		Lab.expect(utils.filterRoutesByTagSelection(server.connections[0].table(), ['Hapi'], [])).to.have.length(2);
+		Lab.expect(utils.filterRoutesByTagSelection(server.connections[0].table(), ['Hapi'], ['api'])).to.have.length(1);
+		Lab.expect(utils.filterRoutesByTagSelection(server.connections[0].table(), [], ['api'])).to.have.length(4);
+
+		done();
+	});
+
 
     describe('parseTags', function () {
         it('#1', function (done) {
@@ -192,6 +229,28 @@ describe('utils', function () {
         });
     });
 
+	describe('filterRoutesByPrefix (Integration)', function () {
+		it('#1', function (done) {
+
+			var routes = [
+				{path: '/', method: 'get', config: { handler: dummyHandler }},
+				{path: '/dev', method: 'post', config: { handler: dummyHandler }},
+				{path: '/dev', method: 'get', config: { handler: dummyHandler }},
+				{path: '/dev/null', method: 'get', config: { handler: dummyHandler }},
+				{path: '/abc/null', method: 'get', config: { handler: dummyHandler }}
+			];
+
+			var server = new Hapi.Server();
+			server.connection({ port: 80 });
+			server.route(routes);
+
+			var extractAPIKeys = utils.filterRoutesByPrefix(server.connections[0].table(), 'dev');
+			Lab.expect(extractAPIKeys).to.have.length(3);
+
+			done();
+		});
+	});
+
     describe('groupRoutesByPath', function () {
         it('#1', function (done) {
             var extractAPIKeys = utils.groupRoutesByPath([
@@ -216,6 +275,30 @@ describe('utils', function () {
             done();
         });
     });
+
+	describe('groupRoutesByPath (Integration)', function () {
+		it('#1', function (done) {
+
+			var routes = [
+				{path: '/', method: 'get', config: { handler: dummyHandler }},
+				{path: '/dev', method: 'post', config: { handler: dummyHandler }},
+				{path: '/dev', method: 'get', config: { handler: dummyHandler }},
+				{path: '/dev/null', method: 'get', config: { handler: dummyHandler }},
+			];
+
+			var server = new Hapi.Server();
+			server.connection({ port: 80 });
+			server.route(routes);
+
+			var extractAPIKeys = utils.groupRoutesByPath(server.connections[0].table());
+
+			Lab.expect(extractAPIKeys['/']).to.have.length(1);
+			Lab.expect(extractAPIKeys['/dev']).to.have.length(2);
+			Lab.expect(extractAPIKeys['/dev/null']).to.have.length(1);
+
+			done();
+		});
+	});
 
     describe('extractAPIKeys', function () {
         it('#1', function (done) {
@@ -244,6 +327,39 @@ describe('utils', function () {
             done();
         });
     });
+
+	describe('extractAPIKeys (Integration)', function () {
+		it('#1', function (done) {
+			var routes = [
+				{path: '/', method: 'get', config: { handler: dummyHandler }},
+				{path: '/dev', method: 'post', config: { handler: dummyHandler }},
+				{path: '/dev', method: 'get', config: { handler: dummyHandler }},
+				{path: '/dev/null', method: 'get', config: { handler: dummyHandler }},
+			];
+
+			var server = new Hapi.Server();
+			server.connection({ port: 80 });
+			server.route(routes);
+
+			var extractAPIKeys = utils.extractAPIKeys(server.connections[0].table());
+			Lab.expect(extractAPIKeys).to.eql(['/dev']);
+			done();
+		});
+
+		it('#2', function (done) {
+			var extractAPIKeys = utils.extractAPIKeys([
+				{path: '/'},
+				{path: '/zdsa'},
+				{path: '/dev'},
+				{path: '/asdf'},
+				{path: '/asdf'},
+				{path: '/dev/null'}
+			]);
+
+			Lab.expect(extractAPIKeys).to.eql(['/asdf', '/dev', '/zdsa']);
+			done();
+		});
+	});
 
     describe('generateFallbackName', function () {
         it('#1', function (done) {

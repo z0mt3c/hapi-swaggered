@@ -28,9 +28,9 @@ describe('indexTest', function () {
     describe('init', function () {
         it('no options', function (done) {
             var server = new Hapi.Server();
-
-            server.pack.register({
-                plugin: index
+			server.connection({ port: 80 });
+            server.register({
+                register: index
             }, function (err) {
                 expect(err).to.not.exist;
                 done();
@@ -39,9 +39,10 @@ describe('indexTest', function () {
 
         it('empty options', function (done) {
             var server = new Hapi.Server();
+			server.connection({ port: 80 });
 
-            server.pack.register({
-                plugin: index,
+            server.register({
+                register: index,
                 options: {}
             }, function (err) {
                 expect(err).to.not.exist;
@@ -51,9 +52,10 @@ describe('indexTest', function () {
 
         it('with route prefix', function (done) {
             var server = new Hapi.Server();
+			server.connection({ port: 80 });
 
-            server.pack.register({
-                plugin: index,
+            server.register({
+                register: index,
                 options: {
                     stripPrefix: '/api'
                 }
@@ -69,9 +71,10 @@ describe('indexTest', function () {
 
         it('without response validation', function (done) {
             var server = new Hapi.Server();
+			server.connection({ port: 80 });
 
-            server.pack.register({
-                plugin: index,
+            server.register({
+                register: index,
                 options: {
                     responseValidation: false
                 }
@@ -87,9 +90,10 @@ describe('indexTest', function () {
 
         it('broken info', function (done) {
             var server = new Hapi.Server();
+			server.connection({ port: 80 });
 
             var options = {
-                plugin: index,
+                register: index,
                 options: {
                     info: {bull: 'shit'}
                 }
@@ -97,15 +101,16 @@ describe('indexTest', function () {
 
             var reply = function () {
             };
-            expect(server.pack.register.bind(server.pack, options, reply)).to.throw();
+            expect(server.register.bind(server.pack, options, reply)).to.throw();
             done();
         });
 
         it('valid info', function (done) {
             var server = new Hapi.Server();
+			server.connection({ port: 80 });
 
             var options = {
-                plugin: index,
+                register: index,
                 options: {
                     info: {
                         title: 'Overwritten',
@@ -118,7 +123,7 @@ describe('indexTest', function () {
                 }
             };
 
-            server.pack.register(options, function (err) {
+            server.register(options, function (err) {
                 expect(err).to.not.exist;
                 done();
             });
@@ -135,8 +140,9 @@ describe('indexTest', function () {
 
         lab.beforeEach(function (done) {
             server = new Hapi.Server();
-            server.pack.register({
-                plugin: index,
+			server.connection({ port: 80 });
+            server.register({
+                register: index,
                 options: pluginOptions
             }, function (err) {
                 expect(err).to.not.exist;
@@ -154,6 +160,7 @@ describe('indexTest', function () {
             server.inject('/swagger', function (res) {
                 expect(res.statusCode).to.exist.and.to.eql(200);
                 expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
+                expect(res.result.apis).to.have.length(1);
                 expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
                 expect(res.result).not.to.have.deep.property('apis[0].description');
                 done();
@@ -176,7 +183,7 @@ describe('indexTest', function () {
         it('apiListing with server descriptions', function (done) {
             server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
 
-            server.settings.app = {swagger: {descriptions: {'testEndpoint': 'myDesc'}}};
+            server.connections[0].settings.app = {swagger: {descriptions: {'testEndpoint': 'myDesc'}}};
 
             server.inject('/swagger', function (res) {
                 expect(res.statusCode).to.exist.and.to.eql(200);
@@ -214,8 +221,9 @@ describe('indexTest', function () {
 
         lab.beforeEach(function (done) {
             server = new Hapi.Server();
-            server.pack.register({
-                plugin: index,
+			server.connection({ port: 80 });
+            server.register({
+                register: index,
                 options: pluginOptions
             }, function (err) {
                 expect(err).to.not.exist;
@@ -298,8 +306,9 @@ describe('indexTest', function () {
 
         lab.beforeEach(function (done) {
             server = new Hapi.Server();
-            server.pack.register({
-                plugin: index,
+			server.connection({ port: 80 });
+            server.register({
+                register: index,
                 options: pluginOptions
             }, function (err) {
                 expect(err).to.not.exist;
