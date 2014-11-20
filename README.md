@@ -41,7 +41,9 @@ Some configurations can be overwritten on server level:
 
 ```js
 var Hapi = require('hapi');
-var server = Hapi.createServer('localhost', 8000, {
+var server = new Hapi.Server();
+server.connection({ 
+  port: 8000,
   labels: ['api'],
   app: {
     swagger: {
@@ -62,14 +64,12 @@ var Joi = require('joi');
 var hapiSwaggered = require('hapi-swaggered');
 var hapiSwaggeredUi = require('hapi-swaggered-ui');
 
-var server = Hapi.createServer('localhost', 8000, {
-	labels: ['api']
-});
+var server = new Hapi.Server();
+server.connection({ port: 8000, labels: ['api'] });
 
-server.pack.register({
-	plugin: hapiSwaggered,
+server.register({
+	register: hapiSwaggered,
 	options: {
-		apiVersion: '999',
 		descriptions: {
 			'music': 'Example music description'
 		},
@@ -83,14 +83,14 @@ server.pack.register({
 	route: {
 		prefix: '/swagger'
 	}
-}, function (err) {
+}, function(err) {
 	if (err) {
 		throw err;
 	}
 });
 
-server.pack.register({
-	plugin: hapiSwaggeredUi,
+server.register({
+	register: hapiSwaggeredUi,
 	options: {
 		title: 'Example API',
 		authorization: {
@@ -104,7 +104,7 @@ server.pack.register({
 	route: {
 		prefix: '/docs'
 	}
-}, function (err) {
+}, function(err) {
 	if (err) {
 		throw err;
 	}
