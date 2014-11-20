@@ -1,5 +1,5 @@
 # hapi-swaggered
-Yet another hapi (>= 6.x < 8.x) plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.
+Yet another hapi (>= 6.x < 8.0.0-rc2) plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.
 
 [![Build Status](https://travis-ci.org/z0mt3c/hapi-swaggered.png)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Dependency Status](https://gemnasium.com/z0mt3c/hapi-swaggered.png)](https://gemnasium.com/z0mt3c/hapi-swaggered)
