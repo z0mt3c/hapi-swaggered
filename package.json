@@ -1,7 +1,7 @@
 {
   "name": "hapi-swaggered",
   "description": "Yet another hapi plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.",
-  "version": "1.1.4",
+  "version": "1.2.0",
   "author": "Timo Behrmann",
   "repository": {
     "type": "git",
@@ -33,7 +33,7 @@
     "grunt-contrib-watch": "^0.6.1",
     "grunt-release": "^0.7.0",
     "grunt-shell": "^1.1.1",
-	"hapi": "8.0.0rc2",
+    "hapi": "8.0.0rc2",
     "jshint-stylish": "^1.0.0",
     "lab": "^4.0.0",
     "sinon": "^1.10.3",
@@ -43,6 +43,6 @@
     "test": "make test"
   },
   "peerDependencies": {
-	"hapi": ">= 6.x.x <= 8.0.0rc2"
+    "hapi": ">= 6.x.x <= 8.0.0rc2"
   }
 }
