@@ -13,7 +13,6 @@ var schemas = require('../lib/schema');
 var Hapi = require('hapi');
 var _ = require('lodash');
 
-var simpleSchema = Joi.object().keys({name: Joi.string()}).options({className: 'SimpleTestModel'});
 var baseRoute = {
 	method: 'GET',
 	path: '/testEndpoint',
@@ -52,7 +51,7 @@ describe('resources', function() {
 		expect(resources.paths['/testEndpoint']).to.only.include('post');
 		resources = internals.resources([route1, route2], {}, '-requiredTag');
 		expect(resources.paths['/testEndpoint']).to.only.include('get');
-		resources = internals.resources([route1, route2], { requiredTags: ['requiredTag'] });
+		resources = internals.resources([route1, route2], {requiredTags: ['requiredTag']});
 		expect(resources.paths['/testEndpoint']).to.only.include('post');
 		done();
 	});
@@ -60,15 +59,59 @@ describe('resources', function() {
 	it('tags are exposed', function(done) {
 		var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: ['myTestTag']}}));
 		expect(resources).to.exist;
-		expect(resources.paths['/testEndpoint'].get).to.deep.include({ tags: ['myTestTag' ]});
+		expect(resources.paths['/testEndpoint'].get).to.deep.include({tags: ['myTestTag']});
 		done();
 	});
 
 	it('deprecation', function(done) {
 		var tags = ['myTestTag', 'deprecated'];
-        var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: tags}}));
+		var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: tags}}));
 		expect(resources).to.exist;
-		expect(resources.paths['/testEndpoint'].get).to.deep.include({ tags: tags, deprecated: true });
+		expect(resources.paths['/testEndpoint'].get).to.deep.include({tags: tags, deprecated: true});
 		done();
+	});
+
+	describe('params', function() {
+		it('simple', function(done) {
+			var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+				path: '/foo/{bar}',
+				config: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
+			}));
+
+			expect(resources).to.exist;
+			expect(resources.paths['/foo/{bar}'].get).to.deep.include({
+				parameters: [{
+					required: true,
+					description: 'test',
+					type: 'string',
+					name: 'bar',
+					in: 'path'
+				}]
+			});
+
+			done();
+		});
+	});
+
+	describe('query', function() {
+		it('simple', function(done) {
+			var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+				path: '/foo',
+				config: {validate: {query: Joi.object({bar: Joi.string().description('test').required()})}}
+			}));
+
+			expect(resources).to.exist;
+			expect(resources.paths['/foo'].get).to.deep.include({
+				parameters: [{
+					required: true,
+					description: 'test',
+					type: 'string',
+					name: 'bar',
+					in: 'query'
+				}]
+			});
+
+			done();
+		});
 	});
 });
