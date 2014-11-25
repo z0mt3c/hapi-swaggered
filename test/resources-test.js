@@ -113,5 +113,52 @@ describe('resources', function() {
 
 			done();
 		});
+
+		/*
+		 TODO:
+		 test validation e.g.
+		 default: 10
+		 minimum: 11
+		 maximum: 10000
+		 */
+	});
+
+
+	describe('payload', function() {
+		it('simple', function(done) {
+			var expectedParam = {
+				name: 'TestModel',
+				required: true,
+				in: 'body',
+				description: 'foobar',
+				schema: {
+					$ref: '#/definitions/TestModel'
+				}
+			};
+
+			Joi.assert(expectedParam, schemas.Parameter, 'Expected parameter should be valid');
+
+			var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+				path: '/foo',
+				method: 'post',
+				config: {validate: {payload: Joi.object({bar: Joi.string().description('test').required()}).description('foobar').required().options({className: 'TestModel'})}}
+			}));
+
+			expect(resources).to.exist;
+			expect(resources.paths['/foo'].post).to.deep.include({
+				parameters: [expectedParam]
+			});
+			expect(resources.definitions.TestModel).to.exist;
+
+			done();
+		});
+
+		/*
+		 TODO:
+		 test validation e.g.
+		 default: 10
+		 minimum: 11
+		 maximum: 10000
+		 */
 	});
 });
