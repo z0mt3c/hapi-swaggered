@@ -80,7 +80,7 @@ server.register({
 	}
 }, {
 	select: 'api',
-	route: {
+	routes: {
 		prefix: '/swagger'
 	}
 }, function(err) {
@@ -101,7 +101,7 @@ server.register({
 	}
 }, {
 	select: 'api',
-	route: {
+	routes: {
 		prefix: '/docs'
 	}
 }, function(err) {

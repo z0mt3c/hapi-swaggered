@@ -32,6 +32,15 @@ describe('utils', function () {
         });
     });
 
+ 	describe('getRouteModifiers', function () {
+        it('#1', function (done) {
+            Lab.expect(utils.getRoutesModifiers({ config: 'test' })).to.equal('test');
+            Lab.expect(utils.getRoutesModifiers({ realm: { modifiers: 'test' } })).to.equal('test');
+            Lab.expect(utils.getRoutesModifiers({})).to.not.exist;
+            done();
+        });
+    });
+
     describe('firstCharToUpperCase', function () {
         it('#1', function (done) {
             Lab.expect(utils.firstCharToUpperCase(null)).to.equal(null);

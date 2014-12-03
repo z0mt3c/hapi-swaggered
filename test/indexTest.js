@@ -60,7 +60,7 @@ describe('indexTest', function () {
                     stripPrefix: '/api'
                 }
             }, {
-                route: {
+                routes: {
                     prefix: '/api/test123'
                 }
             }, function (err) {
@@ -79,7 +79,7 @@ describe('indexTest', function () {
                     responseValidation: false
                 }
             }, {
-                route: {
+                routes: {
                     prefix: '/api/test123'
                 }
             }, function (err) {
