@@ -1,5 +1,5 @@
 # hapi-swaggered
-Yet another hapi (>= 6.x < 8.x) plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.
+Yet another hapi (>= 6.x < 8.0.0-rc2) plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.
 
 [![Build Status](https://travis-ci.org/z0mt3c/hapi-swaggered.png)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Dependency Status](https://gemnasium.com/z0mt3c/hapi-swaggered.png)](https://gemnasium.com/z0mt3c/hapi-swaggered)
@@ -41,7 +41,9 @@ Some configurations can be overwritten on server level:
 
 ```js
 var Hapi = require('hapi');
-var server = Hapi.createServer('localhost', 8000, {
+var server = new Hapi.Server();
+server.connection({ 
+  port: 8000,
   labels: ['api'],
   app: {
     swagger: {
@@ -62,14 +64,12 @@ var Joi = require('joi');
 var hapiSwaggered = require('hapi-swaggered');
 var hapiSwaggeredUi = require('hapi-swaggered-ui');
 
-var server = Hapi.createServer('localhost', 8000, {
-	labels: ['api']
-});
+var server = new Hapi.Server();
+server.connection({ port: 8000, labels: ['api'] });
 
-server.pack.register({
-	plugin: hapiSwaggered,
+server.register({
+	register: hapiSwaggered,
 	options: {
-		apiVersion: '999',
 		descriptions: {
 			'music': 'Example music description'
 		},
@@ -80,17 +80,17 @@ server.pack.register({
 	}
 }, {
 	select: 'api',
-	route: {
+	routes: {
 		prefix: '/swagger'
 	}
-}, function (err) {
+}, function(err) {
 	if (err) {
 		throw err;
 	}
 });
 
-server.pack.register({
-	plugin: hapiSwaggeredUi,
+server.register({
+	register: hapiSwaggeredUi,
 	options: {
 		title: 'Example API',
 		authorization: {
@@ -101,10 +101,10 @@ server.pack.register({
 	}
 }, {
 	select: 'api',
-	route: {
+	routes: {
 		prefix: '/docs'
 	}
-}, function (err) {
+}, function(err) {
 	if (err) {
 		throw err;
 	}

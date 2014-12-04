@@ -27,9 +27,12 @@ var baseRoute = {
 var internals = {
     resources: function(routes, settings, tags) {
         var server = new Hapi.Server();
+        server.connection({port: 80});
+
         settings = settings || {};
         server.route(routes);
-        var myResources = resources(settings, server.table(), tags);
+        var table = server.connections[0].table();
+        var myResources = resources(settings, table, tags);
         Joi.assert(myResources.paths, Joi.object({}).pattern(/./g, schemas.Path));
         Joi.assert(myResources.definitions, Joi.object({}).pattern(/./g, schemas.Definition));
         return myResources;
