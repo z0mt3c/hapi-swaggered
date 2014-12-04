@@ -9,8 +9,8 @@ var Joi = require('joi');
 var schemas = require('../lib/schema');
 var generator = require('../lib/generator');
 
-describe('model constellations', function () {
-    it('Just an example', function (done) {
+describe('model constellations', function() {
+    it('Just an example', function(done) {
         var schema = Joi.object().keys({
             name: Joi.string().description('test').required(),
             number: Joi.number().description('numberDescription').required(),

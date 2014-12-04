@@ -13,15 +13,15 @@ var petApiDeclaration = 'http://petstore.swagger.wordnik.com/api/api-docs/pet';
 var userApiDeclaration = 'http://petstore.swagger.wordnik.com/api/api-docs/user';
 var storeApiDeclaration = 'http://petstore.swagger.wordnik.com/api/api-docs/store';
 
-describe('Schema integration test against official petstore', function () {
-    it('ResourceListing', function (done) {
-        Wreck.request('GET', petstoreListing, { }, function (err, res) {
+describe('Schema integration test against official petstore', function() {
+    it('ResourceListing', function(done) {
+        Wreck.request('GET', petstoreListing, {}, function(err, res) {
             expect(err).to.be.null;
-            Wreck.read(res, { json: true }, function (err, specs) {
+            Wreck.read(res, {json: true}, function(err, specs) {
                 expect(err).to.be.null;
                 expect(specs).to.exist;
 
-                Joi.validate(specs, schema.ResourceListing, function (err, value) {
+                Joi.validate(specs, schema.ResourceListing, function(err, value) {
                     expect(err).to.be.null;
                     expect(value).to.exist;
                     done();
@@ -30,15 +30,15 @@ describe('Schema integration test against official petstore', function () {
         });
     });
 
-    describe('APIDeclaration', function () {
-        it('Pet', function (done) {
-            Wreck.request('GET', petApiDeclaration, { }, function (err, res) {
+    describe('APIDeclaration', function() {
+        it('Pet', function(done) {
+            Wreck.request('GET', petApiDeclaration, {}, function(err, res) {
                 expect(err).to.be.null;
-                Wreck.read(res, { json: true }, function (err, specs) {
+                Wreck.read(res, {json: true}, function(err, specs) {
                     expect(err).to.be.null;
                     expect(specs).to.exist;
 
-                    Joi.validate(specs, schema.APIDeclaration, function (err, value) {
+                    Joi.validate(specs, schema.APIDeclaration, function(err, value) {
                         expect(err).to.be.null;
                         expect(value).to.exist;
                         done();
@@ -47,14 +47,14 @@ describe('Schema integration test against official petstore', function () {
             });
         });
 
-        it('User', function (done) {
-            Wreck.request('GET', userApiDeclaration, { }, function (err, res) {
+        it('User', function(done) {
+            Wreck.request('GET', userApiDeclaration, {}, function(err, res) {
                 expect(err).to.be.null;
-                Wreck.read(res, { json: true }, function (err, specs) {
+                Wreck.read(res, {json: true}, function(err, specs) {
                     expect(err).to.be.null;
                     expect(specs).to.exist;
 
-                    Joi.validate(specs, schema.APIDeclaration, function (err, value) {
+                    Joi.validate(specs, schema.APIDeclaration, function(err, value) {
                         expect(err).to.be.null;
                         expect(value).to.exist;
                         done();
@@ -63,14 +63,14 @@ describe('Schema integration test against official petstore', function () {
             });
         });
 
-        it('Store', function (done) {
-            Wreck.request('GET', storeApiDeclaration, { }, function (err, res) {
+        it('Store', function(done) {
+            Wreck.request('GET', storeApiDeclaration, {}, function(err, res) {
                 expect(err).to.be.null;
-                Wreck.read(res, { json: true }, function (err, specs) {
+                Wreck.read(res, {json: true}, function(err, specs) {
                     expect(err).to.be.null;
                     expect(specs).to.exist;
 
-                    Joi.validate(specs, schema.APIDeclaration, function (err, value) {
+                    Joi.validate(specs, schema.APIDeclaration, function(err, value) {
                         expect(err).to.be.null;
                         expect(value).to.exist;
                         done();
