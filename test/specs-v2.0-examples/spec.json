@@ -1,225 +1,225 @@
 {
-	"swagger": "2.0",
-	"info": {
-		"title": "MicroURL url shortening service",
-		"termsOfService": "SAS internal use only",
-		"contact": {
-			"name": "David Biesack",
-			"url": "http://sww.sas.com/saspedia/David_Biesack",
-			"email": "David.Biesack@sas.com"
-		},
-		"license": {
-			"name": "Apache 2.0",
-			"url": "http://www.apache.org/licenses/LICENSE-2.0.html"
-		},
-		"version": "1"
-	},
-	"host": "djb.na.sas.com",
-	"basePath": "/mu/rest",
-	"schemes": [
-		"http"
-	],
-	"externalDocs": {
-		"description": "MicroUrl service",
-		"url": "http://sww.sas.com/saspedia/User:Djb/MicroURL"
-	},
-	"paths": {
-		"/": {
-			"get": {
-				"produces": [
-					"application/json",
-					"application/xml"
-				],
-				"responses": {
-					"200": {
-						"description": "links to the resources in this API"
-					}
-				}
-			}
-		},
-		"/microUrls": {
-			"get": {
-				"produces": [
-					"application/json",
-					"application/xml",
-					"application/vnd.sas.collection+json",
-					"application/vnd.sas.collection+xml"
-				],
-				"responses": {
-					"200": {
-						"description": "a paginated collection (application/vnd.sas.collection)\nof MicroUrls (application/vnd.sas.mu) resources\n"
-					}
-				},
-				"parameters": [
-					{
-						"name": "start",
-						"in": "query",
-						"type": "integer",
-						"required": false,
-						"description": "The 0-based start index of a paginated request.\nDefault is 0 .\n"
-					},
-					{
-						"name": "limit",
-						"in": "query",
-						"type": "integer",
-						"required": false,
-						"description": "The maximum number of items to return in this request. Default is 10."
-					}
-				]
-			},
-			"post": {
-				"consumes": [
-					"application/json",
-					"application/xml",
-					"application/vnd.sas.mu+json",
-					"application/vnd.sas.mu+xml",
-					"application/vnd.sas.mus+json",
-					"application/vnd.sas.mus+xml"
-				],
-				"parameters": [
-					{
-						"name": "body",
-						"in": "body",
-						"required": true,
-						"description": "A MicroUrl (application/vnd.sas.mu)",
-						"schema": {
-							"$ref": "MicroUrl"
-						}
-					}
-				],
-				"responses": {
-					"201": {
-						"description": "Created"
-					},
-					"400": {
-						"description": "Bad request (the request body is not well formed)"
-					}
-				}
-			}
-		},
-		"/microUrls/{microUrlId}": {
-			"parameters": [
-				{
-					"name": "microUrlId",
-					"in": "path",
-					"type": "string",
-					"required": true,
-					"description": "The unique id of a MicroURL resource."
-				}
-			],
-			"get": {
-				"produces": [
-					"application/xml",
-					"application/json",
-					"application/vnd.sas.mu+xml",
-					"application/vnd.sas.mu+json"
-				],
-				"responses": {
-					"200": {
-						"description": "return a specific MicroURL resource"
-					},
-					"404": {
-						"description": "Not found"
-					}
-				}
-			},
-			"post": {
-				"consumes": [
-					"application/xml",
-					"application/json",
-					"application/vnd.sas.mu+xml",
-					"application/vnd.sas.mu+json"
-				],
-				"parameters": [
-					{
-						"name": "body",
-						"in": "body",
-						"description": "A MicroUrl resource (application/vnd.sas.mu)",
-						"required": true,
-						"schema": {
-							"$ref": "MicroUrl"
-						}
-					}
-				],
-				"responses": {
-					"201": {
-						"description": "Created"
-					},
-					"400": {
-						"description": "Bad request (if the request body is not well formed)"
-					},
-					"409": {
-						"description": "Conflict; a resource already exists here."
-					}
-				}
-			},
-			"put": {
-				"consumes": [
-					"application/xml",
-					"application/json",
-					"application/vnd.sas.mu+xml",
-					"application/vnd.sas.mu+json"
-				],
-				"parameters": [
-					{
-						"name": "body",
-						"in": "body",
-						"description": "A MicroUrl resource (application/vnd.sas.mu)",
-						"required": true,
-						"schema": {
-							"$ref": "MicroUrl"
-						}
-					}
-				],
-				"responses": {
-					"200": {
-						"description": "OK"
-					},
-					"400": {
-						"description": "Bad input; the request body is not well formed, or the shortcut, if present, does not match the {microUrl} path element"
-					},
-					"404": {
-						"description": "Not found"
-					}
-				}
-			},
-			"delete": {
-				"responses": {
-					"204": {
-						"description": "No content - the resource was deleted"
-					},
-					"404": {
-						"description": "Not found"
-					}
-				}
-			}
-		}
-	},
-	"definitions": {
-		"MicroUrl": {
-			"title": "Micro URL representation",
-			"required": [
-				"longUrl",
-				"owner"
-			],
-			"properties": {
-				"longUrl": {
-					"type": "string",
-					"description": "The full URL this microUrl redirects to"
-				},
-				"owner": {
-					"type": "string",
-					"description": "the owner of this microUrl instance (user id or email address, etc.)"
-				},
-				"shortcut": {
-					"type": "string",
-					"description": "The optional shortcut to use for this microUrl"
-				},
-				"description": {
-					"type": "string",
-					"description": "the description or text label for the long URL"
-				}
-			}
-		}
-	}
+  "swagger": "2.0",
+  "info": {
+    "title": "MicroURL url shortening service",
+    "termsOfService": "SAS internal use only",
+    "contact": {
+      "name": "David Biesack",
+      "url": "http://sww.sas.com/saspedia/David_Biesack",
+      "email": "David.Biesack@sas.com"
+    },
+    "license": {
+      "name": "Apache 2.0",
+      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+    },
+    "version": "1"
+  },
+  "host": "djb.na.sas.com",
+  "basePath": "/mu/rest",
+  "schemes": [
+    "http"
+  ],
+  "externalDocs": {
+    "description": "MicroUrl service",
+    "url": "http://sww.sas.com/saspedia/User:Djb/MicroURL"
+  },
+  "paths": {
+    "/": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "links to the resources in this API"
+          }
+        }
+      }
+    },
+    "/microUrls": {
+      "get": {
+        "produces": [
+          "application/json",
+          "application/xml",
+          "application/vnd.sas.collection+json",
+          "application/vnd.sas.collection+xml"
+        ],
+        "responses": {
+          "200": {
+            "description": "a paginated collection (application/vnd.sas.collection)\nof MicroUrls (application/vnd.sas.mu) resources\n"
+          }
+        },
+        "parameters": [
+          {
+            "name": "start",
+            "in": "query",
+            "type": "integer",
+            "required": false,
+            "description": "The 0-based start index of a paginated request.\nDefault is 0 .\n"
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "type": "integer",
+            "required": false,
+            "description": "The maximum number of items to return in this request. Default is 10."
+          }
+        ]
+      },
+      "post": {
+        "consumes": [
+          "application/json",
+          "application/xml",
+          "application/vnd.sas.mu+json",
+          "application/vnd.sas.mu+xml",
+          "application/vnd.sas.mus+json",
+          "application/vnd.sas.mus+xml"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "description": "A MicroUrl (application/vnd.sas.mu)",
+            "schema": {
+              "$ref": "MicroUrl"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request (the request body is not well formed)"
+          }
+        }
+      }
+    },
+    "/microUrls/{microUrlId}": {
+      "parameters": [
+        {
+          "name": "microUrlId",
+          "in": "path",
+          "type": "string",
+          "required": true,
+          "description": "The unique id of a MicroURL resource."
+        }
+      ],
+      "get": {
+        "produces": [
+          "application/xml",
+          "application/json",
+          "application/vnd.sas.mu+xml",
+          "application/vnd.sas.mu+json"
+        ],
+        "responses": {
+          "200": {
+            "description": "return a specific MicroURL resource"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "post": {
+        "consumes": [
+          "application/xml",
+          "application/json",
+          "application/vnd.sas.mu+xml",
+          "application/vnd.sas.mu+json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "A MicroUrl resource (application/vnd.sas.mu)",
+            "required": true,
+            "schema": {
+              "$ref": "MicroUrl"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad request (if the request body is not well formed)"
+          },
+          "409": {
+            "description": "Conflict; a resource already exists here."
+          }
+        }
+      },
+      "put": {
+        "consumes": [
+          "application/xml",
+          "application/json",
+          "application/vnd.sas.mu+xml",
+          "application/vnd.sas.mu+json"
+        ],
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "A MicroUrl resource (application/vnd.sas.mu)",
+            "required": true,
+            "schema": {
+              "$ref": "MicroUrl"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad input; the request body is not well formed, or the shortcut, if present, does not match the {microUrl} path element"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      },
+      "delete": {
+        "responses": {
+          "204": {
+            "description": "No content - the resource was deleted"
+          },
+          "404": {
+            "description": "Not found"
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "MicroUrl": {
+      "title": "Micro URL representation",
+      "required": [
+        "longUrl",
+        "owner"
+      ],
+      "properties": {
+        "longUrl": {
+          "type": "string",
+          "description": "The full URL this microUrl redirects to"
+        },
+        "owner": {
+          "type": "string",
+          "description": "the owner of this microUrl instance (user id or email address, etc.)"
+        },
+        "shortcut": {
+          "type": "string",
+          "description": "The optional shortcut to use for this microUrl"
+        },
+        "description": {
+          "type": "string",
+          "description": "the description or text label for the long URL"
+        }
+      }
+    }
+  }
 }
