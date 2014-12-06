@@ -18,7 +18,7 @@ var schemas = require('../lib/schema');
 var helper = {
     testDefinition: function(schema, definition, definitions) {
         var definitionResults = definitions || {};
-        var desc = generator.fromJoiSchema(schema, null, definitionResults);
+        var desc = generator.fromJoiSchema(schema, definitionResults);
         expect(desc).to.exist;
         Joi.assert(definitionResults, Joi.object({}).pattern(/.*/, schemas.Definition));
         expect(definitionResults).to.deep.equal(definition);
@@ -344,6 +344,26 @@ describe('definitions', function() {
                     'properties': {
                         'name': {
                             'type': 'string'
+                        }
+                    }
+                }
+            };
+
+            helper.testDefinition(schema, result);
+            done();
+        });
+
+        it('swaggerType', function(done) {
+            var schema = Joi.object({
+                name: Joi.any().options({ swaggerType: 'test' })
+            });
+
+            var result = {
+                'NameModel': {
+                    'required': [],
+                    'properties': {
+                        'name': {
+                            'type': 'test'
                         }
                     }
                 }

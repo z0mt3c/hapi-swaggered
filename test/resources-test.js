@@ -96,6 +96,28 @@ describe('resources', function() {
         });
     });
 
+    describe('header', function() {
+        it('simple', function(done) {
+            var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                path: '/foo/{bar}',
+                config: {validate: {headers: Joi.object({bar: Joi.string().description('test').required()})}}
+            }));
+
+            expect(resources).to.exist;
+            expect(resources.paths['/foo/{bar}'].get).to.deep.include({
+                parameters: [{
+                    required: true,
+                    description: 'test',
+                    type: 'string',
+                    name: 'bar',
+                    in: 'header'
+                }]
+            });
+
+            done();
+        });
+    });
+
     describe('query', function() {
         it('simple', function(done) {
             var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
@@ -126,6 +148,35 @@ describe('resources', function() {
          */
     });
 
+
+    describe('form', function() {
+        it('simple', function(done) {
+
+            _.each(['application/x-www-form-urlencoded', 'multipart/form-data'], function(mimeType) {
+                var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                    method: 'post',
+                    path: '/foo/{bar}',
+                    config: {
+                        validate: {payload: Joi.object({bar: Joi.string().description('test').required()})},
+                        payload: {allow: [mimeType]}
+                    }
+                }));
+
+                expect(resources).to.exist;
+                expect(resources.paths['/foo/{bar}'].post).to.deep.include({
+                    parameters: [{
+                        required: true,
+                        description: 'test',
+                        type: 'string',
+                        name: 'bar',
+                        in: 'formData'
+                    }]
+                });
+            });
+
+            done();
+        });
+    });
 
     describe('payload', function() {
         it('simple', function(done) {

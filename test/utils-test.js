@@ -430,6 +430,14 @@ describe('utils', function() {
             done();
         });
     });
+
+    describe('generateRouteNickname', function() {
+        it('#1', function(done) {
+            Code.expect(utils.generateRouteNickname({method:'get', path: '/path/to/{somthing}'})).to.equal('get_path_to__somthing_');
+            done();
+        });
+    });
+
     describe('isPrimitiveSwaggerType', function() {
         it('#1', function(done) {
             _.each(['integer', 'number', 'string', 'boolean', 'string'], function(type) {
