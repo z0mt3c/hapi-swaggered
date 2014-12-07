@@ -74,6 +74,14 @@ describe('resources', function() {
         done();
     });
 
+    it('stripPrefix', function(done) {
+        var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {path: '/api/foo/bar'}), {stripPrefix: '/api'});
+        expect(resources).to.exist;
+        expect(resources.paths['/api/foo/bar']).to.not.exist;
+        expect(resources.paths['/foo/bar']).to.exist;
+        done();
+    });
+
     describe('params', function() {
         it('simple', function(done) {
             var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
@@ -81,7 +89,7 @@ describe('resources', function() {
                 config: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
             }));
 
-            expect(resources).to.exist;
+            expect(resources['foo']).to.exist;
             expect(resources.paths['/foo/{bar}'].get).to.deep.include({
                 parameters: [{
                     required: true,
@@ -90,6 +98,91 @@ describe('resources', function() {
                     name: 'bar',
                     in: 'path'
                 }]
+            });
+
+            done();
+        });
+    });
+
+    describe('responses', function() {
+        //TODO: description, test with primary types + arrays
+        it('only response model', function(done) {
+            var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                path: '/foo',
+                config: {
+                    response: {
+                        schema: Joi.object({
+                            bar: Joi.string().description('test').required()
+                        }),
+                        status: {
+                            500: Joi.object({
+                                bar: Joi.string().description('test').required()
+                            })
+                        }
+                    }
+                }
+            }));
+
+            expect(resources).to.exist;
+            expect(resources.paths['/foo'].get.responses).to.deep.include({
+                default: {description: 'dummy description', schema: {$ref: '#/definitions/BarModel'}},
+                500: {description: 'dummy description', schema: {$ref: '#/definitions/BarModel'}}
+            });
+            done();
+        });
+
+        it('plugin options without model', function(done) {
+            var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                path: '/foo',
+                config: {
+                    plugins: {
+                        'hapi-swaggered': {
+                            responses: {
+                                default: {description: 'Bad Request'},
+                                500: {description: 'Internal Server Error'}
+                            }
+                        }
+                    },
+                    response: {
+                        schema: Joi.object({
+                            bar: Joi.string().description('test').required()
+                        })
+                    }
+                }
+            }));
+
+            expect(resources).to.exist;
+            expect(resources.paths['/foo'].get.responses).to.deep.include({
+                default: {description: 'dummy description', schema: {$ref: '#/definitions/BarModel'}},
+                500: {description: 'Internal Server Error'}
+            });
+
+            done();
+        });
+
+        it('plugin options with model', function(done) {
+            var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                path: '/foo',
+                config: {
+                    plugins: {
+                        'hapi-swaggered': {
+                            responses: {
+                                default: {
+                                    description: 'Bad Request', schema: Joi.object({
+                                        bar: Joi.string().description('test').required()
+                                    })
+                                },
+                                500: {description: 'Internal Server Error'}
+                            }
+                        }
+                    }
+                }
+            }));
+
+            expect(resources).to.exist;
+            expect(resources.paths['/foo'].get.responses).to.deep.include({
+                default: {description: 'Bad Request', schema: {$ref: '#/definitions/BarModel'}},
+                500: {description: 'Internal Server Error'}
             });
 
             done();
@@ -151,7 +244,6 @@ describe('resources', function() {
 
     describe('form', function() {
         it('simple', function(done) {
-
             _.each(['application/x-www-form-urlencoded', 'multipart/form-data'], function(mimeType) {
                 var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
                     method: 'post',
