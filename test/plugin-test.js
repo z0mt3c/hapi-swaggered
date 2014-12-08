@@ -10,7 +10,7 @@ var Joi = require('joi');
 var Hapi = require('hapi');
 var Hoek = require('hoek');
 var index = require('../');
-
+var schemas = require('../lib/schema');
 
 var simpleSchema = Joi.object().keys({name: Joi.string()}).options({className: 'SimpleTestModel'});
 
@@ -129,8 +129,120 @@ describe('indexTest', function() {
         });
     });
 
+
+    describe('settings', function() {
+        it('with cache', function(done) {
+            var server = new Hapi.Server();
+            server.connection({port: 80});
+            server.register({
+                register: index,
+                options: {}
+            }, function() {
+                server.route(Hoek.applyToDefaults(baseRoute, {}));
+                var call = function(next) {
+                    server.inject('/swagger', function(res) {
+                        expect(res.statusCode).to.exist;
+                        expect(res.statusCode).to.equal(200);
+                        Joi.assert(res.result, schemas.Swagger);
+                        expect(res.result).to.exist;
+                        expect(res.result.paths).to.exist;
+                        expect(res.result.paths['/testEndpoint']).to.exist;
+                        expect(res.result.paths['/testEndpoint'].get).to.exist;
+                        next();
+                    });
+                };
+
+                call(function() {
+                    call(done);
+                });
+            });
+        });
+
+        it('without cache', function(done) {
+            var server = new Hapi.Server();
+            server.connection({port: 80});
+            server.register({
+                register: index,
+                options: {
+                    cache: false
+                }
+            }, function() {
+                server.route(Hoek.applyToDefaults(baseRoute, {}));
+
+                var call = function(next) {
+                    server.inject('/swagger', function(res) {
+                        expect(res.statusCode).to.exist;
+                        expect(res.statusCode).to.equal(200);
+                        Joi.assert(res.result, schemas.Swagger);
+                        expect(res.result).to.exist;
+                        expect(res.result.paths).to.exist;
+                        expect(res.result.paths['/testEndpoint']).to.exist;
+                        expect(res.result.paths['/testEndpoint'].get).to.exist;
+                        next();
+                    });
+                };
+
+                call(function() {
+                    call(done);
+                });
+            });
+        });
+    });
+
+    describe('/swagger', function() {
+        var server;
+
+        lab.beforeEach(function(done) {
+            server = new Hapi.Server();
+            server.connection({port: 80});
+            server.register({
+                register: index,
+                options: {
+                    cache: false,
+                    descriptions: {
+                        'serverDescription': 'myDesc2'
+                    }
+                }
+            }, done);
+        });
+
+        it('empty', function(done) {
+            server.inject('/swagger', function(res) {
+                expect(res.statusCode).to.exist;
+                expect(res.statusCode).to.equal(200);
+                Joi.assert(res.result, schemas.Swagger);
+                expect(res.result).to.deep.include({swagger: '2.0', paths: {}, definitions: {}});
+                done();
+            });
+        });
+
+        it('simple', function(done) {
+            server.route(Hoek.applyToDefaults(baseRoute, {}));
+            server.inject('/swagger', function(res) {
+                expect(res.statusCode).to.exist;
+                expect(res.statusCode).to.equal(200);
+                Joi.assert(res.result, schemas.Swagger);
+                expect(res.result).to.deep.include({
+                    swagger: '2.0',
+                    definitions: {},
+                    paths: {
+                        '/testEndpoint': {
+                            get: {
+                                tags: ['api', 'test'],
+                                responses: {},
+                                produces: ['application/json']
+                            }
+                        }
+                    }
+                });
+                done();
+            });
+        });
+    });
+
+
     /*
-     describe('apiListing', function () {
+     describe('apiListing', function() {
      var server;
      var pluginOptions = {
      descriptions: {
@@ -138,25 +250,26 @@ describe('indexTest', function() {
      }
      };
 
-     lab.beforeEach(function (done) {
+     lab.beforeEach(function(done) {
      server = new Hapi.Server();
+     server.connection({port: 80});
      server.register({
      register: index,
      options: pluginOptions
-     }, function (err) {
+     }, function(err) {
      expect(err).to.not.exist;
      done();
      });
      });
 
-     lab.afterEach(function (done) {
+     lab.afterEach(function(done) {
      done();
      });
 
-     it('apiListing contains baseRoute', function (done) {
+     it('apiListing contains baseRoute', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
 
-     server.inject('/swagger', function (res) {
+     server.inject('/swagger', function(res) {
      expect(res.statusCode).to.exist.and.to.eql(200);
      expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
      expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
@@ -165,10 +278,10 @@ describe('indexTest', function() {
      });
      });
 
-     it('apiListing contains tags', function (done) {
+     it('apiListing contains tags', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
 
-     server.inject('/swagger?tags=test', function (res) {
+     server.inject('/swagger?tags=test', function(res) {
      expect(res.statusCode).to.exist.and.to.eql(200);
      expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
      expect(res.result).to.exist.and.to.have.property('basePath', 'http://localhost/swagger/list?tags=test&path=');
@@ -178,12 +291,12 @@ describe('indexTest', function() {
      });
      });
 
-     it('apiListing with server descriptions', function (done) {
+     it('apiListing with server descriptions', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
 
      server.settings.app = {swagger: {descriptions: {'testEndpoint': 'myDesc'}}};
 
-     server.inject('/swagger', function (res) {
+     server.inject('/swagger', function(res) {
      expect(res.statusCode).to.exist.and.to.eql(200);
      expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
      expect(res.result).to.have.deep.property('apis[0].path', '/testEndpoint');
@@ -192,11 +305,11 @@ describe('indexTest', function() {
      });
      });
 
-     it('apiListing with plugin descriptions', function (done) {
+     it('apiListing with plugin descriptions', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {path: '/serverDescription'}));
      pluginOptions.descriptions = {'testEndpoint': 'myDesc'};
 
-     server.inject('/swagger', function (res) {
+     server.inject('/swagger', function(res) {
      expect(res.statusCode).to.exist.and.to.eql(200);
      expect(res.result).to.exist.and.to.have.property('swaggerVersion', '1.2');
      expect(res.result).to.have.deep.property('apis[0].path', '/serverDescription');
@@ -207,7 +320,7 @@ describe('indexTest', function() {
      });
 
 
-     describe('apiDeclaration', function () {
+     describe('apiDeclaration', function() {
      var server;
      var pluginOptions = {
      protocol: 'joi',
@@ -217,38 +330,39 @@ describe('indexTest', function() {
      }
      };
 
-     lab.beforeEach(function (done) {
+     lab.beforeEach(function(done) {
      server = new Hapi.Server();
+     server.connection({port: 80});
      server.register({
      register: index,
      options: pluginOptions
-     }, function (err) {
+     }, function(err) {
      expect(err).to.not.exist;
      done();
      });
      });
 
-     lab.afterEach(function (done) {
+     lab.afterEach(function(done) {
      done();
      });
 
-     it('404', function (done) {
-     server.inject('/swagger/list?path=/404', function (res) {
+     it('404', function(done) {
+     server.inject('/swagger/list?path=/404', function(res) {
      expect(res.statusCode).to.exist.and.to.eql(404);
      expect(res.result).to.exist.and.to.have.property('statusCode', 404);
      done();
      });
      });
 
-     it('proper config', function (done) {
+     it('proper config', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {}));
-     server.inject('/swagger/list?path=/testEndpoint', function (res) {
+     server.inject('/swagger/list?path=/testEndpoint', function(res) {
      expect(res.result).to.have.deep.property('apis[0].operations[0]');
      done();
      });
      });
 
-     it('with models', function (done) {
+     it('with models', function(done) {
      var routeConfig = Hoek.merge(Hoek.clone(baseRoute), {
      method: 'POST',
      path: '/withModels/{name}',
@@ -258,7 +372,7 @@ describe('indexTest', function() {
      params: simpleSchema,
      payload: simpleSchema
      },
-     handler: function (request, reply) {
+     handler: function(request, reply) {
      reply({name: 'hapi-swagger'});
      },
      response: {
@@ -269,7 +383,7 @@ describe('indexTest', function() {
 
      server.route(routeConfig);
 
-     server.inject('/swagger/list?path=/withModels', function (res) {
+     server.inject('/swagger/list?path=/withModels', function(res) {
      expect(res.result).to.exist;
      expect(res.result).to.have.property('swaggerVersion', '1.2');
      expect(res.result).to.have.property('resourcePath', '/withModels');
@@ -290,7 +404,7 @@ describe('indexTest', function() {
      });
      });
 
-     describe('apiDeclaration with stripPrefix', function () {
+     describe('apiDeclaration with stripPrefix', function() {
      var server;
      var pluginOptions = {
      protocol: 'joi',
@@ -301,62 +415,63 @@ describe('indexTest', function() {
      }
      };
 
-     lab.beforeEach(function (done) {
+     lab.beforeEach(function(done) {
      server = new Hapi.Server();
+     server.connection({port: 80});
      server.register({
      register: index,
      options: pluginOptions
-     }, function (err) {
+     }, function(err) {
      expect(err).to.not.exist;
      done();
      });
      });
 
-     lab.afterEach(function (done) {
+     lab.afterEach(function(done) {
      done();
      });
 
-     it('404', function (done) {
-     server.inject('/swagger/list?path=/404', function (res) {
+     it('404', function(done) {
+     server.inject('/swagger/list?path=/404', function(res) {
      expect(res.statusCode).to.exist.and.to.eql(404);
      expect(res.result).to.exist.and.to.have.property('statusCode', 404);
      done();
      });
      });
 
-     it('proper config', function (done) {
+     it('proper config', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {path: '/api' + baseRoute.path}));
-     server.inject('/swagger/list?path=/testEndpoint', function (res) {
+     server.inject('/swagger/list?path=/testEndpoint', function(res) {
      expect(res.result).to.have.deep.property('apis[0].operations[0]');
      done();
      });
      });
 
-     it('with not existing tags', function (done) {
+     it('with not existing tags', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {path: '/api' + baseRoute.path}));
-     server.inject('/swagger/list?tags=abc&path=/testEndpoint', function (res) {
+     server.inject('/swagger/list?tags=abc&path=/testEndpoint', function(res) {
      expect(res.result).to.have.property('statusCode', 404);
      done();
      });
      });
 
-     it('with existing tags', function (done) {
+     it('with existing tags', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {path: '/api' + baseRoute.path}));
-     server.inject('/swagger/list?tags=test&path=/testEndpoint', function (res) {
+     server.inject('/swagger/list?tags=test&path=/testEndpoint', function(res) {
      expect(res.result).to.have.deep.property('apis[0].operations[0]');
      done();
      });
      });
 
-     it('proper config', function (done) {
+     it('proper config', function(done) {
      server.route(Hoek.merge(Hoek.clone(baseRoute), {path: '/api' + baseRoute.path}));
-     server.inject('/swagger/list?path=/testEndpoint', function (res) {
+     server.inject('/swagger/list?path=/testEndpoint', function(res) {
      expect(res.result).to.have.deep.property('apis[0].operations[0]');
      done();
      });
      });
 
-     it('with models', function (done) {
+     it('with models', function(done) {
      var routeConfig = Hoek.merge(Hoek.clone(baseRoute), {
      method: 'POST',
      path: '/api/withModels/{name}',
@@ -366,7 +481,7 @@ describe('indexTest', function() {
      params: simpleSchema,
      payload: simpleSchema
      },
-     handler: function (request, reply) {
+     handler: function(request, reply) {
      reply({name: 'hapi-swagger'});
      },
      response: {
@@ -377,7 +492,7 @@ describe('indexTest', function() {
 
      server.route(routeConfig);
 
-     server.inject('/swagger/list?path=/withModels', function (res) {
+     server.inject('/swagger/list?path=/withModels', function(res) {
      expect(res.result).to.exist;
      expect(res.result).to.have.property('swaggerVersion', '1.2');
      expect(res.result).to.have.property('resourcePath', '/withModels');
