@@ -302,6 +302,31 @@ describe('definitions', function() {
     });
 
     describe('specials', function() {
+        it('name through options.className', function(done) {
+            var definitions = {};
+            var schema = Joi.object({
+                name: Joi.string().required()
+            }).options({
+                className: 'Pet123'
+            });
+
+            var result = {
+                'Pet123': {
+                    'properties': {
+                        'name': {
+                            'type': 'string'
+                        }
+                    },
+                    'required': [
+                        'name'
+                    ]
+                }
+            };
+
+            helper.testDefinition(schema, result, definitions);
+            done();
+        });
+
         it('duplicate models', function(done) {
             var definitions = {
                 Pet: {}

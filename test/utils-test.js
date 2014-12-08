@@ -452,6 +452,7 @@ describe('utils', function() {
             done();
         });
     });
+
     describe('setNotEmpty', function() {
         it('#1', function(done) {
             Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value');
@@ -459,6 +460,15 @@ describe('utils', function() {
             Code.expect(utils.setNotEmpty({}, 'key', undefined).key).not.to.exist;
             Code.expect(utils.setNotEmpty({}, 'key', null).key).not.to.exist;
             Code.expect(utils.setNotEmpty({}, 'key', []).key).not.to.exist;
+            done();
+        });
+    });
+
+    describe('getMeta', function() {
+        it('#1', function(done) {
+            Code.expect(utils.getMeta(Joi.object().options({className: 'myClassName'}), 'className')).to.be.equal('myClassName');
+            Code.expect(utils.getMeta(undefined, 'className')).to.be.equal(undefined);
+            Code.expect(utils.getMeta(null, 'className')).to.be.equal(undefined);
             done();
         });
     });
