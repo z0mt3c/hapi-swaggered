@@ -4,6 +4,7 @@ var lab = exports.lab = Lab.script();
 var describe = lab.experiment;
 var it = lab.test;
 var Code = require('code');
+var expect = Code.expect;
 var Joi = require('joi');
 var utils = require('../lib/utils');
 var _ = require('lodash');
@@ -37,18 +38,18 @@ describe('utils', function() {
 
     describe('getRequestConnection', function() {
         it('#1', function(done) {
-            Lab.expect(utils.getRequestConnection({connection: 'a', server: 'b'})).to.equal('a');
-            Lab.expect(utils.getRequestConnection({server: 'b'})).to.equal('b');
-            Lab.expect(utils.getRequestConnection({})).to.not.exist;
+            expect(utils.getRequestConnection({connection: 'a', server: 'b'})).to.equal('a');
+            expect(utils.getRequestConnection({server: 'b'})).to.equal('b');
+            expect(utils.getRequestConnection({})).to.not.exist;
             done();
         });
     });
 
     describe('getRouteModifiers', function() {
         it('#1', function(done) {
-            Lab.expect(utils.getRoutesModifiers({config: 'test'})).to.equal('test');
-            Lab.expect(utils.getRoutesModifiers({realm: {modifiers: 'test'}})).to.equal('test');
-            Lab.expect(utils.getRoutesModifiers({})).to.not.exist;
+            expect(utils.getRoutesModifiers({config: 'test'})).to.equal('test');
+            expect(utils.getRoutesModifiers({realm: {modifiers: 'test'}})).to.equal('test');
+            expect(utils.getRoutesModifiers({})).to.not.exist;
             done();
         });
     });
