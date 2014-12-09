@@ -7,7 +7,6 @@ var expect = Code.expect;
 var Joi = require('joi');
 var Hoek = require('hoek');
 var resources = require('../lib/resources');
-//var utils = require('../lib/utils');
 var generator = require('../lib/generator');
 var schemas = require('../lib/schema');
 var Hapi = require('hapi');
@@ -213,32 +212,62 @@ describe('resources', function() {
 
     describe('query', function() {
         it('simple', function(done) {
+            var params = {
+                bar: Joi.string().description('test').required(),
+                foo: Joi.number().integer().min(20).max(30).default(2).required(),
+                array: Joi.array().includes(Joi.string()),
+                arrayOfObjects: Joi.array().includes(Joi.object({bar: Joi.string().description('test').required()}))
+            };
+
             var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
                 path: '/foo',
-                config: {validate: {query: Joi.object({bar: Joi.string().description('test').required()})}}
+                config: {
+                    validate: {
+                        query: Joi.object(params)
+                    }
+                }
             }));
 
             expect(resources).to.exist;
-            expect(resources.paths['/foo'].get).to.deep.include({
-                parameters: [{
-                    required: true,
-                    description: 'test',
-                    type: 'string',
-                    name: 'bar',
-                    in: 'query'
-                }]
+            var parameters = resources.paths['/foo'].get.parameters;
+            expect(parameters).to.have.length(_.keys(params).length);
+
+            expect(parameters).to.deep.include({
+                required: true,
+                description: 'test',
+                type: 'string',
+                name: 'bar',
+                in: 'query'
+            });
+
+            expect(parameters).to.deep.include({
+                required: true,
+                default: 2,
+                minimum: 20,
+                maximum: 30,
+                type: 'integer',
+                name: 'foo',
+                in: 'query'
+            });
+
+            expect(parameters).to.deep.include({
+                required: false,
+                type: 'array',
+                items: {type: 'string'},
+                name: 'array',
+                in: 'query'
+            });
+
+            expect(parameters).to.deep.include({
+                required: false,
+                type: 'array',
+                items: {type: 'string'},
+                name: 'array',
+                in: 'query'
             });
 
             done();
         });
-
-        /*
-         TODO:
-         test validation e.g.
-         default: 10
-         minimum: 11
-         maximum: 10000
-         */
     });
 
 
@@ -299,12 +328,44 @@ describe('resources', function() {
             done();
         });
 
-        /*
-         TODO:
-         test validation e.g.
-         default: 10
-         minimum: 11
-         maximum: 10000
-         */
+        it('array of primitive', function(done) {
+            var expectedParam = {
+                name: 'Test',
+                in: 'body',
+                required: true,
+                description: 'foobar',
+                schema: {
+                    $ref: '#/definitions/Test'
+                }
+            };
+
+            Joi.assert(expectedParam, schemas.Parameter, 'Expected parameter should be valid');
+
+            var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                path: '/foobar/test',
+                method: 'post',
+                config: {
+                    tags: ['api'],
+                    validate: {
+                        payload: Joi.array().includes(
+                            Joi.string()
+                        ).description('foobar').required().options({className: 'Test'})
+                    }
+                }
+            }));
+
+            expect(resources).to.exist;
+            expect(resources.paths['/foobar/test'].post).to.deep.include({
+                parameters: [expectedParam]
+            });
+            expect(resources.definitions.Test).to.exist;
+            expect(resources.definitions.Test).to.deep.include({
+                type: 'array',
+                description: 'foobar',
+                items: {type: 'string'}
+            });
+
+            done();
+        });
     });
 });

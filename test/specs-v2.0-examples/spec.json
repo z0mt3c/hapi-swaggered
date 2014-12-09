@@ -31,6 +31,7 @@
           "application/xml"
         ],
         "responses": {
+          "default": {},
           "200": {
             "description": "links to the resources in this API"
           }
@@ -46,6 +47,7 @@
           "application/vnd.sas.collection+xml"
         ],
         "responses": {
+          "default": {},
           "200": {
             "description": "a paginated collection (application/vnd.sas.collection)\nof MicroUrls (application/vnd.sas.mu) resources\n"
           }
@@ -88,6 +90,7 @@
           }
         ],
         "responses": {
+          "default": {},
           "201": {
             "description": "Created"
           },
@@ -115,6 +118,7 @@
           "application/vnd.sas.mu+json"
         ],
         "responses": {
+          "default": {},
           "200": {
             "description": "return a specific MicroURL resource"
           },
@@ -142,6 +146,7 @@
           }
         ],
         "responses": {
+          "default": {},
           "201": {
             "description": "Created"
           },
@@ -172,6 +177,7 @@
           }
         ],
         "responses": {
+          "default": {},
           "200": {
             "description": "OK"
           },
@@ -185,6 +191,7 @@
       },
       "delete": {
         "responses": {
+          "default": {},
           "204": {
             "description": "No content - the resource was deleted"
           },

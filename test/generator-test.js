@@ -26,6 +26,36 @@ var helper = {
 };
 
 describe('definitions', function() {
+    describe('newModel', function() {
+        it('object', function(done) {
+            var definitions = {};
+            var reference = generator.newModel(Joi.object({
+                name: Joi.string().required()
+            }).options({
+                className: 'Pet'
+            }), definitions);
+
+            expect(reference).to.deep.include({'$ref': 'Pet'});
+            expect(definitions.Pet).to.exist;
+            expect(definitions.Pet).to.deep.include({
+                required: ['name'],
+                properties: {name: {type: 'string'}}
+            });
+
+            done();
+        });
+
+        it('array', function(done) {
+            var definitions = {};
+            var model = Joi.array().includes(Joi.string()).options({
+                className: 'Pet'
+            });
+            var reference = generator.newModel.bind(this, model, definitions);
+            expect(reference).to.throw(Error, 'generator.newModel does not support array schema');
+            done();
+        });
+    });
+
     describe('simple', function() {
         it('simple schema', function(done) {
             var schema = Joi.object({
@@ -380,7 +410,7 @@ describe('definitions', function() {
 
         it('swaggerType', function(done) {
             var schema = Joi.object({
-                name: Joi.any().options({ swaggerType: 'test' })
+                name: Joi.any().options({swaggerType: 'test'})
             });
 
             var result = {
