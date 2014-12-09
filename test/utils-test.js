@@ -165,8 +165,8 @@ describe('utils', function() {
             Code.expect(utils.generateNameFromSchema(schema)).to.deep.equal('NameEmailModel');
             Code.expect(utils.generateNameFromSchema(Joi.object().keys({}))).to.deep.equal('EmptyModel');
             Code.expect(utils.generateNameFromSchema(Joi.object())).to.deep.equal('EmptyModel');
-            Code.expect(utils.generateNameFromSchema(Joi.array())).to.deep.equal('ArrayModel');
-            Code.expect(utils.generateNameFromSchema(Joi.array().includes(Joi.string()))).to.deep.equal('StringArrayModel');
+            Code.expect(utils.generateNameFromSchema(Joi.array())).to.deep.equal('Array');
+            Code.expect(utils.generateNameFromSchema(Joi.array().includes(Joi.string()))).to.deep.equal('Array');
 
             done();
         });

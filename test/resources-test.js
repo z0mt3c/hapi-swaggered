@@ -112,7 +112,7 @@ describe('resources', function() {
                     response: {
                         schema: Joi.object({
                             bar: Joi.string().description('test').required()
-                        }),
+                        }).description('test'),
                         status: {
                             500: Joi.object({
                                 bar: Joi.string().description('test').required()
@@ -124,8 +124,8 @@ describe('resources', function() {
 
             expect(resources).to.exist;
             expect(resources.paths['/foo'].get.responses).to.deep.include({
-                default: {description: 'dummy description', schema: {$ref: '#/definitions/BarModel'}},
-                500: {description: 'dummy description', schema: {$ref: '#/definitions/BarModel'}}
+                default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
+                500: {description: undefined, schema: {$ref: '#/definitions/BarModel'}}
             });
             done();
         });
@@ -144,15 +144,15 @@ describe('resources', function() {
                     },
                     response: {
                         schema: Joi.object({
-                            bar: Joi.string().description('test').required()
-                        })
+                            bar: Joi.string().required()
+                        }).description('test')
                     }
                 }
             }));
 
             expect(resources).to.exist;
             expect(resources.paths['/foo'].get.responses).to.deep.include({
-                default: {description: 'dummy description', schema: {$ref: '#/definitions/BarModel'}},
+                default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
                 500: {description: 'Internal Server Error'}
             });
 
@@ -363,6 +363,88 @@ describe('resources', function() {
                 type: 'array',
                 description: 'foobar',
                 items: {type: 'string'}
+            });
+
+            done();
+        });
+
+        it('array of primitive', function(done) {
+            var expectedParam = {
+                name: 'Array',
+                in: 'body',
+                required: true,
+                description: 'foobar',
+                schema: {
+                    $ref: '#/definitions/Array'
+                }
+            };
+
+            Joi.assert(expectedParam, schemas.Parameter, 'Expected parameter should be valid');
+
+            var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                path: '/foobar/test',
+                method: 'post',
+                config: {
+                    tags: ['api'],
+                    validate: {
+                        payload: Joi.array().includes(
+                            Joi.string()
+                        ).description('foobar').required()
+                    }
+                }
+            }));
+
+            expect(resources).to.exist;
+            expect(resources.paths['/foobar/test'].post).to.deep.include({
+                parameters: [expectedParam]
+            });
+
+            expect(resources.definitions.Array).to.exist;
+            expect(resources.definitions.Array).to.deep.include({
+                type: 'array',
+                description: 'foobar',
+                items: {type: 'string'}
+            });
+
+            done();
+        });
+
+        it('array of objects', function(done) {
+            var expectedParam = {
+                name: 'Array',
+                in: 'body',
+                required: true,
+                description: 'foobar',
+                schema: {
+                    $ref: '#/definitions/Array'
+                }
+            };
+
+            Joi.assert(expectedParam, schemas.Parameter, 'Expected parameter should be valid');
+
+            var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+                path: '/foobar/test',
+                method: 'post',
+                config: {
+                    tags: ['api'],
+                    validate: {
+                        payload: Joi.array().includes(
+                            Joi.object({name: Joi.string()})
+                        ).description('foobar').required()
+                    }
+                }
+            }));
+
+            expect(resources).to.exist;
+            expect(resources.paths['/foobar/test'].post).to.deep.include({
+                parameters: [expectedParam]
+            });
+
+            expect(resources.definitions.Array).to.exist;
+            expect(resources.definitions.Array).to.deep.include({
+                type: 'array',
+                description: 'foobar',
+                items: {$ref: 'NameModel'}
             });
 
             done();
