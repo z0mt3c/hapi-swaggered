@@ -25,16 +25,14 @@
     "boom": "^2.6.1",
     "hoek": "^2.10.0",
     "joi": "^5.0.2",
-    "lodash": "^2.4.1"
+    "lodash": "^3.1.0"
   },
   "devDependencies": {
     "code": "^1.2.0",
     "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.10.0",
+    "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
-    "grunt-release": "^0.9.0",
-    "grunt-shell": "^1.1.1",
-    "hapi": "8.0.0-rc9",
+    "hapi": "8.x.x",
     "jshint-stylish": "^1.0.0",
     "lab": "^5.1.0",
     "sinon": "^1.10.3",
@@ -44,6 +42,6 @@
     "test": "make test"
   },
   "peerDependencies": {
-    "hapi": ">= 6.x.x <= 8.0.0-rc9"
+    "hapi": ">= 6.x.x <= 9.0.0"
   }
 }

@@ -65,6 +65,13 @@ describe('resources', function() {
         done();
     });
 
+    it('notes->description and description->summary are exposed', function(done) {
+        var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {notes: 'my notes', description: 'my description' }}));
+        expect(resources).to.exist;
+        expect(resources.paths['/testEndpoint'].get).to.deep.include({summary: 'my description', description: 'my notes'});
+        done();
+    });
+
     it('deprecation', function(done) {
         var tags = ['myTestTag', 'deprecated'];
         var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: tags}}));
