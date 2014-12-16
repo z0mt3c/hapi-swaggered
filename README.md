@@ -10,6 +10,9 @@ Supports hapi 7.x and 8.x
 ```bash
 npm install hapi-swaggered --save
 ```
+## Similar swagger-projects for hapi
+[krakenjs/swaggerize-hapi](https://github.com/krakenjs/swaggerize-hapi) follows a design driven approach (swagger-schema first) for building APIs. In other words: it supports you to implement an api behind a specific swagger-schema while you have to create and maintain the swagger-schema yourself (or a third-party). In contrast with hapi-swaggered you will have to design your api through hapi route defintions and joi schemas (or did already) and hapi-swaggered will generate it's swagger specifications up on that (Of course not as beautiful and shiny structured as done by hand). Based on this you are able to get beautiful hands-on swagger-ui documentation (like [this](http://petstore.swagger.wordnik.com/)) for your api up and running (e.g. through [hapi-swaggered-ui](https://github.com/z0mt3c/hapi-swaggered-ui)).
+
 ## Swagger-UI
 This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger-ui) interface. It just serves a bare swagger 1.2 (working on 2.0) compliant json feed. If you are looking for an easy swagger-ui plugin to drop-in? Have a look at:
 * [hapi-swaggered-ui](https://github.com/z0mt3c/hapi-swaggered-ui)
