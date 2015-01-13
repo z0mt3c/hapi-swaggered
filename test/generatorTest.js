@@ -16,10 +16,10 @@ var generator = require('../lib/generator');
 var _ = require('lodash');
 
 
-describe('generator', function () {
-    describe('newModel', function () {
-        describe('complex', function () {
-            it('className', function (done) {
+describe('generator', function() {
+    describe('newModel', function() {
+        describe('complex', function() {
+            it('className', function(done) {
                 var models = {};
                 var schema = Joi.object().keys({}).options({className: 'TestModel'});
                 var swaggerSchema = generator.newModel(schema, null, models);
@@ -29,7 +29,7 @@ describe('generator', function () {
                 done();
             });
 
-            it('key', function (done) {
+            it('key', function(done) {
                 var models = {};
                 var schema = Joi.object().keys({});
                 var swaggerSchema = generator.newModel(schema, 'TestModel', models);
@@ -40,19 +40,19 @@ describe('generator', function () {
                 done();
             });
 
-            describe('name generator', function () {
-                before(function (done) {
+            describe('name generator', function() {
+                before(function(done) {
                     var stub = sinon.stub(utils, 'generateNameFromSchema');
                     stub.returns('TestModel');
                     done();
                 });
 
-                after(function (done) {
+                after(function(done) {
                     utils.generateNameFromSchema.restore();
                     done();
                 });
 
-                it('name generator', function (done) {
+                it('name generator', function(done) {
                     var models = {};
                     var swaggerSchema = generator.newModel(Joi.object().keys({}), null, models);
 
@@ -63,19 +63,19 @@ describe('generator', function () {
                 });
             });
 
-            describe('duplicate model name', function () {
-                before(function (done) {
+            describe('duplicate model name', function() {
+                before(function(done) {
                     var stub = sinon.stub(utils, 'generateFallbackName');
                     stub.returns('FallbackName');
                     done();
                 });
 
-                after(function (done) {
+                after(function(done) {
                     utils.generateFallbackName.restore();
                     done();
                 });
 
-                it('equal schema = equal model', function (done) {
+                it('equal schema = equal model', function(done) {
                     var models = {};
                     var schema1 = Joi.object().keys({name: Joi.string()}).options({className: 'TestModel'});
                     var schema2 = Joi.object().keys({name: Joi.string()}).options({className: 'TestModel'});
@@ -89,7 +89,7 @@ describe('generator', function () {
                     done();
                 });
 
-                it('not equal schema = new model', function (done) {
+                it('not equal schema = new model', function(done) {
                     var models = {};
                     var schema1 = Joi.object().keys({name: Joi.string()}).options({className: 'TestModel'});
                     var schema2 = Joi.object().keys({
@@ -109,18 +109,18 @@ describe('generator', function () {
             });
         });
 
-        describe('primitive', function () {
-            it('swagger type', function (done) {
+        describe('primitive', function() {
+            it('swagger type', function(done) {
                 var types = ['integer', 'number', 'string', 'boolean'];
 
-                _.each(types, function (type) {
+                _.each(types, function(type) {
                     expect(generator.newModel({_type: type})).to.be.eql({type: type});
                 });
 
                 done();
             });
 
-            it('joi type', function (done) {
+            it('joi type', function(done) {
                 expect(generator.newModel(Joi.number())).to.be.eql({type: 'number'});
                 expect(generator.newModel(Joi.number().integer())).to.be.eql({type: 'integer'});
                 expect(generator.newModel(Joi.string())).to.be.eql({type: 'string'});
@@ -130,12 +130,12 @@ describe('generator', function () {
         });
     });
 
-    describe('fromJoiSchema', function () {
-        describe('rules', function () {
-            it('#1: required', function (done) {
+    describe('fromJoiSchema', function() {
+        describe('rules', function() {
+            it('#1: required', function(done) {
                 var types = [Joi.string, Joi.number, Joi.object];
 
-                _.each(types, function (type) {
+                _.each(types, function(type) {
                     var msg = 'Failed for type -> ' + type()._type;
                     expect(generator.fromJoiSchema(type(), null, {})).to.have.property('required', false, msg);
                     expect(generator.fromJoiSchema(type().optional(), null, {})).to.have.property('required', false, msg);
@@ -145,11 +145,11 @@ describe('generator', function () {
                 done();
             });
 
-            it('#2: description', function (done) {
+            it('#2: description', function(done) {
                 var types = [Joi.string, Joi.number, Joi.object];
                 var desc = 'DescriptionText';
 
-                _.each(types, function (type) {
+                _.each(types, function(type) {
                     var msg = 'Failed for type -> ' + type()._type;
                     expect(generator.fromJoiSchema(type().description(desc), null, {})).to.have.property('description', desc, msg);
                     expect(generator.fromJoiSchema(type(), null, {})).not.to.have.property('description');
@@ -158,7 +158,7 @@ describe('generator', function () {
                 done();
             });
 
-            it('#2: enum', function (done) {
+            it('#2: enum', function(done) {
                 var enumValuesString = ['Test', 'Test2'];
                 var enumValuesNumber = [1, 2];
 
@@ -175,7 +175,7 @@ describe('generator', function () {
                 done();
             });
 
-            it('#3: minimum / maximum', function (done) {
+            it('#3: minimum / maximum', function(done) {
                 expect(generator.fromJoiSchema(Joi.number().min(1), null, {})).to.have.property('minimum', 1);
                 expect(generator.fromJoiSchema(Joi.number().max(2), null, {})).to.have.property('maximum', 2);
 
@@ -186,8 +186,8 @@ describe('generator', function () {
             });
         });
 
-        describe('types', function () {
-            it('#0: null schema', function (done) {
+        describe('types', function() {
+            it('#0: null schema', function(done) {
                 var models = {};
                 var swaggerSchema = generator.fromJoiSchema(null, null, models);
                 expect(swaggerSchema).not.to.exist;
@@ -195,7 +195,7 @@ describe('generator', function () {
                 done();
             });
 
-            it('#1: string', function (done) {
+            it('#1: string', function(done) {
                 var models = {};
                 var swaggerSchema = generator.fromJoiSchema(Joi.string(), null, models);
 
@@ -210,7 +210,7 @@ describe('generator', function () {
                 done();
             });
 
-            it('#2: number', function (done) {
+            it('#2: number', function(done) {
                 var models = {};
                 var swaggerSchema = generator.fromJoiSchema(Joi.number(), null, models);
                 var type = 'number';
@@ -225,7 +225,7 @@ describe('generator', function () {
                 done();
             });
 
-            it('#3: integer', function (done) {
+            it('#3: integer', function(done) {
                 var models = {};
                 var swaggerSchema = generator.fromJoiSchema(Joi.number().integer(), null, models);
                 var type = 'integer';
@@ -240,21 +240,21 @@ describe('generator', function () {
                 done();
             });
 
-            describe('#4: object', function () {
+            describe('#4: object', function() {
                 var newModelStub;
 
-                before(function (done) {
+                before(function(done) {
                     newModelStub = sinon.stub(generator, 'newModel');
                     newModelStub.returns({test: true});
                     done();
                 });
 
-                after(function (done) {
+                after(function(done) {
                     generator.newModel.restore();
                     done();
                 });
 
-                it('Merge', function (done) {
+                it('Merge', function(done) {
                     var models = {};
                     var swaggerSchema = generator.fromJoiSchema(Joi.object(), null, models);
 
@@ -270,22 +270,22 @@ describe('generator', function () {
                 });
             });
 
-            describe('#5: array', function () {
+            describe('#5: array', function() {
                 var newModelStub;
 
-                beforeEach(function (done) {
+                beforeEach(function(done) {
                     newModelStub = sinon.stub(generator, 'newModel');
                     newModelStub.onCall(0).returns({type: 'string'});
                     newModelStub.onCall(1).returns({type: 'test'});
                     done();
                 });
 
-                afterEach(function (done) {
+                afterEach(function(done) {
                     generator.newModel.restore();
                     done();
                 });
 
-                it('Check items', function (done) {
+                it('Check items', function(done) {
                     var models = {};
                     var primitiveArray = generator.fromJoiSchema(Joi.array().includes(Joi.string()), null, models);
                     expect(primitiveArray).to.exist;
@@ -309,7 +309,7 @@ describe('generator', function () {
                 });
             });
 
-            it('#6: boolea, date & any ', function (done) {
+            it('#6: boolea, date & any ', function(done) {
                 var models = {};
                 expect(generator.fromJoiSchema(Joi.any(), null, models)).to.eql({required: false, type: 'any'});
                 expect(generator.fromJoiSchema(Joi.any().options({swaggerType: 'file'}), null, models)).to.eql({
