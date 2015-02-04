@@ -1,14 +1,17 @@
 # hapi-swaggered
-Yet another hapi (>= 6.x < 8.0.0-rc2) plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.
+Yet another hapi plugin providing swagger compliant API specifications based on routes and joi schemas to be used with swagger-ui.
+
+Supports hapi 7.x and 8.x
 
 [![Build Status](https://travis-ci.org/z0mt3c/hapi-swaggered.png)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Dependency Status](https://gemnasium.com/z0mt3c/hapi-swaggered.png)](https://gemnasium.com/z0mt3c/hapi-swaggered)
-
 
 ## Install
 ```bash
 npm install hapi-swaggered --save
 ```
+## Similar swagger-projects for hapi
+[krakenjs/swaggerize-hapi](https://github.com/krakenjs/swaggerize-hapi) follows a design driven approach (swagger-schema first) for building APIs. In other words: it supports you to implement an api behind a specific swagger-schema while you have to create and maintain the swagger-schema yourself (or a third-party). In contrast with hapi-swaggered you will have to design your api through hapi route defintions and joi schemas (or did already) and hapi-swaggered will generate it's swagger specifications up on that (Of course not as beautiful and shiny structured as done by hand). Based on this you are able to get beautiful hands-on swagger-ui documentation (like [this](http://petstore.swagger.wordnik.com/)) for your api up and running (e.g. through [hapi-swaggered-ui](https://github.com/z0mt3c/hapi-swaggered-ui)).
 
 ## Swagger-UI
 This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger-ui) interface. It just serves a bare swagger 1.2 (working on 2.0) compliant json feed. If you are looking for an easy swagger-ui plugin to drop-in? Have a look at:
@@ -35,27 +38,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
   * `license`: string
   * `licenseUrl`: string
 
-
-## Overwriting configuration on server level
-Some configurations can be overwritten on server level:
-
-```js
-var Hapi = require('hapi');
-var server = new Hapi.Server();
-server.connection({ 
-  port: 8000,
-  labels: ['api'],
-  app: {
-    swagger: {
-      // stripPrefix: '/api', // see plugin configuration for stripPrefix above
-      descriptions: undefined  // see plugin configuration for descriptions above
-      info: undefined // see plugin configuration for info above
-    }
-  }
-});
-```
-
-## Example
+## Example (Hapi 8)
 Example configuration for hapi-swaggered + hapi-swaggered-ui
 
 ```js
@@ -65,102 +48,120 @@ var hapiSwaggered = require('hapi-swaggered');
 var hapiSwaggeredUi = require('hapi-swaggered-ui');
 
 var server = new Hapi.Server();
-server.connection({ port: 8000, labels: ['api'] });
-
-server.register({
-	register: hapiSwaggered,
-	options: {
-		descriptions: {
-			'music': 'Example music description'
-		},
-		info: {
-			title: 'Example API',
-			description: 'Tiny hapi-swaggered example'
-		}
-	}
-}, {
-	select: 'api',
-	routes: {
-		prefix: '/swagger'
-	}
-}, function(err) {
-	if (err) {
-		throw err;
-	}
+server.connection({
+    port: 8000,
+    labels: ['api']
 });
 
 server.register({
-	register: hapiSwaggeredUi,
-	options: {
-		title: 'Example API',
-		authorization: {
-			field: 'apiKey',
-			scope: 'query' // header works as well
-			// valuePrefix: 'bearer '// prefix incase
-		}
-	}
+    register: hapiSwaggered,
+    options: {
+        descriptions: {
+            'foobar': 'Example foobar description'
+        },
+        info: {
+            title: 'Example API',
+            description: 'Tiny hapi-swaggered example'
+        }
+    }
 }, {
-	select: 'api',
-	routes: {
-		prefix: '/docs'
-	}
+    select: 'api',
+    routes: {
+        prefix: '/swagger'
+    }
 }, function(err) {
-	if (err) {
-		throw err;
-	}
+    if (err) {
+        throw err;
+    }
+});
+
+server.register({
+    register: hapiSwaggeredUi,
+    options: {
+        title: 'Example API',
+        authorization: {
+            field: 'apiKey',
+            scope: 'query' // header works as well
+            // valuePrefix: 'bearer '// prefix incase
+        }
+    }
+}, {
+    select: 'api',
+    routes: {
+        prefix: '/docs'
+    }
+}, function(err) {
+    if (err) {
+        throw err;
+    }
+});
+
+
+server.route({
+    path: '/',
+    method: 'GET',
+    handler: function(request, reply) {
+        reply.redirect('/docs');
+    }
 });
 
 server.route({
-	path: '/music/{album}/{song}',
-	method: 'GET',
-	config: {
-		tags: ['api'],
-		validate: {
-			params: {
-				album: Joi.string().required(),
-				song: Joi.string().required()
-			}
-		},
-		handler: function (request, reply) {
-			reply({});
-		}
-	}
+    path: '/foobar/test',
+    method: 'GET',
+    config: {
+        tags: ['api'],
+        description: 'My route description',
+        notes: 'My route notes',
+        handler: function(request, reply) {
+            reply({});
+        }
+    }
 });
 
 server.route({
-	method: 'POST',
-	path: '/music/upload',
-	config: {
-		tags: ['api'],
-		validate: {
-			payload: Joi.object().keys({
-				name: Joi.string(),
-				album: Joi.string(),
-				file: Joi.any().options({
-					swaggerType: 'file'
-				})
-			})
-		},
-		handler: function (request, reply) {
-			// handle file upload as specified in payload.output
-			reply({
-				name: request.payload.name
-			});
-		},
-		payload: {
-			allow: 'multipart/form-data',
-			output: 'data'
-		}
-	}
+    path: '/foobar/{foo}/{bar}',
+    method: 'GET',
+    config: {
+        tags: ['api'],
+        validate: {
+            params: {
+                foo: Joi.string().required().description('test'),
+                bar: Joi.string().required()
+            }
+        },
+        handler: function(request, reply) {
+            reply({});
+        }
+    }
 });
 
-server.start(function () {
-	console.log('started on http://localhost:8000');
+server.start(function() {
+    console.log('started on http://localhost:8000');
+});
+```
+
+## Overwriting configuration on server level (Hapi 8)
+Some configurations can be overwritten on connection level:
+
+```js
+var Hapi = require('hapi');
+var server = new Hapi.Server();
+server.connection({
+    port: 8000,
+    labels: ['api'],
+    app: {
+        swagger: {
+            info: {
+                title: 'Example API',
+                description: 'Tiny hapi-swaggered example'
+            }
+        }
+    }
 });
 ```
 
 ## Features
-### File upload
+### File upload (Hapi 8)
 To achieve a file upload your route should look like as follows. (Important parts are the swaggerType in the Joi options as well as the allowed payload)
 
 ```js
@@ -193,6 +194,9 @@ For example:
   * will only show apis and routes with tag public AND/OR beta.
 * `?tags=public,-beta (equal to ?tags=+public,-beta)`
   * will only show apis and routes with tag public AND NOT beta.
+
+## Hapi 7 usage
+Please have a look at a previous (README)[https://github.com/z0mt3c/hapi-swaggered/blob/feb699f1c2393c466ae29850733877b095673491/README.md].
 
 ## Known issues
 ### No repsonse types
