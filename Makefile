@@ -8,4 +8,7 @@ test-cov:
 test-cov-html:
 	./node_modules/.bin/lab -r html -o ./coverage.html
 
-.PHONY: test test-cov test-cov-html
+test-cov-coveralls:
+	./node_modules/.bin/lab -r lcov | ./node_modules/.bin/coveralls
+
+.PHONY: test test-cov test-cov-html test-cov-coveralls

@@ -109,27 +109,6 @@ describe('utils', function() {
         });
     });
 
-    describe('extractBaseHost', function() {
-        it('#1', function(done) {
-            Code.expect(utils.extractBaseHost({}, {
-                headers: {}
-            })).to.equal('localhost');
-            Code.expect(utils.extractBaseHost({
-                host: 'abc'
-            }, {
-                headers: {
-                    host: 'localhost'
-                }
-            })).to.equal('abc');
-            Code.expect(utils.extractBaseHost({}, {
-                headers: {
-                    host: '123'
-                }
-            })).to.equal('123');
-            done();
-        });
-    });
-
     describe('generateNameFromSchema', function() {
         it('#1', function(done) {
             Code.expect(utils.generateNameFromSchema({

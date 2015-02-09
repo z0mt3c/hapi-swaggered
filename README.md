@@ -5,6 +5,7 @@ Supports hapi 7.x and 8.x
 
 [![Build Status](https://travis-ci.org/z0mt3c/hapi-swaggered.png)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Dependency Status](https://gemnasium.com/z0mt3c/hapi-swaggered.png)](https://gemnasium.com/z0mt3c/hapi-swaggered)
+[![Coverage Status](https://coveralls.io/repos/z0mt3c/hapi-swaggered/badge.svg?branch=swagger_2_specs)](https://coveralls.io/r/z0mt3c/hapi-swaggered?branch=swagger_2_specs)
 
 ## Install
 ```bash
