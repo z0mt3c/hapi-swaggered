@@ -24,7 +24,7 @@
   "dependencies": {
     "boom": "^2.6.1",
     "hoek": "^2.10.0",
-    "joi": "^5.0.2",
+    "joi": "^6.0.0",
     "lodash": "^3.1.0"
   },
   "devDependencies": {

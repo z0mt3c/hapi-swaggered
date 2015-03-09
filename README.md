@@ -162,6 +162,13 @@ server.connection({
 ```
 
 ## Features
+### Model naming
+To assign custom names to your Models use the Joi.meta() option (in previous joi versions Joi.options() may be used)
+
+```js
+Joi.object({}).meta({ className: 'FooBar' });
+```
+
 ### File upload (Hapi 8)
 To achieve a file upload your route should look like as follows. (Important parts are the swaggerType in the Joi options as well as the allowed payload)
 
@@ -172,7 +179,7 @@ server.route({
     config: {
         tags: ['api'],
         validate: {
-            payload: Joi.object().keys({ name: Joi.string(), file: Joi.any().options({ swaggerType: 'file' }) })
+            payload: Joi.object().keys({ name: Joi.string(), file: Joi.any().meta({ swaggerType: 'file' }) })
         },
         handler: function (request, reply) {
             // handle file upload as specified in payload.output

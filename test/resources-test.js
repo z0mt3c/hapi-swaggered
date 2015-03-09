@@ -222,8 +222,8 @@ describe('resources', function() {
             var params = {
                 bar: Joi.string().description('test').required(),
                 foo: Joi.number().integer().min(20).max(30).default(2).required(),
-                array: Joi.array().includes(Joi.string()),
-                arrayOfObjects: Joi.array().includes(Joi.object({bar: Joi.string().description('test').required()}))
+                array: Joi.array().items(Joi.string()),
+                arrayOfObjects: Joi.array().items(Joi.object({bar: Joi.string().description('test').required()}))
             };
 
             var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
@@ -323,7 +323,7 @@ describe('resources', function() {
             var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
                 path: '/foo',
                 method: 'post',
-                config: {validate: {payload: Joi.object({bar: Joi.string().description('test').required()}).description('foobar').required().options({className: 'TestModel'})}}
+                config: {validate: {payload: Joi.object({bar: Joi.string().description('test').required()}).description('foobar').required().meta({className: 'TestModel'})}}
             }));
 
             expect(resources).to.exist;
@@ -354,9 +354,9 @@ describe('resources', function() {
                 config: {
                     tags: ['api'],
                     validate: {
-                        payload: Joi.array().includes(
+                        payload: Joi.array().items(
                             Joi.string()
-                        ).description('foobar').required().options({className: 'Test'})
+                        ).description('foobar').required().meta({className: 'Test'})
                     }
                 }
             }));
@@ -394,7 +394,7 @@ describe('resources', function() {
                 config: {
                     tags: ['api'],
                     validate: {
-                        payload: Joi.array().includes(
+                        payload: Joi.array().items(
                             Joi.string()
                         ).description('foobar').required()
                     }
@@ -435,7 +435,7 @@ describe('resources', function() {
                 config: {
                     tags: ['api'],
                     validate: {
-                        payload: Joi.array().includes(
+                        payload: Joi.array().items(
                             Joi.object({name: Joi.string()})
                         ).description('foobar').required()
                     }

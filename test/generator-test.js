@@ -31,7 +31,7 @@ describe('definitions', function() {
             var definitions = {};
             var reference = generator.newModel(Joi.object({
                 name: Joi.string().required()
-            }).options({
+            }).meta({
                 className: 'Pet'
             }), definitions);
 
@@ -47,7 +47,7 @@ describe('definitions', function() {
 
         it('array', function(done) {
             var definitions = {};
-            var model = Joi.array().includes(Joi.string()).options({
+            var model = Joi.array().items(Joi.string()).meta({
                 className: 'Pet'
             });
             var reference = generator.newModel.bind(this, model, definitions);
@@ -60,7 +60,7 @@ describe('definitions', function() {
         it('simple schema', function(done) {
             var schema = Joi.object({
                 name: Joi.string().required()
-            }).options({
+            }).meta({
                 className: 'Pet'
             });
 
@@ -85,14 +85,13 @@ describe('definitions', function() {
         it('extended', function(done) {
             var schema = Joi.object({
                 huntingSkill: Joi.string().default('lazy').description('The measured skill for hunting').valid('clueless', 'lazy', 'adventerous', 'aggressive'),
-                packSize: Joi.number().integer().default(0).min(0).max(10).description('the size of the pack the dog is from').options({format: 'int32'})
-            }).options({
+                packSize: Joi.number().integer().default(0).min(0).max(10).description('the size of the pack the dog is from').meta({format: 'int32'})
+            }).meta({
                 className: 'Pet1'
             });
 
             var result = {
                 'Pet1': {
-                    'required': [],
                     'properties': {
                         'huntingSkill': {
                             'type': 'string',
@@ -119,26 +118,25 @@ describe('definitions', function() {
         it('multiple properties', function(done) {
             var schema = Joi.object({
                 booleanValue: Joi.boolean(),
-                byteValue: Joi.string().options({format: 'byte'}),
-                dateTimeValue: Joi.string().options({format: 'date-time'}),
+                byteValue: Joi.string().meta({format: 'byte'}),
+                dateTimeValue: Joi.string().meta({format: 'date-time'}),
                 numberValue: Joi.number(),
                 integerValue: Joi.number().integer(),
-                int32Value: Joi.number().integer().options({format: 'int32'}),
-                int64Value: Joi.number().integer().options({format: 'int64'}),
+                int32Value: Joi.number().integer().meta({format: 'int32'}),
+                int64Value: Joi.number().integer().meta({format: 'int64'}),
                 stringValue: Joi.string(),
-                booleanArrayValue: Joi.array().includes(Joi.boolean()),
-                byteArrayValue: Joi.array().includes(Joi.string().options({format: 'byte'})),
-                dateTimeArrayValue: Joi.array().includes(Joi.string().options({format: 'date-time'})),
-                int32ArrayValue: Joi.array().includes(Joi.number().integer().options({format: 'int32'})),
-                int64ArrayValue: Joi.array().includes(Joi.number().integer().options({format: 'int64'})),
-                stringArrayValue: Joi.array().includes(Joi.string())
-            }).options({
+                booleanArrayValue: Joi.array().items(Joi.boolean()),
+                byteArrayValue: Joi.array().items(Joi.string().meta({format: 'byte'})),
+                dateTimeArrayValue: Joi.array().items(Joi.string().meta({format: 'date-time'})),
+                int32ArrayValue: Joi.array().items(Joi.number().integer().meta({format: 'int32'})),
+                int64ArrayValue: Joi.array().items(Joi.number().integer().meta({format: 'int64'})),
+                stringArrayValue: Joi.array().items(Joi.string())
+            }).meta({
                 className: 'Pet'
             }).description('true');
 
             var result = {
                 Pet: {
-                    'required': [],
                     //'description': 'true',
                     'properties': {
                         'booleanValue': {
@@ -220,13 +218,13 @@ describe('definitions', function() {
     describe('array', function() {
         it('simple type', function(done) {
             var schema = Joi.object({
-                id: Joi.number().integer().options({
+                id: Joi.number().integer().meta({
                     format: 'int64'
                 }).required(),
-                childrensAges: Joi.array().includes(Joi.number().integer().options({
+                childrensAges: Joi.array().items(Joi.number().integer().meta({
                     format: 'int32'
                 }))
-            }).options({
+            }).meta({
                 className: 'Array'
             });
 
@@ -257,11 +255,11 @@ describe('definitions', function() {
 
         it('no inclusion type', function(done) {
             var schema = Joi.object({
-                id: Joi.number().integer().options({
+                id: Joi.number().integer().meta({
                     format: 'int64'
                 }).required(),
                 childrensAges: Joi.array()
-            }).options({
+            }).meta({
                 className: 'Array'
             });
 
@@ -288,13 +286,13 @@ describe('definitions', function() {
 
         it('ref', function(done) {
             var schema = Joi.object({
-                id: Joi.number().integer().options({
+                id: Joi.number().integer().meta({
                     format: 'int64'
                 }).required(),
-                children: Joi.array().includes(Joi.object({
+                children: Joi.array().items(Joi.object({
                     name: Joi.string().required()
-                }).options({className: 'Person'}))
-            }).options({
+                }).meta({className: 'Person'}))
+            }).meta({
                 className: 'Array'
             });
 
@@ -336,7 +334,7 @@ describe('definitions', function() {
             var definitions = {};
             var schema = Joi.object({
                 name: Joi.string().required()
-            }).options({
+            }).meta({
                 className: 'Pet123'
             });
 
@@ -364,7 +362,7 @@ describe('definitions', function() {
 
             var schema = Joi.object({
                 name: Joi.string().required()
-            }).options({
+            }).meta({
                 className: 'Pet'
             });
 
@@ -410,12 +408,11 @@ describe('definitions', function() {
 
         it('swaggerType', function(done) {
             var schema = Joi.object({
-                name: Joi.any().options({swaggerType: 'test'})
+                name: Joi.any().meta({swaggerType: 'test'})
             });
 
             var result = {
                 'NameModel': {
-                    'required': [],
                     'properties': {
                         'name': {
                             'type': 'test'

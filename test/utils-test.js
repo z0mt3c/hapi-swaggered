@@ -145,7 +145,7 @@ describe('utils', function() {
             Code.expect(utils.generateNameFromSchema(Joi.object().keys({}))).to.deep.equal('EmptyModel');
             Code.expect(utils.generateNameFromSchema(Joi.object())).to.deep.equal('EmptyModel');
             Code.expect(utils.generateNameFromSchema(Joi.array())).to.deep.equal('Array');
-            Code.expect(utils.generateNameFromSchema(Joi.array().includes(Joi.string()))).to.deep.equal('Array');
+            Code.expect(utils.generateNameFromSchema(Joi.array().items(Joi.string()))).to.deep.equal('Array');
 
             done();
         });
@@ -446,7 +446,7 @@ describe('utils', function() {
 
     describe('getMeta', function() {
         it('#1', function(done) {
-            Code.expect(utils.getMeta(Joi.object().options({className: 'myClassName'}), 'className')).to.be.equal('myClassName');
+            Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName');
             Code.expect(utils.getMeta(undefined, 'className')).to.be.equal(undefined);
             Code.expect(utils.getMeta(null, 'className')).to.be.equal(undefined);
             done();
