@@ -32,7 +32,7 @@ describe('indexTest', function() {
             server.register({
                 register: index
             }, function(err) {
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 done();
             });
         });
@@ -45,7 +45,7 @@ describe('indexTest', function() {
                 register: index,
                 options: {}
             }, function(err) {
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 done();
             });
         });
@@ -64,7 +64,7 @@ describe('indexTest', function() {
                     prefix: '/api/test123'
                 }
             }, function(err) {
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 done();
             });
         });
@@ -83,7 +83,7 @@ describe('indexTest', function() {
                     prefix: '/api/test123'
                 }
             }, function(err) {
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 done();
             });
         });
@@ -121,7 +121,7 @@ describe('indexTest', function() {
             };
 
             server.register(options, function(err) {
-                expect(err).to.not.exist;
+                expect(err).to.not.exist();
                 done();
             });
         });
@@ -139,13 +139,13 @@ describe('indexTest', function() {
                 server.route(Hoek.applyToDefaults(baseRoute, {}));
                 var call = function(next) {
                     server.inject('/swagger', function(res) {
-                        expect(res.statusCode).to.exist;
+                        expect(res.statusCode).to.exist();
                         expect(res.statusCode).to.equal(200);
                         Joi.assert(res.result, schemas.Swagger);
-                        expect(res.result).to.exist;
-                        expect(res.result.paths).to.exist;
-                        expect(res.result.paths['/testEndpoint']).to.exist;
-                        expect(res.result.paths['/testEndpoint'].get).to.exist;
+                        expect(res.result).to.exist();
+                        expect(res.result.paths).to.exist();
+                        expect(res.result.paths['/testEndpoint']).to.exist();
+                        expect(res.result.paths['/testEndpoint'].get).to.exist();
                         next();
                     });
                 };
@@ -169,13 +169,13 @@ describe('indexTest', function() {
 
                 var call = function(next) {
                     server.inject('/swagger', function(res) {
-                        expect(res.statusCode).to.exist;
+                        expect(res.statusCode).to.exist();
                         expect(res.statusCode).to.equal(200);
                         Joi.assert(res.result, schemas.Swagger);
-                        expect(res.result).to.exist;
-                        expect(res.result.paths).to.exist;
-                        expect(res.result.paths['/testEndpoint']).to.exist;
-                        expect(res.result.paths['/testEndpoint'].get).to.exist;
+                        expect(res.result).to.exist();
+                        expect(res.result.paths).to.exist();
+                        expect(res.result.paths['/testEndpoint']).to.exist();
+                        expect(res.result.paths['/testEndpoint'].get).to.exist();
                         next();
                     });
                 };
@@ -206,7 +206,7 @@ describe('indexTest', function() {
 
         it('empty', function(done) {
             server.inject('/swagger', function(res) {
-                expect(res.statusCode).to.exist;
+                expect(res.statusCode).to.exist();
                 expect(res.statusCode).to.equal(200);
                 Joi.assert(res.result, schemas.Swagger);
                 expect(res.result).to.deep.include({swagger: '2.0', paths: {}, definitions: {}});
@@ -217,7 +217,7 @@ describe('indexTest', function() {
         it('simple', function(done) {
             server.route(Hoek.applyToDefaults(baseRoute, {}));
             server.inject('/swagger', function(res) {
-                expect(res.statusCode).to.exist;
+                expect(res.statusCode).to.exist();
                 expect(res.statusCode).to.equal(200);
                 Joi.assert(res.result, schemas.Swagger);
                 expect(res.result).to.deep.include({

@@ -19,7 +19,7 @@ var helper = {
     testDefinition: function(schema, definition, definitions) {
         var definitionResults = definitions || {};
         var desc = generator.fromJoiSchema(schema, definitionResults);
-        expect(desc).to.exist;
+        expect(desc).to.exist();
         Joi.assert(definitionResults, Joi.object({}).pattern(/.*/, schemas.Definition));
         expect(definitionResults).to.deep.equal(definition);
     }
@@ -36,7 +36,7 @@ describe('definitions', function() {
             }), definitions);
 
             expect(reference).to.deep.include({'$ref': 'Pet'});
-            expect(definitions.Pet).to.exist;
+            expect(definitions.Pet).to.exist();
             expect(definitions.Pet).to.deep.include({
                 required: ['name'],
                 properties: {name: {type: 'string'}}

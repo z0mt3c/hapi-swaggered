@@ -40,7 +40,7 @@ describe('utils', function() {
         it('#1', function(done) {
             expect(utils.getRequestConnection({connection: 'a', server: 'b'})).to.equal('a');
             expect(utils.getRequestConnection({server: 'b'})).to.equal('b');
-            expect(utils.getRequestConnection({})).to.not.exist;
+            expect(utils.getRequestConnection({})).to.not.exist();
             done();
         });
     });
@@ -49,7 +49,7 @@ describe('utils', function() {
         it('#1', function(done) {
             expect(utils.getRoutesModifiers({config: 'test'})).to.equal('test');
             expect(utils.getRoutesModifiers({realm: {modifiers: 'test'}})).to.equal('test');
-            expect(utils.getRoutesModifiers({})).to.not.exist;
+            expect(utils.getRoutesModifiers({})).to.not.exist();
             done();
         });
     });
@@ -437,9 +437,9 @@ describe('utils', function() {
         it('#1', function(done) {
             Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value');
             Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value');
-            Code.expect(utils.setNotEmpty({}, 'key', undefined).key).not.to.exist;
-            Code.expect(utils.setNotEmpty({}, 'key', null).key).not.to.exist;
-            Code.expect(utils.setNotEmpty({}, 'key', []).key).not.to.exist;
+            Code.expect(utils.setNotEmpty({}, 'key', undefined).key).not.to.exist();
+            Code.expect(utils.setNotEmpty({}, 'key', null).key).not.to.exist();
+            Code.expect(utils.setNotEmpty({}, 'key', []).key).not.to.exist();
             done();
         });
     });
