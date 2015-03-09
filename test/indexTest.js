@@ -11,7 +11,7 @@ var Hoek = require('hoek');
 var index = require('../');
 
 
-var simpleSchema = Joi.object().keys({name: Joi.string()}).options({className: 'SimpleTestModel'});
+var simpleSchema = Joi.object().keys({name: Joi.string()}).meta({className: 'SimpleTestModel'});
 
 var baseRoute = {
     method: 'GET',

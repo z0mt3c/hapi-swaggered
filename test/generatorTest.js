@@ -19,9 +19,20 @@ var _ = require('lodash');
 describe('generator', function() {
     describe('newModel', function() {
         describe('complex', function() {
-            it('className', function(done) {
+            it('className (meta)', function(done) {
                 var models = {};
-                var schema = Joi.object().keys({}).options({className: 'TestModel'});
+                var schema = Joi.object().keys({}).meta({className: 'TestModel'});
+                var swaggerSchema = generator.newModel(schema, null, models);
+
+                expect(swaggerSchema).to.be.eql({type: 'TestModel'});
+                expect(models).to.have.property('TestModel');
+                done();
+            });
+
+            it('className (settings)', function(done) {
+                var models = {};
+                var schema = Joi.object().keys({});
+                schema._settings = { className: 'TestModel' };
                 var swaggerSchema = generator.newModel(schema, null, models);
 
                 expect(swaggerSchema).to.be.eql({type: 'TestModel'});
@@ -77,8 +88,8 @@ describe('generator', function() {
 
                 it('equal schema = equal model', function(done) {
                     var models = {};
-                    var schema1 = Joi.object().keys({name: Joi.string()}).options({className: 'TestModel'});
-                    var schema2 = Joi.object().keys({name: Joi.string()}).options({className: 'TestModel'});
+                    var schema1 = Joi.object().keys({name: Joi.string()}).meta({className: 'TestModel'});
+                    var schema2 = Joi.object().keys({name: Joi.string()}).meta({className: 'TestModel'});
                     var swaggerSchema1 = generator.newModel(schema1, null, models);
                     var swaggerSchema2 = generator.newModel(schema2, null, models);
 
@@ -91,11 +102,11 @@ describe('generator', function() {
 
                 it('not equal schema = new model', function(done) {
                     var models = {};
-                    var schema1 = Joi.object().keys({name: Joi.string()}).options({className: 'TestModel'});
+                    var schema1 = Joi.object().keys({name: Joi.string()}).meta({className: 'TestModel'});
                     var schema2 = Joi.object().keys({
                         name: Joi.string(),
                         email: Joi.string()
-                    }).options({className: 'TestModel'});
+                    }).meta({className: 'TestModel'});
                     var swaggerSchema1 = generator.newModel(schema1, null, models);
                     var swaggerSchema2 = generator.newModel(schema2, null, models);
 
@@ -287,13 +298,13 @@ describe('generator', function() {
 
                 it('Check items', function(done) {
                     var models = {};
-                    var primitiveArray = generator.fromJoiSchema(Joi.array().includes(Joi.string()), null, models);
+                    var primitiveArray = generator.fromJoiSchema(Joi.array().items(Joi.string()), null, models);
                     expect(primitiveArray).to.exist;
                     expect(primitiveArray).to.eql({required: false, type: 'array', items: {'type': 'string'}});
                     expect(newModelStub.callCount).to.be.eql(1);
                     expect(newModelStub.calledWith(Joi.string(), null, models)).to.be.ok;
 
-                    var modelArray = generator.fromJoiSchema(Joi.array().includes(Joi.object()), null, models);
+                    var modelArray = generator.fromJoiSchema(Joi.array().items(Joi.object()), null, models);
 
                     expect(modelArray).to.exist;
                     expect(modelArray).to.eql({required: false, type: 'array', items: {'$ref': 'test'}});
@@ -312,10 +323,18 @@ describe('generator', function() {
             it('#6: boolea, date & any ', function(done) {
                 var models = {};
                 expect(generator.fromJoiSchema(Joi.any(), null, models)).to.eql({required: false, type: 'any'});
-                expect(generator.fromJoiSchema(Joi.any().options({swaggerType: 'file'}), null, models)).to.eql({
+                expect(generator.fromJoiSchema(Joi.any().meta({swaggerType: 'file'}), null, models)).to.eql({
                     required: false,
                     type: 'file'
                 });
+
+                var schema = Joi.any();
+                schema._settings = { swaggerType: 'file' };
+                expect(generator.fromJoiSchema(schema, null, models)).to.eql({
+                    required: false,
+                    type: 'file'
+                });
+
                 expect(generator.fromJoiSchema(Joi.boolean(), null, models)).to.eql({required: false, type: 'boolean'});
                 expect(generator.fromJoiSchema(Joi.date(), null, models)).to.eql({required: false, type: 'date'});
                 done();

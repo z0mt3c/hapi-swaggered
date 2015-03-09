@@ -34,7 +34,7 @@ describe('apiListing', function() {
             expect(list).to.have.length(2);
             expect(list).to.have.deep.property('[0].path').that.to.eql('/dev');
 
-            Joi.validate(list, Joi.array().includes(schemas.APIReference), function(err, value) {
+            Joi.validate(list, Joi.array().items(schemas.APIReference), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -62,7 +62,7 @@ describe('apiListing', function() {
             expect(list).to.have.length(2);
             expect(list).to.have.deep.property('[0].path').that.to.eql('/dev');
 
-            Joi.validate(list, Joi.array().includes(schemas.APIReference), function(err, value) {
+            Joi.validate(list, Joi.array().items(schemas.APIReference), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -87,7 +87,7 @@ describe('apiListing', function() {
             expect(list).to.have.length(1);
             expect(list).to.have.deep.property('[0].path').that.to.eql('/test');
 
-            Joi.validate(list, Joi.array().includes(schemas.APIReference), function(err, value) {
+            Joi.validate(list, Joi.array().items(schemas.APIReference), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -120,7 +120,7 @@ describe('apiListing', function() {
             expect(list).to.exist;
             expect(list).to.have.length(2);
 
-            Joi.validate(list, Joi.array().includes(schemas.APIReference), function(err, value) {
+            Joi.validate(list, Joi.array().items(schemas.APIReference), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -146,7 +146,7 @@ describe('apiListing', function() {
             expect(list).to.have.length(1);
             expect(list).to.have.deep.property('[0]').that.to.eql({path: '/test', description: 'mep'});
 
-            Joi.validate(list, Joi.array().includes(schemas.APIReference), function(err, value) {
+            Joi.validate(list, Joi.array().items(schemas.APIReference), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();

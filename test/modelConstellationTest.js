@@ -15,7 +15,7 @@ describe('model constellations', function() {
             name: Joi.string().description('test').required(),
             number: Joi.number().description('numberDescription').required(),
             integer: Joi.number().min(1).max(3).integer().description('numberDescription').required()
-        }).required().options({
+        }).required().meta({
             className: 'SwaggerModel'
         });
 

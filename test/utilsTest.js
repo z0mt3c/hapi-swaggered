@@ -13,6 +13,13 @@ var dummyHandler = function(request, reply) {
 
 
 describe('utils', function() {
+    describe('getMeta', function() {
+        it('#1', function(done) {
+            Lab.expect(utils.getMeta(null, 'test')).to.equal(undefined);
+            done();
+        });
+    });
+
     describe('getDescription', function() {
         it('#1', function(done) {
             Lab.expect(utils.getDescription(null, 'test')).to.equal(undefined);
@@ -132,7 +139,7 @@ describe('utils', function() {
             Lab.expect(utils.generateNameFromSchema(Joi.object().keys({}))).to.eql('EmptyModel');
             Lab.expect(utils.generateNameFromSchema(Joi.object())).to.eql('EmptyModel');
             Lab.expect(utils.generateNameFromSchema(Joi.array())).to.eql('ArrayModel');
-            Lab.expect(utils.generateNameFromSchema(Joi.array().includes(Joi.string()))).to.eql('StringArrayModel');
+            Lab.expect(utils.generateNameFromSchema(Joi.array().items(Joi.string()))).to.eql('StringArrayModel');
 
             done();
         });

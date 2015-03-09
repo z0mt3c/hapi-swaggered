@@ -12,7 +12,7 @@ var utils = require('../lib/utils');
 var generator = require('../lib/generator');
 var schemas = require('../lib/schema');
 
-var simpleJoiSchema = Joi.object().keys({string: Joi.string()}).options({className: 'SimpleTestModel'});
+var simpleJoiSchema = Joi.object().keys({string: Joi.string()}).meta({className: 'SimpleTestModel'});
 
 describe('apiDeclaration', function() {
     var filterRoutesByPrefix, groupRoutesByPath, createProperties, fromJoiSchema, filterRoutesByRequiredTags, filterRoutesByTagSelection;
@@ -55,7 +55,7 @@ describe('apiDeclaration', function() {
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'path');
 
-            Joi.validate(apis, Joi.array().includes(schemas.API), function(err, value) {
+            Joi.validate(apis, Joi.array().items(schemas.API), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -76,7 +76,7 @@ describe('apiDeclaration', function() {
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'query');
 
-            Joi.validate(apis, Joi.array().includes(schemas.API), function(err, value) {
+            Joi.validate(apis, Joi.array().items(schemas.API), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -108,7 +108,7 @@ describe('apiDeclaration', function() {
                 }
             });
 
-            Joi.validate(apis, Joi.array().includes(schemas.API), function(err, value) {
+            Joi.validate(apis, Joi.array().items(schemas.API), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
 
@@ -143,7 +143,7 @@ describe('apiDeclaration', function() {
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'form');
 
-            Joi.validate(apis, Joi.array().includes(schemas.API), function(err, value) {
+            Joi.validate(apis, Joi.array().items(schemas.API), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -173,7 +173,7 @@ describe('apiDeclaration', function() {
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].type', 'string');
             expect(apis[0]).to.have.deep.property('operations[0].parameters[0].paramType', 'form');
 
-            Joi.validate(apis, Joi.array().includes(schemas.API), function(err, value) {
+            Joi.validate(apis, Joi.array().items(schemas.API), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
                 done();
@@ -204,7 +204,7 @@ describe('apiDeclaration', function() {
                 }
             });
 
-            Joi.validate(apis, Joi.array().includes(schemas.API), function(err, value) {
+            Joi.validate(apis, Joi.array().items(schemas.API), function(err, value) {
                 expect(err).to.be.null;
                 expect(value).to.exist;
 
@@ -288,7 +288,7 @@ describe('apiDeclaration', function() {
 
         expect(list).to.have.length(2);
 
-        Joi.validate(list, Joi.array().includes(schemas.API), function(err, value) {
+        Joi.validate(list, Joi.array().items(schemas.API), function(err, value) {
             expect(err).to.be.null;
             expect(value).to.exist;
             done();
@@ -341,7 +341,7 @@ describe('apiDeclaration', function() {
 
         expect(list).to.have.length(2);
 
-        Joi.validate(list, Joi.array().includes(schemas.API), function(err, value) {
+        Joi.validate(list, Joi.array().items(schemas.API), function(err, value) {
             expect(err).to.be.null;
             expect(value).to.exist;
             done();
@@ -454,7 +454,7 @@ describe('apiDeclaration', function() {
         expect(apiDeclarations)
             .to.have.length(1).and.have.deep.property('[0].operations').that.have.length(1);
 
-        Joi.validate(apiDeclarations, Joi.array().includes(schemas.API), function(err, value) {
+        Joi.validate(apiDeclarations, Joi.array().items(schemas.API), function(err, value) {
             expect(err).to.be.null;
             expect(value).to.exist;
             done();
