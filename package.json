@@ -37,10 +37,11 @@
     "jshint-stylish": "^1.0.0",
     "lab": "^5.1.0",
     "sinon": "^1.10.3",
+    "standard": "^3.6.1",
     "wreck": "^5.0.1"
   },
   "scripts": {
-    "test": "make test"
+    "test": "standard && make test"
   },
   "peerDependencies": {
     "hapi": ">= 7.x.x < 9.0.0"
