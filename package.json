@@ -30,11 +30,7 @@
   "devDependencies": {
     "code": "^1.2.0",
     "coveralls": "^2.11.2",
-    "grunt": "^0.4.5",
-    "grunt-contrib-jshint": "^0.11.0",
-    "grunt-contrib-watch": "^0.6.1",
     "hapi": "8.x.x",
-    "jshint-stylish": "^1.0.0",
     "lab": "^5.1.0",
     "sinon": "^1.10.3",
     "standard": "^3.6.1",
