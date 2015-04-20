@@ -19,7 +19,7 @@
     "hapi"
   ],
   "engines": {
-    "node": "0.10.x"
+    "node": ">=0.10.32"
   },
   "dependencies": {
     "boom": "^2.6.1",
@@ -28,18 +28,20 @@
     "lodash": "^3.5.0"
   },
   "devDependencies": {
+    "code": "^1.4.0",
     "grunt": "^0.4.5",
     "grunt-contrib-jshint": "^0.11.0",
     "grunt-contrib-watch": "^0.6.1",
     "grunt-shell": "^1.1.1",
     "hapi": "^8.2.0",
     "jshint-stylish": "^1.0.0",
-    "lab": "^4.0.0",
+    "lab": "^5.5.1",
     "sinon": "^1.10.3",
+    "standard": "^3.6.1",
     "wreck": "^5.0.1"
   },
   "scripts": {
-    "test": "make test"
+    "test": "standard && make test"
   },
   "peerDependencies": {
     "hapi": ">= 7.x.x < 9.0.0"
