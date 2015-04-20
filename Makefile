@@ -1,4 +1,7 @@
 
+standard:
+	./node_modules/.bin/standard
+
 test:
 	./node_modules/.bin/lab
 
@@ -11,4 +14,4 @@ test-cov-html:
 test-cov-coveralls:
 	./node_modules/.bin/lab -r lcov | ./node_modules/.bin/coveralls
 
-.PHONY: test test-cov test-cov-html test-cov-coveralls
+.PHONY: standard test test-cov test-cov-html test-cov-coveralls
