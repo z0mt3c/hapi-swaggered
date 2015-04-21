@@ -28,6 +28,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `routeTags`: an array of strings, all routes exposed by hapi-swaggered will be tagged as specified, defaults to `['swagger']`
 * `stripPrefix`: a path prefix which should be stripped from the swagger specifications. E.g. your root resource are located under `/api/v12345678/resource` you might want to strip `/api/v12345678`, defaults to null
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to true
+* `supportedMethods`: array of http methods, only routes with mentioned methods will be exposed, in case of a wildcard * a route will be generated for each method, defaults to ```['get', 'put', 'post', 'delete', 'patch']```
 * `host`: string, overwrite requests host (e.g. domain.tld:1337)
 * `protocol`: string, overwrite requests schema (e.g. https)
 * `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/docs/Reference.md#servermethodname-fn-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
@@ -192,6 +193,71 @@ server.route({
         }
     }
 });
+```
+
+### Document responses
+There are 2 and a half different ways of documenting responses of routes:
+
+The hapi way:
+
+```js
+{
+  config: {
+    response: {
+      schema: Joi.object({
+        bar: Joi.string().description('test').required()
+      }).description('test'),
+      status: {
+        500: Joi.object({
+          bar: Joi.string().description('test').required()
+        })
+      }
+    }
+  }
+}
+```
+
+The plugin way without schemas:
+
+```js
+{
+  config: {
+    plugins: {
+      'hapi-swaggered': {
+        responses: {
+          default: {description: 'Bad Request'},
+          500: {description: 'Internal Server Error'}
+        }
+      }
+    },
+    response: {
+      schema: Joi.object({
+        bar: Joi.string().required()
+      }).description('test')
+    }
+  }
+}
+```
+
+The plugin way with schemas:
+
+```js
+{
+  config: {
+    plugins: {
+      'hapi-swaggered': {
+        responses: {
+          default: {
+            description: 'Bad Request', schema: Joi.object({
+              bar: Joi.string().description('test').required()
+            })
+          },
+          500: {description: 'Internal Server Error'}
+        }
+      }
+    }
+  }
+}
 ```
 
 ### Tag filtering
