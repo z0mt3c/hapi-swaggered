@@ -8,8 +8,9 @@ var Joi = require('joi')
 var Hoek = require('hoek')
 var resources = require('../lib/resources')
 var schemas = require('../lib/schema')
-var Hapi = require('hapi')
 var _ = require('lodash')
+var defaults = _.pick(require('../lib/defaults'), ['supportedMethods'])
+var Hapi = require('hapi')
 
 var baseRoute = {
   method: 'GET',
@@ -26,11 +27,9 @@ var internals = {
   resources: function (routes, settings, tags) {
     var server = new Hapi.Server()
     server.connection({port: 80})
-
-    settings = settings || {}
     server.route(routes)
     var table = server.connections[0].table()
-    var myResources = resources(settings, table, tags)
+    var myResources = resources(_.extend({}, defaults, settings), table, tags)
     Joi.assert(myResources.paths, Joi.object({}).pattern(/./g, schemas.Path))
     Joi.assert(myResources.definitions, Joi.object({}).pattern(/./g, schemas.Definition))
     return myResources

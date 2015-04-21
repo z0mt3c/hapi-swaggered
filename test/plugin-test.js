@@ -234,5 +234,36 @@ describe('indexTest', function () {
         done()
       })
     })
+
+    it('wildcard', function (done) {
+      server.route(Hoek.applyToDefaults(baseRoute, { method: '*' }))
+      server.inject('/swagger', function (res) {
+        expect(res.statusCode).to.exist()
+        expect(res.statusCode).to.equal(200)
+
+        var operation = {
+          tags: ['api', 'test'],
+          responses: { default: {} },
+          produces: ['application/json']
+        }
+
+        expect(res.result).to.deep.include({
+          swagger: '2.0',
+          definitions: {},
+          paths: {
+            '/testEndpoint': {
+              get: operation,
+              put: operation,
+              post: operation,
+              delete: operation,
+              patch: operation
+            }
+          }
+        })
+
+        Joi.assert(res.result, schemas.Swagger)
+        done()
+      })
+    })
   })
 })
