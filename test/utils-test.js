@@ -119,7 +119,7 @@ describe('utils', function () {
             key: 'test2'
           }]
         }
-      })).to.deep.equal('TestTest2Model')
+      })).to.equal('TestTest2Model')
 
       Code.expect(utils.generateNameFromSchema({
         _inner: {
@@ -127,10 +127,10 @@ describe('utils', function () {
             key: 'test'
           }]
         }
-      })).to.deep.equal('TestModel')
+      })).to.equal('TestModel')
 
-      Code.expect(utils.generateNameFromSchema({})).to.deep.equal('EmptyModel')
-      Code.expect(utils.generateNameFromSchema(null)).to.deep.equal('EmptyModel')
+      Code.expect(utils.generateNameFromSchema({})).to.equal('EmptyModel')
+      Code.expect(utils.generateNameFromSchema(null)).to.equal('EmptyModel')
 
       done()
     })
@@ -141,12 +141,20 @@ describe('utils', function () {
         email: Joi.string()
       })
 
-      Code.expect(utils.generateNameFromSchema(schema)).to.deep.equal('NameEmailModel')
-      Code.expect(utils.generateNameFromSchema(Joi.object().keys({}))).to.deep.equal('EmptyModel')
-      Code.expect(utils.generateNameFromSchema(Joi.object())).to.deep.equal('EmptyModel')
-      Code.expect(utils.generateNameFromSchema(Joi.array())).to.deep.equal('Array')
-      Code.expect(utils.generateNameFromSchema(Joi.array().items(Joi.string()))).to.deep.equal('Array')
+      Code.expect(utils.generateNameFromSchema(schema)).to.equal('NameEmailModel')
+      Code.expect(utils.generateNameFromSchema(Joi.object().keys({}))).to.equal('EmptyModel')
+      Code.expect(utils.generateNameFromSchema(Joi.object())).to.equal('EmptyModel')
+      Code.expect(utils.generateNameFromSchema(Joi.array())).to.equal('Array')
+      Code.expect(utils.generateNameFromSchema(Joi.array().items(Joi.string()))).to.equal('Array')
 
+      done()
+    })
+  })
+
+  describe('generateNameWithFallback', function () {
+    it('#1', function (done) {
+      var schema = Joi.object().keys({ name: Joi.string()})
+      Code.expect(utils.generateNameWithFallback(schema)).to.equal('NameModel')
       done()
     })
   })
@@ -455,8 +463,24 @@ describe('utils', function () {
   describe('getMeta', function () {
     it('#1', function (done) {
       Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
+      Code.expect(utils.getMeta({_settings: {className: 'myClassName'}}, 'className')).to.be.equal('myClassName')
       Code.expect(utils.getMeta(undefined, 'className')).to.be.equal(undefined)
       Code.expect(utils.getMeta(null, 'className')).to.be.equal(undefined)
+      done()
+    })
+  })
+
+  describe('getSettings', function () {
+    it('#1', function (done) {
+      Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
+      done()
+    })
+  })
+
+  describe('getResponseDescription', function () {
+    it('#1', function (done) {
+      Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
+      Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName', description: 'test'}))).to.equal('test')
       done()
     })
   })
