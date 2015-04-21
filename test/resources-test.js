@@ -229,7 +229,8 @@ describe('resources', function () {
         bar: Joi.string().description('test').required(),
         foo: Joi.number().integer().min(20).max(30).default(2).required(),
         array: Joi.array().items(Joi.string()),
-        arrayOfObjects: Joi.array().items(Joi.object({bar: Joi.string().description('test').required()}))
+        arrayOfObjects: Joi.array().items(Joi.object({bar: Joi.string().description('test').required()})),
+        any: Joi.any()
       }
 
       var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
@@ -276,6 +277,13 @@ describe('resources', function () {
         type: 'array',
         items: {type: 'string'},
         name: 'array',
+        in: 'query'
+      })
+
+      expect(parameters).to.deep.include({
+        required: false,
+        type: 'string',
+        name: 'any',
         in: 'query'
       })
 

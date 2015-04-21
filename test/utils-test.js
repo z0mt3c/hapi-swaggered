@@ -442,6 +442,16 @@ describe('utils', function () {
     })
   })
 
+  describe('getPrimitiveType', function () {
+    it('#1', function (done) {
+      Code.expect(utils.getPrimitiveType(Joi.string())).to.be.equal('string')
+      Code.expect(utils.getPrimitiveType(Joi.number())).to.be.equal('number')
+      Code.expect(utils.getPrimitiveType(Joi.number().integer())).to.be.equal('integer')
+      Code.expect(utils.getPrimitiveType(Joi.any())).to.be.equal('string')
+      done()
+    })
+  })
+
   describe('getMeta', function () {
     it('#1', function (done) {
       Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
