@@ -149,6 +149,13 @@ describe('utils', function () {
 
       done()
     })
+
+    it('#3 Primitives', function (done) {
+      Code.expect(utils.generateNameFromSchema(Joi.string())).to.equal('String')
+      Code.expect(utils.generateNameFromSchema(Joi.number())).to.equal('Number')
+      Code.expect(utils.generateNameFromSchema(Joi.number().integer())).to.equal('Integer')
+      done()
+    })
   })
 
   describe('generateNameWithFallback', function () {

@@ -137,8 +137,62 @@ describe('resources', function () {
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.deep.include({
         default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
-        500: {description: undefined, schema: {$ref: '#/definitions/BarModel'}}
+        500: {description: '', schema: {$ref: '#/definitions/BarModel'}}
       })
+      done()
+    })
+
+    it('array response type', function (done) {
+      var sameModel = Joi.array().items(Joi.string().description('name')).description('test')
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foo',
+        config: {
+          response: {
+            schema: sameModel,
+            status: {
+              500: sameModel,
+              501: Joi.array().description('test1'),
+              502: Joi.array().items(Joi.number().integer()).description('num'),
+              503: Joi.array().items(Joi.object({ name: Joi.string() }).meta({className: 'TestModel'})).description('num')
+            }
+          }
+        }
+      }))
+
+      expect(resources).to.exist()
+
+      var sameResponse = {description: 'test', schema: {type: 'array', items: { type: 'string'}, description: 'test'}}
+      expect(resources.paths['/foo'].get.responses).to.deep.equal({
+        default: sameResponse,
+        500: sameResponse,
+        501: {description: 'test1', schema: {type: 'array', description: 'test1', items: undefined}},
+        502: {description: 'num', schema: {type: 'array', items: { type: 'integer'}, description: 'num'}},
+        503: {description: 'num', schema: {type: 'array', description: 'num', 'items': { $ref: '#/definitions/TestModel' }}}
+      })
+
+      done()
+    })
+    it('primitive response type', function (done) {
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foo',
+        config: {
+          response: {
+            schema: Joi.string().description('test'),
+            status: {
+              500: Joi.number(),
+              501: Joi.number().integer().description('test')
+            }
+          }
+        }
+      }))
+
+      expect(resources).to.exist()
+      expect(resources.paths['/foo'].get.responses).to.deep.equal({
+        default: {description: 'test', schema: {type: 'string', description: 'test' }},
+        500: {description: '', schema: {type: 'number', description: undefined}},
+        501: {description: 'test', schema: {type: 'integer', description: 'test'}}
+      })
+
       done()
     })
 

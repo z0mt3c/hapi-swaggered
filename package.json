@@ -22,7 +22,6 @@
     "node": "0.10.x"
   },
   "dependencies": {
-    "boom": "^2.7.1",
     "hoek": "^2.12.0",
     "joi": "^6.2.0",
     "lodash": "^3.7.0"
@@ -37,7 +36,7 @@
     "wreck": "^5.4.0"
   },
   "scripts": {
-    "test": "standard && make test"
+    "test": "standard && lab -c -t 99"
   },
   "peerDependencies": {
     "hapi": ">= 7.x.x < 9.0.0"

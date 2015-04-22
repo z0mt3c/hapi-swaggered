@@ -54,6 +54,14 @@ describe('definitions', function () {
       expect(reference).to.throw(Error, 'generator.newModel does not support array schema')
       done()
     })
+
+    it('primitive', function (done) {
+      var definitions = {}
+      var reference = generator.newModel(Joi.string(), definitions)
+      expect(reference).to.deep.include({'type': 'string'})
+      expect(definitions).to.deep.equal({})
+      done()
+    })
   })
 
   describe('simple', function () {
