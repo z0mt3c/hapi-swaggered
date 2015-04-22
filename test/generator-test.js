@@ -35,7 +35,7 @@ describe('definitions', function () {
         className: 'Pet'
       }), definitions)
 
-      expect(reference).to.deep.include({'$ref': 'Pet'})
+      expect(reference).to.deep.include({'$ref': '#/definitions/Pet'})
       expect(definitions.Pet).to.exist()
       expect(definitions.Pet).to.deep.include({
         required: ['name'],
@@ -324,7 +324,7 @@ describe('definitions', function () {
             'children': {
               'type': 'array',
               'items': {
-                '$ref': 'Person'
+                '$ref': '#/definitions/Person'
               }
             }
           }

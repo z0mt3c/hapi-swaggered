@@ -45,14 +45,14 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "Product"
+                "$ref": "#/definitions/Product"
               }
             }
           },
           "default": {
             "description": "Unexpected error",
             "schema": {
-              "$ref": "Error"
+              "$ref": "#/definitions/Error"
             }
           }
         }
@@ -105,14 +105,14 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "PriceEstimate"
+                "$ref": "#/definitions/PriceEstimate"
               }
             }
           },
           "default": {
             "description": "Unexpected error",
             "schema": {
-              "$ref": "Error"
+              "$ref": "#/definitions/Error"
             }
           }
         }
@@ -162,14 +162,14 @@
             "schema": {
               "type": "array",
               "items": {
-                "$ref": "Product"
+                "$ref": "#/definitions/Product"
               }
             }
           },
           "default": {
             "description": "Unexpected error",
             "schema": {
-              "$ref": "Error"
+              "$ref": "#/definitions/Error"
             }
           }
         }
@@ -186,13 +186,13 @@
           "200": {
             "description": "Profile information for a user",
             "schema": {
-              "$ref": "Profile"
+              "$ref": "#/definitions/Profile"
             }
           },
           "default": {
             "description": "Unexpected error",
             "schema": {
-              "$ref": "Error"
+              "$ref": "#/definitions/Error"
             }
           }
         }
@@ -225,13 +225,13 @@
           "200": {
             "description": "History information for the given user",
             "schema": {
-              "$ref": "Activities"
+              "$ref": "#/definitions/Activities"
             }
           },
           "default": {
             "description": "Unexpected error",
             "schema": {
-              "$ref": "Error"
+              "$ref": "#/definitions/Error"
             }
           }
         }
@@ -346,7 +346,7 @@
         },
         "history": {
           "type": "array",
-          "$ref": "Activity"
+          "$ref": "#/definitions/Activity"
         }
       }
     },

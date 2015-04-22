@@ -64,6 +64,17 @@ describe('utils', function () {
     })
   })
 
+  describe('sanitizePath', function () {
+    it('#1', function (done) {
+      Code.expect(utils.sanitizePath('/')).to.equal('/')
+      Code.expect(utils.sanitizePath('/test')).to.equal('/test')
+      Code.expect(utils.sanitizePath('/test/{a}')).to.equal('/test/{a}')
+      Code.expect(utils.sanitizePath('/test/{a}/{b}')).to.equal('/test/{a}/{b}')
+      Code.expect(utils.sanitizePath('/test/{a*}/{b*2}/{c*1}/{d?}')).to.equal('/test/{a}/{b}/{c}/{d}')
+      done()
+    })
+  })
+
   describe('getCurrentSettings', function () {
     it('#1', function (done) {
       var settings = {

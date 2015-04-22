@@ -555,7 +555,7 @@ describe('resources', function () {
       expect(resources.definitions.Array).to.deep.include({
         type: 'array',
         description: 'foobar',
-        items: {$ref: 'NameModel'}
+        items: {$ref: '#/definitions/NameModel'}
       })
 
       done()
