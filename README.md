@@ -271,7 +271,7 @@ For example:
   * will only show apis and routes with tag public AND NOT beta.
 
 ## Hapi 7 usage
-Please have a look at a previous (README)[https://github.com/z0mt3c/hapi-swaggered/blob/feb699f1c2393c466ae29850733877b095673491/README.md].
+Please have a look at a previous [README](https://github.com/z0mt3c/hapi-swaggered/blob/feb699f1c2393c466ae29850733877b095673491/README.md).
 
 ## Known issues
 ### No repsonse types
