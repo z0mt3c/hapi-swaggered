@@ -415,7 +415,7 @@ describe('definitions', function () {
 
     it('swaggerType', function (done) {
       var schema = Joi.object({
-        name: Joi.any().meta({swaggerType: 'test'})
+        name: Joi.string().meta({swaggerType: 'test'})
       })
 
       var result = {

@@ -297,7 +297,7 @@ describe('resources', function () {
 
       expect(resources).to.exist()
       var parameters = resources.paths['/foo'].get.parameters
-      expect(parameters).to.have.length(_.keys(params).length)
+      expect(parameters).to.have.length(_.keys(params).length - 1)
 
       expect(parameters).to.deep.include({
         required: true,
@@ -333,13 +333,24 @@ describe('resources', function () {
         in: 'query'
       })
 
-      expect(parameters).to.deep.include({
-        required: false,
-        type: 'string',
-        name: 'any',
-        in: 'query'
-      })
+      done()
+    })
 
+    it('drop any', function (done) {
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foo',
+        config: {
+          validate: {
+            query: Joi.object({
+              any: Joi.any()
+            })
+          }
+        }
+      }))
+
+      expect(resources).to.exist()
+      var parameters = resources.paths['/foo'].get.parameters
+      expect(parameters).to.not.exist()
       done()
     })
   })
@@ -366,6 +377,33 @@ describe('resources', function () {
             in: 'formData'
           }]
         })
+      })
+
+      done()
+    })
+
+    it('nested', function (done) {
+      _.each(['application/x-www-form-urlencoded', 'multipart/form-data'], function (mimeType) {
+        var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+          method: 'post',
+          path: '/foo/{bar}',
+          config: {
+            validate: {payload: Joi.object({ bar: Joi.string().description('test').required(), foo: Joi.object({ bar: Joi.string().description('test').required() })})},
+            payload: {allow: [mimeType]}
+          }
+        }))
+
+        expect(resources).to.exist()
+        expect(resources.paths['/foo/{bar}'].post).to.deep.include({
+          parameters: [{
+            required: true,
+            description: 'test',
+            type: 'string',
+            name: 'bar',
+            in: 'formData'
+          }]
+        })
+        expect(resources.paths['/foo/{bar}'].post.parameters).to.have.length(1)
       })
 
       done()
