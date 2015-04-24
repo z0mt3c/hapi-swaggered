@@ -439,6 +439,30 @@ describe('resources', function () {
       done()
     })
 
+    it('primitive', function (done) {
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foo',
+        method: 'post',
+        config: {validate: {payload: Joi.string().description('string!')}}
+      }))
+
+      expect(resources).to.exist()
+      expect(resources.paths['/foo'].post.parameters).to.deep.equal([
+        {
+          'required': false,
+          'description': 'string!',
+          'in': 'body',
+          'name': 'Payload',
+          'schema': {
+            'type': 'string',
+            'description': 'string!'
+          }
+        }
+      ])
+
+      done()
+    })
+
     it('array of primitive', function (done) {
       var expectedParam = {
         name: 'Test',
