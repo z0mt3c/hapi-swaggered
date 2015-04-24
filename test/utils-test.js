@@ -514,6 +514,17 @@ describe('utils', function () {
     })
   })
 
+  describe('getPathPrefix', function (n) {
+    it('#1', function (done) {
+      Code.expect(utils.getPathPrefix('/test1/test2')).to.be.equal('/test1')
+      Code.expect(utils.getPathPrefix('/test1/test2/test3')).to.be.equal('/test1')
+      Code.expect(utils.getPathPrefix('/test1/test2/test3', 2)).to.be.equal('/test1/test2')
+      Code.expect(utils.getPathPrefix('/test1', 5)).to.be.equal('/test1')
+      Code.expect(utils.getPathPrefix('/test1', -1)).to.be.equal('/test1')
+      done()
+    })
+  })
+
   describe('getResponseDescription', function () {
     it('#1', function (done) {
       Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
