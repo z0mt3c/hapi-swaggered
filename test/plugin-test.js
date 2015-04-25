@@ -195,6 +195,9 @@ describe('indexTest', function () {
         register: index,
         options: {
           cache: false,
+          tagging: {
+            mode: 'tags'
+          },
           descriptions: {
             'serverDescription': 'myDesc2'
           }
@@ -224,7 +227,7 @@ describe('indexTest', function () {
           paths: {
             '/testEndpoint': {
               get: {
-                tags: ['api', 'test'],
+                tags: ['test'],
                 responses: { default: {} },
                 produces: ['application/json']
               }
@@ -242,7 +245,7 @@ describe('indexTest', function () {
         expect(res.statusCode).to.equal(200)
 
         var operation = {
-          tags: ['api', 'test'],
+          tags: ['test'],
           responses: { default: {} },
           produces: ['application/json']
         }

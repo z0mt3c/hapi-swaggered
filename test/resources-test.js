@@ -9,7 +9,7 @@ var Hoek = require('hoek')
 var resources = require('../lib/resources')
 var schemas = require('../lib/schema')
 var _ = require('lodash')
-var defaults = _.pick(require('../lib/defaults'), ['supportedMethods'])
+var defaults = _.pick(require('../lib/defaults'), ['supportedMethods', 'tagging'])
 var Hapi = require('hapi')
 
 var baseRoute = {
@@ -29,7 +29,7 @@ var internals = {
     server.connection({port: 80})
     server.route(routes)
     var table = server.connections[0].table()
-    var myResources = resources(_.extend({}, defaults, settings), table, tags)
+    var myResources = resources(_.extend({}, defaults, { tagging: {mode: 'tags' }}, settings), table, tags)
     Joi.assert(myResources.paths, Joi.object({}).pattern(/./g, schemas.Path))
     Joi.assert(myResources.definitions, Joi.object({}).pattern(/./g, schemas.Definition))
     return myResources

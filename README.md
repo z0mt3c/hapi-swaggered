@@ -40,6 +40,10 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
   * `contact`: string
   * `license`: string
   * `licenseUrl`: string
+* `tagging`: Options used for grouping routes
+  * `mode`: string, can be `path` (routes will be grouped by its path) or `tags` (routes will be grouped by its tags), default is `path`
+  * `pathLevel` integer, in case of mode `path` it defines on which level the path grouping will take place (default is 1)
+  * `stripRequiredTags` boolean, in case of mode `tags` it defines if the `requiredTags` will not be exposed (default is true)
 
 ## Example (Hapi 8)
 Example configuration for hapi-swaggered + hapi-swaggered-ui
