@@ -23,7 +23,7 @@ var baseRoute = {
   }
 }
 
-describe('indexTest', function () {
+describe('plugin', function () {
   describe('init', function () {
     it('no options', function (done) {
       var server = new Hapi.Server()
@@ -266,6 +266,91 @@ describe('indexTest', function () {
 
         Joi.assert(res.result, schemas.Swagger)
         done()
+      })
+    })
+  })
+
+  describe('tagging', function () {
+    it('mode: path (default), pathLevel: 1 (default)', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+      server.register({
+        register: index,
+        options: {}
+      }, function (err) {
+        expect(err).to.not.exist()
+        server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+        server.inject('/swagger', function (res) {
+          expect(res.statusCode).to.equal(200)
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['/foo'])
+          done()
+        })
+      })
+    })
+
+    it('mode: path, pathLevel: 2', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+      server.register({
+        register: index,
+        options: {
+          tagging: {
+            mode: 'path',
+            pathLevel: 2
+          }
+        }
+      }, function (err) {
+        expect(err).to.not.exist()
+        server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+        server.inject('/swagger', function (res) {
+          expect(res.statusCode).to.equal(200)
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['/foo/bar'])
+          done()
+        })
+      })
+    })
+
+    it('mode: tags, stripRequiredTags: true', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+      server.register({
+        register: index,
+        options: {
+          tagging: {
+            mode: 'tags',
+            stripRequiredTags: true
+          }
+        }
+      }, function (err) {
+        expect(err).to.not.exist()
+        server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+        server.inject('/swagger', function (res) {
+          expect(res.statusCode).to.equal(200)
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['test'])
+          done()
+        })
+      })
+    })
+
+    it('mode: tags, stripRequiredTags: false', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+      server.register({
+        register: index,
+        options: {
+          tagging: {
+            mode: 'tags',
+            stripRequiredTags: false
+          }
+        }
+      }, function (err) {
+        expect(err).to.not.exist()
+        server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+        server.inject('/swagger', function (res) {
+          expect(res.statusCode).to.equal(200)
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['api', 'test'])
+          done()
+        })
       })
     })
   })
