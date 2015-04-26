@@ -6,4 +6,4 @@ node_js:
 script:
   - "make standard"
   - "make test-cov"
-  - "make test-cov-coveralls"
+  - "make test-cov-coveralls || exit 0"
