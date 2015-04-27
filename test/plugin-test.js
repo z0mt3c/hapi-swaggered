@@ -198,7 +198,7 @@ describe('plugin', function () {
           tagging: {
             mode: 'tags'
           },
-          descriptions: {
+          tags: {
             'serverDescription': 'myDesc2'
           }
         }

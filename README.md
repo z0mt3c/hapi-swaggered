@@ -32,7 +32,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `host`: string, overwrite requests host (e.g. domain.tld:1337)
 * `protocol`: string, overwrite requests schema (e.g. https)
 * `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/docs/Reference.md#servermethodname-fn-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
-* `descriptions`: object for defining root level resource descriptions. E.g. you have endpoints `/get/this` and `/get/that` they will be groupped unter /get and you are able to define a description through this object as `{ 'get': 'get this and that' }`, defaults to null
+* `tags`: object (or array with objects according to the [swagger specs](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#tagObject)) for defining tag / group descriptions. E.g. you two endpoints `/get/this` and `/get/that` and the tagging mode is set to path (with pathLevel: 1) they will be groupped unter /get and you are able to define a description through this object as `{ 'get': 'get this and that' }`, defaults to null
 * `info`: exposed swagger api informations, defaults to null (optional)
   * `title`: string (required)
   * `description`: string (required)
@@ -63,7 +63,7 @@ server.connection({
 server.register({
     register: hapiSwaggered,
     options: {
-        descriptions: {
+        tags: {
             'foobar': 'Example foobar description'
         },
         info: {

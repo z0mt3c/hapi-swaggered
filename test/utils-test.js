@@ -8,34 +8,9 @@ var expect = Code.expect
 var Joi = require('joi')
 var utils = require('../lib/utils')
 var _ = require('lodash')
+var schema = require('../lib/schema')
 
 describe('utils', function () {
-  describe('getDescription', function () {
-    it('#1', function (done) {
-      Code.expect(utils.getDescription(null, 'test')).to.equal(undefined)
-      Code.expect(utils.getDescription(null, null)).to.equal(undefined)
-      Code.expect(utils.getDescription({
-        descriptions: null
-      }, 'Test')).to.equal(undefined)
-      Code.expect(utils.getDescription({
-        descriptions: {
-          test: 'Test'
-        }
-      }, '/test')).to.equal('Test')
-      Code.expect(utils.getDescription({
-        descriptions: {
-          test: 'Test'
-        }
-      }, 'test')).to.equal('Test')
-      Code.expect(utils.getDescription({
-        descriptions: {
-          test: 'Test'
-        }
-      }, null)).to.equal(undefined)
-      done()
-    })
-  })
-
   describe('getRequestConnection', function () {
     it('#1', function (done) {
       expect(utils.getRequestConnection({connection: 'a', server: 'b'})).to.equal('a')
@@ -96,8 +71,28 @@ describe('utils', function () {
         settings: {
           plugin: true,
           server: true
-        }
+        },
+        tags: []
       })
+      done()
+    })
+    it('#2: tags', function (done) {
+      Code.expect(utils.getCurrentSettings({}, {})).to.deep.equal({
+        tags: []
+      })
+
+      Code.expect(utils.getCurrentSettings(
+        { tags: [{name: '1', description: '2' }]},
+        { tags: [{name: '2', description: '2' }]})).to.deep.equal({
+        tags: [{name: '1', description: '2' }, {name: '2', description: '2' }]
+      })
+
+      Code.expect(utils.getCurrentSettings(
+        { tags: { '1': '2' }},
+        { tags: { '2': '2' }})).to.deep.equal({
+        tags: [{name: '1', description: '2' }, {name: '2', description: '2' }]
+      })
+
       done()
     })
   })
@@ -529,6 +524,24 @@ describe('utils', function () {
     it('#1', function (done) {
       Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
       Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName', description: 'test'}))).to.equal('test')
+      done()
+    })
+  })
+
+  describe('getTags', function () {
+    it('#1', function (done) {
+      Code.expect(utils.getTags({tags: []})).to.deep.equal([])
+      Code.expect(utils.getTags({tags: { test: 'test123' }})).to.deep.equal([{name: 'test', description: 'test123'}])
+      Code.expect(utils.getTags({tags: [{ name: 'test', description: 'test123' }]})).to.deep.equal([{name: 'test', description: 'test123'}])
+      var example = { name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
+      Code.expect(utils.getTags({tags: [example]})).to.deep.equal([example])
+      done()
+    })
+
+    it('#2', function (done) {
+      var example = { name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
+      Joi.assert(utils.getTags({tags: [example]}), Joi.array().items(schema.Tag), 'Tag schema doesnt fit')
+      Joi.assert(utils.getTags({tags: { test: 'test123' }}), Joi.array().items(schema.Tag), 'Tag schema doesnt fit')
       done()
     })
   })
