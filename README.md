@@ -18,7 +18,7 @@ npm install hapi-swaggered --save
 
 ## Swagger-UI
 This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger-ui) interface. It just serves a bare swagger 2.0 compliant json feed. If you are looking for an easy swagger-ui plugin to drop-in? You should have a look at:
-* [hapi-swaggered-ui](https://github.com/z0mt3c/hapi-swaggered-ui)
+* [hapi-swaggered-ui@>=1.3.0](https://github.com/z0mt3c/hapi-swaggered-ui)
 
 ## Plugin Configuration
 * `requiredTags`: an array of strings, only routes with on of the specified tags will be exposed, defaults to: `['api']`
