@@ -43,7 +43,7 @@ describe('plugin', function () {
 
       server.register({
         register: index,
-        options: {}
+        options: { responseValidation: true }
       }, function (err) {
         expect(err).to.not.exist()
         done()
@@ -132,7 +132,7 @@ describe('plugin', function () {
       server.connection({port: 80})
       server.register({
         register: index,
-        options: {}
+        options: { responseValidation: true }
       }, function () {
         server.route(Hoek.applyToDefaults(baseRoute, {}))
         var call = function (next) {
@@ -276,7 +276,7 @@ describe('plugin', function () {
       server.connection({port: 80})
       server.register({
         register: index,
-        options: {}
+        options: { responseValidation: true }
       }, function (err) {
         expect(err).to.not.exist()
         server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
