@@ -3,7 +3,7 @@ Yet another hapi plugin providing swagger compliant API specifications (swagger 
 
 Supports hapi 7.x and 8.x
 
-[![Build Status](https://img.shields.io/travis/z0mt3c/hapi-swaggered/master.png)](https://travis-ci.org/z0mt3c/hapi-swaggered)
+[![Build Status](https://img.shields.io/travis/z0mt3c/hapi-swaggered/master.svg)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Coverage Status](https://img.shields.io/coveralls/z0mt3c/hapi-swaggered/master.svg)](https://coveralls.io/r/z0mt3c/hapi-swaggered?branch=master)
 [![Dependency Status](https://img.shields.io/gemnasium/z0mt3c/hapi-swaggered.svg)](https://gemnasium.com/z0mt3c/hapi-swaggered)
 [![js-standard-style](https://img.shields.io/badge/code%20style-standard-brightgreen.svg?style=flat)](https://github.com/feross/standard)
