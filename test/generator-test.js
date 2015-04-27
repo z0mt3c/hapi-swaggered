@@ -7,7 +7,6 @@ var Code = require('code')
 var expect = Code.expect
 var Joi = require('joi')
 // var _ = require('lodash')
-// var sinon = require('sinon')
 // var Hoek = require('hoek')
 
 // var resources = require('../lib/resources')
