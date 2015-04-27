@@ -23,27 +23,32 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `requiredTags`: an array of strings, only routes with on of the specified tags will be exposed, defaults to: `['api']`
 * `produces`: an array of mime type strings, defaults to: `[ 'application/json' ]`
 * `consumes`: an array of mime type strings, defaults to: `[ 'application/json' ]`
-* `apiVersion`: version string of your api, which will be exposed, defaults to null
 * `endpoint`: route path to the swagger specification, defaults to: `'/swagger'`
 * `routeTags`: an array of strings, all routes exposed by hapi-swaggered will be tagged as specified, defaults to `['swagger']`
 * `stripPrefix`: a path prefix which should be stripped from the swagger specifications. E.g. your root resource are located under `/api/v12345678/resource` you might want to strip `/api/v12345678`, defaults to null
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to true
 * `supportedMethods`: array of http methods, only routes with mentioned methods will be exposed, in case of a wildcard * a route will be generated for each method, defaults to ```['get', 'put', 'post', 'delete', 'patch']```
 * `host`: string, overwrite requests host (e.g. domain.tld:1337)
-* `protocol`: string, overwrite requests schema (e.g. https)
+* `schemes`: array of allowed schemes e.g. ['http', 'https', 'ws', 'wss'] (optional)
 * `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/docs/Reference.md#servermethodname-fn-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
-* `tags`: object (or array with objects according to the [swagger specs](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#tagObject)) for defining tag / group descriptions. E.g. you two endpoints `/get/this` and `/get/that` and the tagging mode is set to path (with pathLevel: 1) they will be groupped unter /get and you are able to define a description through this object as `{ 'get': 'get this and that' }`, defaults to null
 * `info`: exposed swagger api informations, defaults to null (optional)
   * `title`: string (required)
   * `description`: string (required)
-  * `termsOfServiceUrl`: string
-  * `contact`: string
-  * `license`: string
-  * `licenseUrl`: string
+  * `termsOfService`: string
+  * `contact`: object (optional)
+    * `name`: string
+    * `url`: string
+    * `email`: string
+  * `license`: object  (optional)
+    * `name`: string: string
+    * `url`: string: string
+  * `version`: version string of your api, which will be exposed (required)
 * `tagging`: Options used for grouping routes
   * `mode`: string, can be `path` (routes will be grouped by its path) or `tags` (routes will be grouped by its tags), default is `path`
   * `pathLevel` integer, in case of mode `path` it defines on which level the path grouping will take place (default is 1)
   * `stripRequiredTags` boolean, in case of mode `tags` it defines if the `requiredTags` will not be exposed (default is true)
+* `tags`: object (or array with objects according to the [swagger specs](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#tagObject)) for defining tag / group descriptions. E.g. you two endpoints `/get/this` and `/get/that` and the tagging mode is set to path (with pathLevel: 1) they will be groupped unter /get and you are able to define a description through this object as `{ 'get': 'get this and that' }`, defaults to null
+
 
 ## Example (Hapi 8)
 Example configuration for hapi-swaggered + hapi-swaggered-ui
@@ -68,7 +73,8 @@ server.register({
         },
         info: {
             title: 'Example API',
-            description: 'Tiny hapi-swaggered example'
+            description: 'Tiny hapi-swaggered example',
+            version: '1.0'
         }
     }
 }, {
