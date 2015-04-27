@@ -27,9 +27,9 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `routeTags`: an array of strings, all routes exposed by hapi-swaggered will be tagged as specified, defaults to `['swagger']`
 * `stripPrefix`: a path prefix which should be stripped from the swagger specifications. E.g. your root resource are located under `/api/v12345678/resource` you might want to strip `/api/v12345678`, defaults to null
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to true
-* `supportedMethods`: array of http methods, only routes with mentioned methods will be exposed, in case of a wildcard * a route will be generated for each method, defaults to ```['get', 'put', 'post', 'delete', 'patch']```
+* `supportedMethods`: array of http methods, only routes with mentioned methods will be exposed, in case of a wildcard * a route will be generated for each method, defaults to `['get', 'put', 'post', 'delete', 'patch']`
 * `host`: string, overwrite requests host (e.g. domain.tld:1337)
-* `schemes`: array of allowed schemes e.g. ['http', 'https', 'ws', 'wss'] (optional)
+* `schemes`: array of allowed schemes e.g. `['http', 'https', 'ws', 'wss']` (optional)
 * `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/docs/Reference.md#servermethodname-fn-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
 * `info`: exposed swagger api informations, defaults to null (optional)
   * `title`: string (required)
