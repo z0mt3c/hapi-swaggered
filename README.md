@@ -191,7 +191,7 @@ server.route({
     config: {
         tags: ['api'],
         validate: {
-            payload: Joi.object().keys({ name: Joi.string(), file: Joi.any().meta({ swaggerType: 'file' }) })
+            payload: Joi.object().keys({ name: Joi.string(), file: Joi.object().meta({ swaggerType: 'file' }) })
         },
         handler: function (request, reply) {
             // handle file upload as specified in payload.output

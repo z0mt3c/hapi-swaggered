@@ -413,9 +413,28 @@ describe('definitions', function () {
       done()
     })
 
-    it('swaggerType', function (done) {
+    it('swaggerType: primitive', function (done) {
       var schema = Joi.object({
         name: Joi.string().meta({swaggerType: 'test'})
+      })
+
+      var result = {
+        'NameModel': {
+          'properties': {
+            'name': {
+              'type': 'test'
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
+    it('swaggerType: complex', function (done) {
+      var schema = Joi.object({
+        name: Joi.object().meta({swaggerType: 'test'})
       })
 
       var result = {
