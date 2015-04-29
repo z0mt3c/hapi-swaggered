@@ -280,7 +280,10 @@ describe('definitions', function () {
               'format': 'int64'
             },
             'childrensAges': {
-              'type': 'array'
+              'type': 'array',
+              'items': {
+                'type': 'string'
+              }
             }
           }
         }

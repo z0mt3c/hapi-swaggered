@@ -165,7 +165,7 @@ describe('resources', function () {
       expect(resources.paths['/foo'].get.responses).to.deep.equal({
         default: sameResponse,
         500: sameResponse,
-        501: {description: 'test1', schema: {type: 'array', description: 'test1', items: undefined}},
+        501: {description: 'test1', schema: {type: 'array', description: 'test1', items: { type: 'string' }}},
         502: {description: 'num', schema: {type: 'array', items: { type: 'integer'}, description: 'num'}},
         503: {description: 'num', schema: {type: 'array', description: 'num', 'items': { $ref: '#/definitions/TestModel' }}}
       })
@@ -535,7 +535,46 @@ describe('resources', function () {
       })
 
       expect(resources.definitions.Array).to.exist()
-      expect(resources.definitions.Array).to.deep.include({
+      expect(resources.definitions.Array).to.deep.equal({
+        type: 'array',
+        description: 'foobar',
+        items: {type: 'string'}
+      })
+
+      done()
+    })
+
+    it('array of undefined', function (done) {
+      var expectedParam = {
+        name: 'Array',
+        in: 'body',
+        required: true,
+        description: 'foobar',
+        schema: {
+          $ref: '#/definitions/Array'
+        }
+      }
+
+      Joi.assert(expectedParam, schemas.Parameter, 'Expected parameter should be valid')
+
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foobar/test',
+        method: 'post',
+        config: {
+          tags: ['api'],
+          validate: {
+            payload: Joi.array().description('foobar').required()
+          }
+        }
+      }))
+
+      expect(resources).to.exist()
+      expect(resources.paths['/foobar/test'].post).to.deep.include({
+        parameters: [expectedParam]
+      })
+
+      expect(resources.definitions.Array).to.exist()
+      expect(resources.definitions.Array).to.deep.equal({
         type: 'array',
         description: 'foobar',
         items: {type: 'string'}
@@ -576,7 +615,7 @@ describe('resources', function () {
       })
 
       expect(resources.definitions.Array).to.exist()
-      expect(resources.definitions.Array).to.deep.include({
+      expect(resources.definitions.Array).to.deep.equal({
         type: 'array',
         description: 'foobar',
         items: {$ref: '#/definitions/NameModel'}
