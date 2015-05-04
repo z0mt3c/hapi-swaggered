@@ -282,7 +282,7 @@ describe('plugin', function () {
         server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
         server.inject('/swagger', function (res) {
           expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['/foo'])
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['foo'])
           done()
         })
       })
@@ -304,7 +304,7 @@ describe('plugin', function () {
         server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
         server.inject('/swagger', function (res) {
           expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['/foo/bar'])
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['foo/bar'])
           done()
         })
       })

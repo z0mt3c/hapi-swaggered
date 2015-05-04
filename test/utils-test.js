@@ -511,11 +511,27 @@ describe('utils', function () {
 
   describe('getPathPrefix', function (n) {
     it('#1', function (done) {
-      Code.expect(utils.getPathPrefix('/test1/test2')).to.be.equal('/test1')
-      Code.expect(utils.getPathPrefix('/test1/test2/test3')).to.be.equal('/test1')
-      Code.expect(utils.getPathPrefix('/test1/test2/test3', 2)).to.be.equal('/test1/test2')
-      Code.expect(utils.getPathPrefix('/test1', 5)).to.be.equal('/test1')
-      Code.expect(utils.getPathPrefix('/test1', -1)).to.be.equal('/test1')
+      Code.expect(utils.getPathPrefix('/test1/test2')).to.be.equal('test1')
+      Code.expect(utils.getPathPrefix('/test1/test2/test3')).to.be.equal('test1')
+      Code.expect(utils.getPathPrefix('/test1/test2/test3', 2)).to.be.equal('test1/test2')
+      Code.expect(utils.getPathPrefix('/test1', 5)).to.be.equal('test1')
+      Code.expect(utils.getPathPrefix('/test1', -1)).to.be.equal('test1')
+      Code.expect(utils.getPathPrefix('/', -1)).to.be.equal('')
+      Code.expect(utils.getPathPrefix(null, -1)).to.be.equal(null)
+      done()
+    })
+  })
+
+  describe('getPathTags', function (n) {
+    it('#1', function (done) {
+      Code.expect(utils.getPathTags('/test1/test2')).to.be.deep.equal(['test1'])
+      Code.expect(utils.getPathTags('/test1/test2/test3')).to.be.deep.equal(['test1'])
+      Code.expect(utils.getPathTags('/test1/test2/test3', 2)).to.be.deep.equal(['test1/test2'])
+      Code.expect(utils.getPathTags('/test1', 5)).to.be.deep.equal(['test1'])
+      Code.expect(utils.getPathTags('/test1', -1)).to.be.deep.equal(['test1'])
+      Code.expect(utils.getPathTags('/', -1)).to.be.deep.equal([])
+      Code.expect(utils.getPathTags('', -1)).to.be.deep.equal([])
+      Code.expect(utils.getPathTags(null, -1)).to.be.deep.equal([])
       done()
     })
   })
