@@ -98,6 +98,32 @@ describe('resources', function () {
     it('simple', function (done) {
       var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
+        config: {
+          plugins: {
+            'hapi-swaggered': {
+              produces: ['application/pdf']
+            }
+          },
+        validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
+      }))
+
+      expect(resources.paths['/foo/{bar}'].get.produces).to.deep.equal(['application/pdf'])
+      expect(resources.paths['/foo/{bar}'].get.parameters).to.deep.equal([{
+        required: true,
+        description: 'test',
+        type: 'string',
+        name: 'bar',
+        in: 'path'
+      }])
+
+      done()
+    })
+  })
+
+  describe('produces', function () {
+    it('#1', function (done) {
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foo/{bar}',
         config: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
       }))
 
@@ -204,7 +230,7 @@ describe('resources', function () {
             'hapi-swaggered': {
               responses: {
                 default: {description: 'Bad Request'},
-                500: {description: 'Internal Server Error'}
+                500: {description: 'Internal Server Error', type: 'string'}
               }
             }
           },
@@ -219,7 +245,7 @@ describe('resources', function () {
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.deep.include({
         default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
-        500: {description: 'Internal Server Error'}
+        500: {description: 'Internal Server Error', schema: { type: 'string' }}
       })
 
       done()
