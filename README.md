@@ -285,3 +285,4 @@ Please have a look at a previous [README](https://github.com/z0mt3c/hapi-swagger
 ## Known issues
 ### No repsonse types
 The routes response schemas which hapi-swaggered is parsing will be dropped by hapi whenever the response validation is disabled. In this case hapi-swaggered will not be able to show any response types. A very low sampling rate is sufficient to keep the repsonse types.
+
