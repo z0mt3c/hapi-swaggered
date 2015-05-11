@@ -259,6 +259,78 @@ describe('definitions', function () {
       done()
     })
 
+    it('array of array of primitive', function (done) {
+      var schema = Joi.object({
+        dimensions: Joi.array().items(Joi.array().items(Joi.string())).required()
+      }).meta({
+        className: 'Array'
+      })
+
+      var result = {
+        Array: {
+          'required': [
+            'dimensions'
+          ],
+          'properties': {
+            'dimensions': {
+              'type': 'array',
+              'items': {
+                'type': 'array',
+                'items': {
+                  'type': 'string'
+                }
+              }
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
+    it('array of array of array of complex', function (done) {
+      var schema = Joi.object({
+        dimensions: Joi.array().items(Joi.array().items(Joi.array().items(Joi.object({
+          name: Joi.string()
+        }).meta({ className: 'Child' })))).required()
+      }).meta({
+        className: 'Array'
+      })
+
+      var result = {
+        Child: {
+          'properties': {
+            'name': {
+              'type': 'string'
+            }
+          }
+        },
+        Array: {
+          'required': [
+            'dimensions'
+          ],
+          'properties': {
+            'dimensions': {
+              'type': 'array',
+              'items': {
+                'type': 'array',
+                'items': {
+                  'type': 'array',
+                  'items': {
+                    '$ref': '#/definitions/Child'
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
     it('no inclusion type', function (done) {
       var schema = Joi.object({
         id: Joi.number().integer().meta({
