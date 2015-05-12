@@ -47,7 +47,8 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
   * `pathLevel` integer, in case of mode `path` it defines on which level the path grouping will take place (default is 1)
   * `stripRequiredTags` boolean, in case of mode `tags` it defines if the `requiredTags` will not be exposed (default is true)
 * `tags`: object (or array with objects according to the [swagger specs](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md#tagObject)) for defining tag / group descriptions. E.g. you two endpoints `/get/this` and `/get/that` and the tagging mode is set to path (with pathLevel: 1) they will be groupped unter /get and you are able to define a description through this object as `{ 'get': 'get this and that' }`, defaults to null
-* `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/docs/Reference.md#servermethodname-fn-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
+* `cors`: boolean or object with cors configuration as according to the [hapijs documentation](https://github.com/hapijs/hapi/blob/master/API.md#route-options) (defaults to false)
+* `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/API.md#servermethodname-method-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to false
 
 ## Example (Hapi 8)
