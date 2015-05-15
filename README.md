@@ -270,6 +270,20 @@ The plugin way with schemas:
 }
 ```
 
+Specify an operationId for a route:
+
+```js
+{
+  config: {
+    plugins: {
+      'hapi-swaggered': {
+        operationId: 'testRoute'
+      }
+    }
+  }
+}
+```
+
 ### Tag filtering
 Routes can be filtered for tags through the tags query parameter beside the requiredTags property which is always required to be present.
 

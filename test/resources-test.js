@@ -278,6 +278,24 @@ describe('resources', function () {
 
       done()
     })
+
+    it('plugin options with operationId', function (done) {
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foo',
+        config: {
+          plugins: {
+            'hapi-swaggered': {
+              operationId: 'fooTest'
+            }
+          }
+        }
+      }))
+
+      expect(resources).to.exist()
+      expect(resources.paths['/foo'].get.operationId).to.equal('fooTest')
+
+      done()
+    })
   })
 
   describe('header', function () {
