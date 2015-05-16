@@ -50,6 +50,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `cors`: boolean or object with cors configuration as according to the [hapijs documentation](https://github.com/hapijs/hapi/blob/master/API.md#route-options) (defaults to false)
 * `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/API.md#servermethodname-method-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to false
+* `auth`: authentication configuration [hapijs documentation](https://github.com/hapijs/hapi/blob/master/API.md#route-options) (default to undefined)
 
 ## Example (Hapi 8)
 Example configuration for hapi-swaggered + hapi-swaggered-ui
