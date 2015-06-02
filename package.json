@@ -22,16 +22,16 @@
     "node": "0.10.x"
   },
   "dependencies": {
-    "hoek": "^2.13.0",
-    "joi": "^6.4.1",
-    "lodash": "^3.8.0"
+    "hoek": "^2.14.0",
+    "joi": "^6.4.3",
+    "lodash": "^3.9.3"
   },
   "devDependencies": {
     "code": "^1.4.0",
     "coveralls": "^2.11.2",
     "hapi": "8.x.x",
-    "lab": "^5.8.0",
-    "standard": "^3.7.3",
+    "lab": "^5.9.0",
+    "standard": "^4.0.1",
     "wreck": "^5.5.1"
   },
   "scripts": {
