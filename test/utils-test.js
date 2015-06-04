@@ -477,7 +477,7 @@ describe('utils', function () {
       Code.expect(utils.isSupportedSchema(Joi.array())).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.boolean())).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.binary())).to.be.false()
-      Code.expect(utils.isSupportedSchema(Joi.date())).to.be.false()
+      Code.expect(utils.isSupportedSchema(Joi.date())).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.func())).to.be.false()
       Code.expect(utils.isSupportedSchema(Joi.object({}))).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.alternatives({}))).to.be.false()

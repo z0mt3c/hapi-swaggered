@@ -506,6 +506,39 @@ describe('definitions', function () {
       done()
     })
 
+    it('swaggerType: dates', function (done) {
+      var schema = Joi.object({
+        date: Joi.date(),
+        dateAsInteger: Joi.date().meta({swaggerType: 'integer'}),
+        stringAsDate: Joi.string().meta({swaggerType: 'date'}),
+        dateAsNumber: Joi.date().meta({swaggerType: 'number'}),
+        dateAsBoolean: Joi.date().meta({swaggerType: 'boolean'}),
+        dateWithFormat: Joi.date().meta({format: 'date'}),
+        dateWithMeta: Joi.date().meta({swaggerType: 'string', format: 'date'}),
+        dateTimeWithMeta: Joi.date().meta({swaggerType: 'string', format: 'date-time'}),
+        dateTimeWithFormat: Joi.date().meta({format: 'date-time'})
+      }).meta({ className: 'Test' })
+
+      var result = {
+        'Test': {
+          'properties': {
+            date: { type: 'string', format: 'date-time' },
+            dateAsInteger: { type: 'integer' },
+            stringAsDate: { type: 'date' },
+            dateAsNumber: { type: 'number' },
+            dateAsBoolean: { type: 'boolean' },
+            dateWithFormat: { type: 'string', format: 'date' },
+            dateWithMeta: { type: 'string', format: 'date' },
+            dateTimeWithMeta: { type: 'string', format: 'date-time' },
+            dateTimeWithFormat: { type: 'string', format: 'date-time' }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
     it('swaggerType: complex', function (done) {
       var schema = Joi.object({
         name: Joi.object().meta({swaggerType: 'test'})
