@@ -21,7 +21,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * [hapi-swaggered-ui@>=1.3.0](https://github.com/z0mt3c/hapi-swaggered-ui)
 
 ## Plugin Configuration
-* `requiredTags`: an array of strings, only routes with one of the specified tags will be exposed, defaults to: `['api']`
+* `requiredTags`: an array of strings, only routes with all of the specified tags will be exposed, defaults to: `['api']`
 * `produces`: an array of mime type strings, defaults to: `[ 'application/json' ]`
 * `consumes`: an array of mime type strings, defaults to: `[ 'application/json' ]`
 * `endpoint`: route path to the swagger specification, defaults to: `'/swagger'`
