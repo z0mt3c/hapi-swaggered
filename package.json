@@ -23,14 +23,14 @@
   },
   "dependencies": {
     "hoek": "^2.14.0",
-    "joi": "^6.5.0",
+    "joi": "^6.6.1",
     "lodash": "^3.10.0"
   },
   "devDependencies": {
     "code": "^1.4.1",
-    "coveralls": "^2.11.2",
+    "coveralls": "^2.11.3",
     "hapi": "8.x.x",
-    "lab": "^5.13.0",
+    "lab": "^5.14.0",
     "standard": "^4.5.4",
     "wreck": "^6.0.0"
   },
