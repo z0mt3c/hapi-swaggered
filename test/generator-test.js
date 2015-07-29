@@ -121,6 +121,38 @@ describe('definitions', function () {
       done()
     })
 
+    it('object max', function (done) {
+      var schema = Joi.object({
+        test: Joi.object().max(1),
+        test2: Joi.array().items(Joi.object()).max(1)
+      }).meta({
+        className: 'Pet1'
+      })
+
+      var result = {
+        'EmptyModel': {
+          'properties': {}
+        },
+        'Pet1': {
+          'properties': {
+            'test': {
+              '$ref': '#/definitions/EmptyModel'
+            },
+            'test2': {
+              'type': 'array',
+              'items': {
+                '$ref': '#/definitions/EmptyModel'
+              },
+              'maximum': 1
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
     it('multiple properties', function (done) {
       var schema = Joi.object({
         booleanValue: Joi.boolean(),
