@@ -29,7 +29,7 @@ var internals = {
     server.connection({port: 80})
     server.route(routes)
     var table = server.connections[0].table()
-    var myResources = resources(_.extend({}, defaults, { tagging: {mode: 'tags' }}, settings), table, tags)
+    var myResources = resources(_.extend({}, defaults, {tagging: {mode: 'tags'}}, settings), table, tags)
     Joi.assert(myResources.paths, Joi.object({}).pattern(/./g, schemas.Path))
     Joi.assert(myResources.definitions, Joi.object({}).pattern(/./g, schemas.Definition))
     return myResources
@@ -64,7 +64,7 @@ describe('resources', function () {
   })
 
   it('notes->description and description->summary are exposed', function (done) {
-    var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {notes: 'my notes', description: 'my description' }}))
+    var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {notes: 'my notes', description: 'my description'}}))
     expect(resources).to.exist()
     expect(resources.paths['/testEndpoint'].get).to.deep.include({summary: 'my description', description: 'my notes'})
     done()
@@ -104,7 +104,7 @@ describe('resources', function () {
               produces: ['application/pdf']
             }
           },
-        validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
+          validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
       }))
 
       expect(resources.paths['/foo/{bar}'].get.produces).to.deep.equal(['application/pdf'])
@@ -187,12 +187,12 @@ describe('resources', function () {
 
       expect(resources).to.exist()
 
-      var sameResponse = {description: 'test', schema: {type: 'array', items: { type: 'string'}, description: 'test'}}
+      var sameResponse = {description: 'test', schema: {type: 'array', items: {type: 'string'}, description: 'test'}}
       expect(resources.paths['/foo'].get.responses).to.deep.equal({
         default: sameResponse,
         500: sameResponse,
         501: {description: 'test1', schema: {type: 'array', description: 'test1', items: { type: 'string' }}},
-        502: {description: 'num', schema: {type: 'array', items: { type: 'integer'}, description: 'num'}},
+        502: {description: 'num', schema: {type: 'array', items: {type: 'integer'}, description: 'num'}},
         503: {description: 'num', schema: {type: 'array', description: 'num', 'items': { $ref: '#/definitions/TestModel' }}}
       })
 
@@ -214,7 +214,7 @@ describe('resources', function () {
 
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.deep.equal({
-        default: {description: 'test', schema: {type: 'string', description: 'test' }},
+        default: {description: 'test', schema: {type: 'string', description: 'test'}},
         500: {description: '', schema: {type: 'number', description: undefined}},
         501: {description: 'test', schema: {type: 'integer', description: 'test'}}
       })
@@ -432,7 +432,7 @@ describe('resources', function () {
           method: 'post',
           path: '/foo/{bar}',
           config: {
-            validate: {payload: Joi.object({ bar: Joi.string().description('test').required(), foo: Joi.object({ bar: Joi.string().description('test').required() })})},
+            validate: {payload: Joi.object({bar: Joi.string().description('test').required(), foo: Joi.object({ bar: Joi.string().description('test').required() })})},
             payload: {allow: [mimeType]}
           }
         }))

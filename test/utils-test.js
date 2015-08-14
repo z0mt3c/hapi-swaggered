@@ -82,16 +82,16 @@ describe('utils', function () {
       })
 
       Code.expect(utils.getCurrentSettings(
-        { tags: [{name: '1', description: '2' }]},
-        { tags: [{name: '2', description: '2' }]})).to.deep.equal({
-        tags: [{name: '1', description: '2' }, {name: '2', description: '2' }]
-      })
+        {tags: [{ name: '1', description: '2' }]},
+        {tags: [{ name: '2', description: '2' }]})).to.deep.equal(
+        {tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]}
+      )
 
       Code.expect(utils.getCurrentSettings(
-        { tags: { '1': '2' }},
-        { tags: { '2': '2' }})).to.deep.equal({
-        tags: [{name: '1', description: '2' }, {name: '2', description: '2' }]
-      })
+        {tags: { '1': '2' }},
+        {tags: { '2': '2' }})).to.deep.equal(
+        {tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]}
+        )
 
       done()
     })
@@ -166,7 +166,7 @@ describe('utils', function () {
 
   describe('generateNameWithFallback', function () {
     it('#1', function (done) {
-      var schema = Joi.object().keys({ name: Joi.string()})
+      var schema = Joi.object().keys({name: Joi.string()})
       Code.expect(utils.generateNameWithFallback(schema)).to.equal('NameModel')
       done()
     })
@@ -549,13 +549,13 @@ describe('utils', function () {
       Code.expect(utils.getTags({tags: []})).to.deep.equal([])
       Code.expect(utils.getTags({tags: { test: 'test123' }})).to.deep.equal([{name: 'test', description: 'test123'}])
       Code.expect(utils.getTags({tags: [{ name: 'test', description: 'test123' }]})).to.deep.equal([{name: 'test', description: 'test123'}])
-      var example = { name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
+      var example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
       Code.expect(utils.getTags({tags: [example]})).to.deep.equal([example])
       done()
     })
 
     it('#2', function (done) {
-      var example = { name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
+      var example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
       Joi.assert(utils.getTags({tags: [example]}), Joi.array().items(schema.Tag), 'Tag schema doesnt fit')
       Joi.assert(utils.getTags({tags: { test: 'test123' }}), Joi.array().items(schema.Tag), 'Tag schema doesnt fit')
       done()
