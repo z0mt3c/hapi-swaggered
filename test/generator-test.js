@@ -153,6 +153,34 @@ describe('definitions', function () {
       done()
     })
 
+    it('collectionFormat', function (done) {
+      var schema = Joi.object({
+        test: Joi.array().items(Joi.object()).meta({collectionFormat: 'multi'})
+      }).meta({
+        className: 'Pet1'
+      })
+
+      var result = {
+        'EmptyModel': {
+          'properties': {}
+        },
+        'Pet1': {
+          'properties': {
+            'test': {
+              'type': 'array',
+              'items': {
+                '$ref': '#/definitions/EmptyModel'
+              },
+              'collectionFormat': 'multi'
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
     it('multiple properties', function (done) {
       var schema = Joi.object({
         booleanValue: Joi.boolean(),
