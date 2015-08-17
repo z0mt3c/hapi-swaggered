@@ -29,7 +29,7 @@
   "devDependencies": {
     "code": "^1.4.1",
     "coveralls": "^2.11.3",
-    "hapi": "8.x.x",
+    "hapi": "9.x.x",
     "lab": "^5.14.0",
     "standard": "^5.1.0",
     "wreck": "^6.0.0"
@@ -38,6 +38,6 @@
     "test": "standard && lab -c -t 99"
   },
   "peerDependencies": {
-    "hapi": ">= 7.x.x < 9.0.0"
+    "hapi": ">= 7.x.x < 10.0.0"
   }
 }
