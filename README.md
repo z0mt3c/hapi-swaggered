@@ -27,6 +27,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `endpoint`: route path to the swagger specification, defaults to: `'/swagger'`
 * `routeTags`: an array of strings, all routes exposed by hapi-swaggered will be tagged as specified, defaults to `['swagger']`
 * `stripPrefix`: a path prefix which should be stripped from the swagger specifications. E.g. your root resource are located under `/api/v12345678/resource` you might want to strip `/api/v12345678`, defaults to null
+* `basePath`: string, optional url base path (e.g. used to fix reverse proxy routes)
 * `supportedMethods`: array of http methods, only routes with mentioned methods will be exposed, in case of a wildcard * a route will be generated for each method, defaults to `['get', 'put', 'post', 'delete', 'patch']`
 * `host`: string, overwrite requests host (e.g. domain.tld:1337)
 * `schemes`: array of allowed schemes e.g. `['http', 'https', 'ws', 'wss']` (optional)
