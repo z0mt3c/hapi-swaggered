@@ -1,7 +1,7 @@
 # hapi-swaggered
 Yet another hapi plugin providing swagger compliant API specifications (swagger specs 2.0) based on routes and joi schemas to be used with swagger-ui.
 
-Supports hapi 7.x and 8.x
+Supports hapi 8.x and 9.x
 
 [![Build Status](https://img.shields.io/travis/z0mt3c/hapi-swaggered/master.svg)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Coverage Status](https://img.shields.io/coveralls/z0mt3c/hapi-swaggered/master.svg)](https://coveralls.io/r/z0mt3c/hapi-swaggered?branch=master)
@@ -13,12 +13,13 @@ Supports hapi 7.x and 8.x
 ```bash
 npm install hapi-swaggered --save
 ```
+
 ## Similar swagger-projects for hapi
 [krakenjs/swaggerize-hapi](https://github.com/krakenjs/swaggerize-hapi) follows a design driven approach (swagger-schema first) for building APIs. In other words: it supports you to implement an api behind a specific swagger-schema while you have to create and maintain the swagger-schema yourself (or a third-party). In contrast with hapi-swaggered you will have to design your api through hapi route defintions and joi schemas (or did already) and hapi-swaggered will generate it's swagger specifications up on that (Of course not as beautiful and shiny structured as done by hand). Based on this you are able to get beautiful hands-on swagger-ui documentation (like [this](http://petstore.swagger.wordnik.com/)) for your api up and running (e.g. through [hapi-swaggered-ui](https://github.com/z0mt3c/hapi-swaggered-ui)).
 
 ## Swagger-UI
 This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger-ui) interface. It just serves a bare swagger 2.0 compliant json feed. If you are looking for an easy swagger-ui plugin to drop-in? You should have a look at:
-* [hapi-swaggered-ui@>=1.3.0](https://github.com/z0mt3c/hapi-swaggered-ui)
+* [hapi-swaggered-ui](https://github.com/z0mt3c/hapi-swaggered-ui)
 
 ## Plugin Configuration
 * `requiredTags`: an array of strings, only routes with all of the specified tags will be exposed, defaults to: `['api']`
@@ -53,14 +54,11 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to false
 * `auth`: authentication configuration [hapijs documentation](https://github.com/hapijs/hapi/blob/master/API.md#route-options) (default to undefined)
 
-## Example (Hapi 8)
+## Example (Hapi 9)
 Example configuration for hapi-swaggered + hapi-swaggered-ui
 
 ```js
 var Hapi = require('hapi')
-var Joi = require('joi')
-var hapiSwaggered = require('hapi-swaggered')
-var hapiSwaggeredUi = require('hapi-swaggered-ui')
 
 var server = new Hapi.Server()
 server.connection({
@@ -68,58 +66,62 @@ server.connection({
   labels: ['api']
 })
 
-server.register({
-  register: hapiSwaggered,
-  options: {
-    tags: {
-      '/foobar': 'Example foobar description'
-    },
-    info: {
+server.register([
+  require('inert'),
+  require('vision'),
+  {
+    register: require('hapi-swaggered'),
+    options: {
+      tags: {
+        'foobar/test': 'Example foobar description'
+      },
+      info: {
+        title: 'Example API',
+        description: 'Powered by node, hapi, joi, hapi-swaggered, hapi-swaggered-ui and swagger-ui',
+        version: '1.0'
+      }
+    }
+  },
+  {
+    register: require('hapi-swaggered-ui'),
+    options: {
       title: 'Example API',
-      description: 'Tiny hapi-swaggered example',
-      version: '1.0'
+      path: '/docs',
+      authorization: {
+        field: 'apiKey',
+        scope: 'query', // header works as well
+        // valuePrefix: 'bearer '// prefix incase
+        defaultValue: 'demoKey',
+        placeholder: 'Enter your apiKey here'
+      },
+      swaggerOptions: {
+        validatorUrl: null
+      }
     }
-  }
-}, {
-  select: 'api',
-  routes: {
-    prefix: '/swagger'
-  }
-}, function (err) {
+  }], {
+    select: 'api'
+  }, function (err) {
   if (err) {
     throw err
   }
-})
 
-server.register({
-  register: hapiSwaggeredUi,
-  options: {
-    title: 'Example API',
-    authorization: {
-      field: 'apiKey',
-      scope: 'query' // header works as well
-    // valuePrefix: 'bearer '// prefix incase
+  server.route({
+    path: '/',
+    method: 'GET',
+    handler: function (request, reply) {
+      reply.redirect('/docs')
     }
-  }
-}, {
-  select: 'api',
-  routes: {
-    prefix: '/docs'
-  }
-}, function (err) {
-  if (err) {
-    throw err
-  }
-})
+  })
 
-server.route({
-  path: '/',
-  method: 'GET',
-  handler: function (request, reply) {
-    reply.redirect('/docs')
-  }
+  server.start(function () {
+    console.log('started on http://localhost:8000')
+  })
 })
+```
 
+
+Demo Routes
+```js
 server.route({
   path: '/foobar/test',
   method: 'GET',
@@ -148,10 +150,6 @@ server.route({
       reply({})
     }
   }
-})
-
-server.start(function () {
-  console.log('started on http://localhost:8000')
 })
 ```
 
@@ -296,8 +294,8 @@ For example:
 * `?tags=public,-beta (equal to ?tags=+public,-beta)`
   * will only show apis and routes with tag public AND NOT beta.
 
-## Hapi 7 usage
-Please have a look at a previous [README](https://github.com/z0mt3c/hapi-swaggered/blob/feb699f1c2393c466ae29850733877b095673491/README.md).
+## Hapi 8 usage
+Please have a look at a previous [README](https://github.com/z0mt3c/hapi-swaggered/tree/v2.2.2#example-hapi-8).
 
 ## Known issues
 ### No repsonse types
