@@ -69,6 +69,26 @@ describe('plugin', function () {
       })
     })
 
+    it('with route prefix and base path', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+
+      server.register({
+        register: index,
+        options: {
+          stripPrefix: '/api',
+          basePath: '/test'
+        }
+      }, {
+        routes: {
+          prefix: '/api/test123'
+        }
+      }, function (err) {
+        expect(err).to.not.exist()
+        done()
+      })
+    })
+
     it('without response validation', function (done) {
       var server = new Hapi.Server()
       server.connection({port: 80})
@@ -174,6 +194,67 @@ describe('plugin', function () {
             expect(res.result.paths).to.exist()
             expect(res.result.paths['/testEndpoint']).to.exist()
             expect(res.result.paths['/testEndpoint'].get).to.exist()
+            next()
+          })
+        }
+
+        call(function () {
+          call(done)
+        })
+      })
+    })
+
+    it('basePath', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+      server.register({
+        register: index,
+        options: {
+          basePath: '/test'
+        }
+      }, function () {
+        server.route(Hoek.applyToDefaults(baseRoute, {}))
+
+        var call = function (next) {
+          server.inject('/swagger', function (res) {
+            expect(res.statusCode).to.exist()
+            expect(res.statusCode).to.equal(200)
+            Joi.assert(res.result, schemas.Swagger)
+            expect(res.result).to.exist()
+            expect(res.result.paths).to.exist()
+            expect(res.result.basePath).to.exist()
+            expect(res.result.basePath).to.equal('/test')
+            next()
+          })
+        }
+
+        call(function () {
+          call(done)
+        })
+      })
+    })
+
+    it('basePath with stripPrefix', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+      server.register({
+        register: index,
+        options: {
+          stripPrefix: '/testEndpoint',
+          basePath: '/test'
+        }
+      }, function () {
+        server.route(Hoek.applyToDefaults(baseRoute, {}))
+
+        var call = function (next) {
+          server.inject('/swagger', function (res) {
+            expect(res.statusCode).to.exist()
+            expect(res.statusCode).to.equal(200)
+            Joi.assert(res.result, schemas.Swagger)
+            expect(res.result).to.exist()
+            expect(res.result.paths).to.exist()
+            expect(res.result.basePath).to.exist()
+            expect(res.result.basePath).to.equal('/test/testEndpoint')
             next()
           })
         }
