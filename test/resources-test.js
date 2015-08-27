@@ -141,6 +141,30 @@ describe('resources', function () {
     })
   })
 
+  describe('custom params', function () {
+    it('allows params that start with x-', function (done) {
+      var resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foo',
+        config: {
+          plugins: {
+            'hapi-swaggered': {
+              custom: {
+                'x-test-foo': 'test value'
+              }
+            }
+          }
+        }
+      }))
+
+      expect(resources).to.exist()
+      expect(resources.paths['/foo'].get).to.include({
+        'x-test-foo': 'test value'
+      })
+
+      done()
+    })
+  })
+
   describe('responses', function () {
     // TODO: description, test with primary types + arrays
     it('only response model', function (done) {
