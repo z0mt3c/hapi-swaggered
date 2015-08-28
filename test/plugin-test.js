@@ -434,5 +434,29 @@ describe('plugin', function () {
         })
       })
     })
+
+    it('mode: tags, stripRequiredTags: false, stripAdditionalTags: [test]', function (done) {
+      var server = new Hapi.Server()
+      server.connection({port: 80})
+      server.register({
+        register: index,
+        options: {
+          tagging: {
+            mode: 'tags',
+            stripRequiredTags: false,
+            stripAdditionalTags: ['test']
+          }
+        }
+      }, function (err) {
+        expect(err).to.not.exist()
+        server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+        server.inject('/swagger', function (res) {
+          expect(res.statusCode).to.equal(200)
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['api'])
+          done()
+        })
+      })
+    })
+
   })
 })
