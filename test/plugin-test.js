@@ -457,6 +457,5 @@ describe('plugin', function () {
         })
       })
     })
-
   })
 })
