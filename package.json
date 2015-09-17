@@ -40,6 +40,6 @@
     "posttest": "npm run lint"
   },
   "peerDependencies": {
-    "hapi": ">= 7.x.x < 10.0.0"
+    "hapi": ">= 7.x.x < 11.0.0"
   }
 }
