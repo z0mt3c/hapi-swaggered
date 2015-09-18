@@ -1,9 +1,20 @@
 language: node_js
-node_js:
-  - "0.10"
-  - "0.12"
-  - "iojs"
+sudo: false
 script:
   - "make standard"
   - "make test-cov"
-  - "make test-cov-coveralls || exit 0"
+matrix:
+  include:
+    - node_js: '4'
+      before_install: npm -g i npm@2
+      after_success: 'make test-cov-coveralls || exit 0'
+    - node_js: '4'
+      before_install: npm -g i npm@3
+    - node_js: 'iojs'
+      before_install: npm -g i npm@2
+    - node_js: 'iojs'
+      before_install: npm -g i npm@3
+    - node_js: '0.12'
+      before_install: npm -g i npm@2
+    - node_js: '0.12'
+      before_install: npm -g i npm@3
