@@ -35,9 +35,11 @@
     "wreck": "^6.0.0"
   },
   "scripts": {
-    "test": "standard && lab -c -t 99"
+    "lint": "standard",
+    "test": "lab -c -t 99",
+    "posttest": "npm run lint"
   },
   "peerDependencies": {
-    "hapi": ">= 7.x.x < 10.0.0"
+    "hapi": ">= 7.x.x < 11.0.0"
   }
 }
