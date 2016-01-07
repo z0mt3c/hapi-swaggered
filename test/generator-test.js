@@ -91,6 +91,7 @@ describe('definitions', function () {
     it('extended', function (done) {
       var schema = Joi.object({
         huntingSkill: Joi.string().default('lazy').description('The measured skill for hunting').valid('clueless', 'lazy', 'adventerous', 'aggressive'),
+        packName: Joi.string().default('theHounds').min(3).max(20).description('the name of the pack the dog is from'),
         packSize: Joi.number().integer().default(0).min(0).max(10).description('the size of the pack the dog is from').meta({format: 'int32'})
       }).meta({
         className: 'Pet1'
@@ -104,6 +105,13 @@ describe('definitions', function () {
               'default': 'lazy',
               'description': 'The measured skill for hunting',
               'enum': ['clueless', 'lazy', 'adventerous', 'aggressive']
+            },
+            'packName': {
+              'type': 'string',
+              'default': 'theHounds',
+              'description': 'the name of the pack the dog is from',
+              'minLength': 3,
+              'maxLength': 20
             },
             'packSize': {
               'type': 'integer',
