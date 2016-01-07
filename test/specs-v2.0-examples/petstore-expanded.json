@@ -183,7 +183,9 @@
           "format": "int64"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "maxLength": 20,
+          "minLength": 3
         },
         "tag": {
           "type": "string"
