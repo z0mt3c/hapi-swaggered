@@ -1,34 +1,36 @@
-var Lab = require('lab')
-var lab = exports.lab = Lab.script()
+'use strict'
 
-var describe = lab.experiment
-var it = lab.test
-var Code = require('code')
-var expect = Code.expect
-var Joi = require('joi')
+const Lab = require('lab')
+let lab = exports.lab = Lab.script()
+
+const describe = lab.experiment
+const it = lab.test
+const Code = require('code')
+const expect = Code.expect
+const Joi = require('joi')
 // var _ = require('lodash')
 // var Hoek = require('hoek')
 
 // var resources = require('../lib/resources')
 // var utils = require('../lib/utils')
-var generator = require('../lib/generator')
-var schemas = require('../lib/schema')
+const generator = require('../lib/generator')
+const schemas = require('../lib/schema')
 
-var helper = {
-  testDefinition: function (schema, definition, definitions) {
-    var definitionResults = definitions || {}
-    var desc = generator.fromJoiSchema(schema, definitionResults)
+const helper = {
+  testDefinition (schema, definition, definitions) {
+    const definitionResults = definitions || {}
+    const desc = generator.fromJoiSchema(schema, definitionResults)
     expect(desc).to.exist()
     Joi.assert(definitionResults, Joi.object({}).pattern(/.*/, schemas.Definition))
     expect(definitionResults).to.deep.equal(definition)
   }
 }
 
-describe('definitions', function () {
-  describe('newModel', function () {
-    it('object', function (done) {
-      var definitions = {}
-      var reference = generator.newModel(Joi.object({
+describe('definitions', () => {
+  describe('newModel', () => {
+    it('object', done => {
+      const definitions = {}
+      const reference = generator.newModel(Joi.object({
         name: Joi.string().required()
       }).meta({
         className: 'Pet'
@@ -44,34 +46,34 @@ describe('definitions', function () {
       done()
     })
 
-    it('array', function (done) {
-      var definitions = {}
-      var model = Joi.array().items(Joi.string()).meta({
+    it('array', done => {
+      const definitions = {}
+      const model = Joi.array().items(Joi.string()).meta({
         className: 'Pet'
       })
-      var reference = generator.newModel.bind(this, model, definitions)
+      const reference = generator.newModel.bind(this, model, definitions)
       expect(reference).to.throw(Error, 'generator.newModel does not support array schema')
       done()
     })
 
-    it('primitive', function (done) {
-      var definitions = {}
-      var reference = generator.newModel(Joi.string(), definitions)
+    it('primitive', done => {
+      const definitions = {}
+      const reference = generator.newModel(Joi.string(), definitions)
       expect(reference).to.deep.include({'type': 'string'})
       expect(definitions).to.deep.equal({})
       done()
     })
   })
 
-  describe('simple', function () {
-    it('simple schema', function (done) {
-      var schema = Joi.object({
+  describe('simple', () => {
+    it('simple schema', done => {
+      const schema = Joi.object({
         name: Joi.string().required()
       }).meta({
         className: 'Pet'
       })
 
-      var result = {
+      const result = {
         'Pet': {
           'properties': {
             'name': {
@@ -88,8 +90,8 @@ describe('definitions', function () {
       done()
     })
 
-    it('extended', function (done) {
-      var schema = Joi.object({
+    it('extended', done => {
+      const schema = Joi.object({
         huntingSkill: Joi.string().default('lazy').description('The measured skill for hunting').valid('clueless', 'lazy', 'adventerous', 'aggressive'),
         packName: Joi.string().default('theHounds').min(3).max(20).description('the name of the pack the dog is from'),
         packSize: Joi.number().integer().default(0).min(0).max(10).description('the size of the pack the dog is from').meta({format: 'int32'})
@@ -97,7 +99,7 @@ describe('definitions', function () {
         className: 'Pet1'
       })
 
-      var result = {
+      const result = {
         'Pet1': {
           'properties': {
             'huntingSkill': {
@@ -129,15 +131,15 @@ describe('definitions', function () {
       done()
     })
 
-    it('object max', function (done) {
-      var schema = Joi.object({
+    it('object max', done => {
+      const schema = Joi.object({
         test: Joi.object().max(1),
         test2: Joi.array().items(Joi.object()).max(1)
       }).meta({
         className: 'Pet1'
       })
 
-      var result = {
+      const result = {
         'EmptyModel': {
           'properties': {}
         },
@@ -161,14 +163,14 @@ describe('definitions', function () {
       done()
     })
 
-    it('collectionFormat', function (done) {
-      var schema = Joi.object({
+    it('collectionFormat', done => {
+      const schema = Joi.object({
         test: Joi.array().items(Joi.object()).meta({collectionFormat: 'multi'})
       }).meta({
         className: 'Pet1'
       })
 
-      var result = {
+      const result = {
         'EmptyModel': {
           'properties': {}
         },
@@ -189,8 +191,8 @@ describe('definitions', function () {
       done()
     })
 
-    it('multiple properties', function (done) {
-      var schema = Joi.object({
+    it('multiple properties', done => {
+      const schema = Joi.object({
         booleanValue: Joi.boolean(),
         byteValue: Joi.string().meta({format: 'byte'}),
         dateTimeValue: Joi.string().meta({format: 'date-time'}),
@@ -209,7 +211,7 @@ describe('definitions', function () {
         className: 'Pet'
       }).description('true')
 
-      var result = {
+      const result = {
         Pet: {
           // 'description': 'true',
           'properties': {
@@ -289,9 +291,9 @@ describe('definitions', function () {
     })
   })
 
-  describe('array', function () {
-    it('simple type', function (done) {
-      var schema = Joi.object({
+  describe('array', () => {
+    it('simple type', done => {
+      const schema = Joi.object({
         id: Joi.number().integer().meta({
           format: 'int64'
         }).required(),
@@ -302,7 +304,7 @@ describe('definitions', function () {
         className: 'Array'
       })
 
-      var result = {
+      const result = {
         Array: {
           'required': [
             'id'
@@ -327,14 +329,14 @@ describe('definitions', function () {
       done()
     })
 
-    it('array of array of primitive', function (done) {
-      var schema = Joi.object({
+    it('array of array of primitive', done => {
+      const schema = Joi.object({
         dimensions: Joi.array().items(Joi.array().items(Joi.string())).required()
       }).meta({
         className: 'Array'
       })
 
-      var result = {
+      const result = {
         Array: {
           'required': [
             'dimensions'
@@ -357,8 +359,8 @@ describe('definitions', function () {
       done()
     })
 
-    it('array of array of array of complex', function (done) {
-      var schema = Joi.object({
+    it('array of array of array of complex', done => {
+      const schema = Joi.object({
         dimensions: Joi.array().items(Joi.array().items(Joi.array().items(Joi.object({
           name: Joi.string()
         }).meta({ className: 'Child' })))).required()
@@ -366,7 +368,7 @@ describe('definitions', function () {
         className: 'Array'
       })
 
-      var result = {
+      const result = {
         Child: {
           'properties': {
             'name': {
@@ -399,8 +401,8 @@ describe('definitions', function () {
       done()
     })
 
-    it('no inclusion type', function (done) {
-      var schema = Joi.object({
+    it('no inclusion type', done => {
+      const schema = Joi.object({
         id: Joi.number().integer().meta({
           format: 'int64'
         }).required(),
@@ -409,7 +411,7 @@ describe('definitions', function () {
         className: 'Array'
       })
 
-      var result = {
+      const result = {
         Array: {
           'required': [
             'id'
@@ -433,8 +435,8 @@ describe('definitions', function () {
       done()
     })
 
-    it('ref', function (done) {
-      var schema = Joi.object({
+    it('ref', done => {
+      const schema = Joi.object({
         id: Joi.number().integer().meta({
           format: 'int64'
         }).required(),
@@ -445,7 +447,7 @@ describe('definitions', function () {
         className: 'Array'
       })
 
-      var result = {
+      const result = {
         Person: {
           required: ['name'],
           properties: {
@@ -478,16 +480,16 @@ describe('definitions', function () {
     })
   })
 
-  describe('specials', function () {
-    it('name through options.className', function (done) {
-      var definitions = {}
-      var schema = Joi.object({
+  describe('specials', () => {
+    it('name through options.className', done => {
+      const definitions = {}
+      const schema = Joi.object({
         name: Joi.string().required()
       }).meta({
         className: 'Pet123'
       })
 
-      var result = {
+      const result = {
         'Pet123': {
           'properties': {
             'name': {
@@ -504,18 +506,18 @@ describe('definitions', function () {
       done()
     })
 
-    it('duplicate models', function (done) {
-      var definitions = {
+    it('duplicate models', done => {
+      const definitions = {
         Pet: {}
       }
 
-      var schema = Joi.object({
+      const schema = Joi.object({
         name: Joi.string().required()
       }).meta({
         className: 'Pet'
       })
 
-      var result = {
+      const result = {
         'Pet': {},
         'Pet_2': {
           'properties': {
@@ -533,12 +535,12 @@ describe('definitions', function () {
       done()
     })
 
-    it('name from schema', function (done) {
-      var schema = Joi.object({
+    it('name from schema', done => {
+      const schema = Joi.object({
         name: Joi.string().required()
       })
 
-      var result = {
+      const result = {
         'NameModel': {
           'required': [
             'name'
@@ -555,12 +557,12 @@ describe('definitions', function () {
       done()
     })
 
-    it('swaggerType: primitive', function (done) {
-      var schema = Joi.object({
+    it('swaggerType: primitive', done => {
+      const schema = Joi.object({
         name: Joi.string().meta({swaggerType: 'test'})
       })
 
-      var result = {
+      const result = {
         'NameModel': {
           'properties': {
             'name': {
@@ -574,8 +576,8 @@ describe('definitions', function () {
       done()
     })
 
-    it('swaggerType: dates', function (done) {
-      var schema = Joi.object({
+    it('swaggerType: dates', done => {
+      const schema = Joi.object({
         date: Joi.date(),
         dateAsInteger: Joi.date().meta({swaggerType: 'integer'}),
         stringAsDate: Joi.string().meta({swaggerType: 'date'}),
@@ -587,7 +589,7 @@ describe('definitions', function () {
         dateTimeWithFormat: Joi.date().meta({format: 'date-time'})
       }).meta({ className: 'Test' })
 
-      var result = {
+      const result = {
         'Test': {
           'properties': {
             date: { type: 'string', format: 'date-time' },
@@ -607,12 +609,12 @@ describe('definitions', function () {
       done()
     })
 
-    it('swaggerType: complex', function (done) {
-      var schema = Joi.object({
+    it('swaggerType: complex', done => {
+      const schema = Joi.object({
         name: Joi.object().meta({swaggerType: 'test'})
       })
 
-      var result = {
+      const result = {
         'NameModel': {
           'properties': {
             'name': {
