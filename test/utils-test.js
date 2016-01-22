@@ -1,18 +1,20 @@
-var Lab = require('lab')
-var lab = exports.lab = Lab.script()
+'use strict'
 
-var describe = lab.experiment
-var it = lab.test
-var Code = require('code')
-var expect = Code.expect
-var Joi = require('joi')
-var utils = require('../lib/utils')
-var _ = require('lodash')
-var schema = require('../lib/schema')
+const Lab = require('lab')
+let lab = exports.lab = Lab.script()
 
-describe('utils', function () {
-  describe('getRequestConnection', function () {
-    it('#1', function (done) {
+const describe = lab.experiment
+const it = lab.test
+const Code = require('code')
+const expect = Code.expect
+const Joi = require('joi')
+const utils = require('../lib/utils')
+const _ = require('lodash')
+const schema = require('../lib/schema')
+
+describe('utils', () => {
+  describe('getRequestConnection', () => {
+    it('#1', done => {
       expect(utils.getRequestConnection({connection: 'a', server: 'b'})).to.equal('a')
       expect(utils.getRequestConnection({server: 'b'})).to.equal('b')
       expect(utils.getRequestConnection({})).to.not.exist()
@@ -20,8 +22,8 @@ describe('utils', function () {
     })
   })
 
-  describe('getRouteModifiers', function () {
-    it('#1', function (done) {
+  describe('getRouteModifiers', () => {
+    it('#1', done => {
       expect(utils.getRoutesModifiers({config: 'test'})).to.equal('test')
       expect(utils.getRoutesModifiers({realm: {modifiers: 'test'}})).to.equal('test')
       expect(utils.getRoutesModifiers({})).to.not.exist()
@@ -29,8 +31,8 @@ describe('utils', function () {
     })
   })
 
-  describe('firstCharToUpperCase', function () {
-    it('#1', function (done) {
+  describe('firstCharToUpperCase', () => {
+    it('#1', done => {
       Code.expect(utils.firstCharToUpperCase(null)).to.equal(null)
       Code.expect(utils.firstCharToUpperCase('')).to.equal('')
       Code.expect(utils.firstCharToUpperCase('a')).to.equal('A')
@@ -39,8 +41,8 @@ describe('utils', function () {
     })
   })
 
-  describe('sanitizePath', function () {
-    it('#1', function (done) {
+  describe('sanitizePath', () => {
+    it('#1', done => {
       Code.expect(utils.sanitizePath('/')).to.equal('/')
       Code.expect(utils.sanitizePath('/test')).to.equal('/test')
       Code.expect(utils.sanitizePath('/test/{a}')).to.equal('/test/{a}')
@@ -50,15 +52,15 @@ describe('utils', function () {
     })
   })
 
-  describe('getCurrentSettings', function () {
-    it('#1', function (done) {
-      var settings = {
+  describe('getCurrentSettings', () => {
+    it('#1', done => {
+      const settings = {
         source: 'plugin',
         settings: {
           plugin: true
         }
       }
-      var serverSettings = {
+      const serverSettings = {
         source: 'server',
         settings: {
           server: true
@@ -76,29 +78,25 @@ describe('utils', function () {
       })
       done()
     })
-    it('#2: tags', function (done) {
+    it('#2: tags', done => {
       Code.expect(utils.getCurrentSettings({}, {})).to.deep.equal({
         tags: []
       })
 
       Code.expect(utils.getCurrentSettings(
         {tags: [{ name: '1', description: '2' }]},
-        {tags: [{ name: '2', description: '2' }]})).to.deep.equal(
-        {tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]}
-      )
+        {tags: [{ name: '2', description: '2' }]})).to.deep.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
 
       Code.expect(utils.getCurrentSettings(
         {tags: { '1': '2' }},
-        {tags: { '2': '2' }})).to.deep.equal(
-        {tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]}
-        )
+        {tags: { '2': '2' }})).to.deep.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
 
       done()
     })
   })
 
-  describe('stripRoutesPrefix', function () {
-    it('#1', function (done) {
+  describe('stripRoutesPrefix', () => {
+    it('#1', done => {
       Code.expect(utils.stripRoutesPrefix(null)).to.be.null
       Code.expect(utils.stripRoutesPrefix([])).to.have.length(0)
       Code.expect(utils.stripRoutesPrefix([{
@@ -115,8 +113,8 @@ describe('utils', function () {
     })
   })
 
-  describe('generateNameFromSchema', function () {
-    it('#1', function (done) {
+  describe('generateNameFromSchema', () => {
+    it('#1', done => {
       Code.expect(utils.generateNameFromSchema({
         _inner: {
           children: [{
@@ -141,8 +139,8 @@ describe('utils', function () {
       done()
     })
 
-    it('#2 Integration', function (done) {
-      var schema = Joi.object().keys({
+    it('#2 Integration', done => {
+      const schema = Joi.object().keys({
         name: Joi.string(),
         email: Joi.string()
       })
@@ -156,7 +154,7 @@ describe('utils', function () {
       done()
     })
 
-    it('#3 Primitives', function (done) {
+    it('#3 Primitives', done => {
       Code.expect(utils.generateNameFromSchema(Joi.string())).to.equal('String')
       Code.expect(utils.generateNameFromSchema(Joi.number())).to.equal('Number')
       Code.expect(utils.generateNameFromSchema(Joi.number().integer())).to.equal('Integer')
@@ -164,16 +162,16 @@ describe('utils', function () {
     })
   })
 
-  describe('generateNameWithFallback', function () {
-    it('#1', function (done) {
-      var schema = Joi.object().keys({name: Joi.string()})
+  describe('generateNameWithFallback', () => {
+    it('#1', done => {
+      const schema = Joi.object().keys({name: Joi.string()})
       Code.expect(utils.generateNameWithFallback(schema)).to.equal('NameModel')
       done()
     })
   })
 
-  it('filterRoutesByRequiredTags', function (done) {
-    var routes = [{
+  it('filterRoutesByRequiredTags', done => {
+    const routes = [{
       path: '/dev/null',
       method: 'get',
       settings: {
@@ -215,8 +213,8 @@ describe('utils', function () {
     done()
   })
 
-  it('filterRoutesByTagSelection', function (done) {
-    var routes = [{
+  it('filterRoutesByTagSelection', done => {
+    const routes = [{
       path: '/dev/null',
       method: 'get',
       settings: {
@@ -260,8 +258,8 @@ describe('utils', function () {
     done()
   })
 
-  describe('parseTags', function () {
-    it('#1', function (done) {
+  describe('parseTags', () => {
+    it('#1', done => {
       Code.expect(utils.parseTags(null)).to.deep.equal(null)
       Code.expect(utils.parseTags('')).to.deep.equal(null)
       Code.expect(utils.parseTags([])).to.deep.equal(null)
@@ -309,9 +307,9 @@ describe('utils', function () {
     })
   })
 
-  describe('filterRoutesByPrefix', function () {
-    it('#1', function (done) {
-      var extractAPIKeys = utils.filterRoutesByPrefix([{
+  describe('filterRoutesByPrefix', () => {
+    it('#1', done => {
+      const extractAPIKeys = utils.filterRoutesByPrefix([{
         path: '/',
         method: 'get'
       }, {
@@ -340,9 +338,9 @@ describe('utils', function () {
     })
   })
 
-  describe('groupRoutesByPath', function () {
-    it('#1', function (done) {
-      var extractAPIKeys = utils.groupRoutesByPath([{
+  describe('groupRoutesByPath', () => {
+    it('#1', done => {
+      const extractAPIKeys = utils.groupRoutesByPath([{
         path: '/',
         method: 'get'
       }, {
@@ -377,9 +375,9 @@ describe('utils', function () {
     })
   })
 
-  describe('extractAPIKeys', function () {
-    it('#1', function (done) {
-      var extractAPIKeys = utils.extractAPIKeys([{
+  describe('extractAPIKeys', () => {
+    it('#1', done => {
+      const extractAPIKeys = utils.extractAPIKeys([{
         path: '/',
         method: 'get'
       }, {
@@ -397,8 +395,8 @@ describe('utils', function () {
       done()
     })
 
-    it('#2', function (done) {
-      var extractAPIKeys = utils.extractAPIKeys([{
+    it('#2', done => {
+      const extractAPIKeys = utils.extractAPIKeys([{
         path: '/'
       }, {
         path: '/zdsa'
@@ -417,8 +415,8 @@ describe('utils', function () {
     })
   })
 
-  describe('generateFallbackName', function () {
-    it('#1', function (done) {
+  describe('generateFallbackName', () => {
+    it('#1', done => {
       Code.expect(utils.generateFallbackName(null)).to.equal(null)
       Code.expect(utils.generateFallbackName(undefined)).to.equal(null)
       Code.expect(utils.generateFallbackName('')).to.equal(null)
@@ -430,16 +428,16 @@ describe('utils', function () {
     })
   })
 
-  describe('generateRouteNickname', function () {
-    it('#1', function (done) {
+  describe('generateRouteNickname', () => {
+    it('#1', done => {
       Code.expect(utils.generateRouteNickname({method: 'get', path: '/path/to/{somthing}'})).to.equal('get_path_to__somthing_')
       done()
     })
   })
 
-  describe('isPrimitiveSwaggerType', function () {
-    it('#1', function (done) {
-      _.each(['integer', 'number', 'string', 'boolean', 'string'], function (type) {
+  describe('isPrimitiveSwaggerType', () => {
+    it('#1', done => {
+      _.each(['integer', 'number', 'string', 'boolean', 'string'], type => {
         Code.expect(utils.isPrimitiveSwaggerType(type)).to.equal(true)
       })
 
@@ -452,8 +450,8 @@ describe('utils', function () {
     })
   })
 
-  describe('setNotEmpty', function () {
-    it('#1', function (done) {
+  describe('setNotEmpty', () => {
+    it('#1', done => {
       Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value')
       Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value')
       Code.expect(utils.setNotEmpty({}, 'key', undefined).key).not.to.exist()
@@ -463,16 +461,16 @@ describe('utils', function () {
     })
   })
 
-  describe('getPrimitiveType', function () {
-    it('#1', function (done) {
+  describe('getPrimitiveType', () => {
+    it('#1', done => {
       Code.expect(utils.getPrimitiveType(Joi.string())).to.be.equal('string')
       Code.expect(utils.getPrimitiveType(Joi.number())).to.be.equal('number')
       Code.expect(utils.getPrimitiveType(Joi.number().integer())).to.be.equal('integer')
       done()
     })
   })
-  describe('isSupportedSchema', function () {
-    it('#1', function (done) {
+  describe('isSupportedSchema', () => {
+    it('#1', done => {
       Code.expect(utils.isSupportedSchema(Joi.string())).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.array())).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.boolean())).to.be.true()
@@ -492,8 +490,8 @@ describe('utils', function () {
     })
   })
 
-  describe('getMeta', function () {
-    it('#1', function (done) {
+  describe('getMeta', () => {
+    it('#1', done => {
       Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
       Code.expect(utils.getMeta({_settings: {className: 'myClassName'}}, 'className')).to.be.equal('myClassName')
       Code.expect(utils.getMeta(undefined, 'className')).to.be.equal(undefined)
@@ -502,15 +500,15 @@ describe('utils', function () {
     })
   })
 
-  describe('getSettings', function () {
-    it('#1', function (done) {
+  describe('getSettings', () => {
+    it('#1', done => {
       Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
       done()
     })
   })
 
-  describe('getPathPrefix', function (n) {
-    it('#1', function (done) {
+  describe('getPathPrefix', n => {
+    it('#1', done => {
       Code.expect(utils.getPathPrefix('/test1/test2')).to.be.equal('test1')
       Code.expect(utils.getPathPrefix('/test1/test2/test3')).to.be.equal('test1')
       Code.expect(utils.getPathPrefix('/test1/test2/test3', 2)).to.be.equal('test1/test2')
@@ -522,8 +520,8 @@ describe('utils', function () {
     })
   })
 
-  describe('getPathTags', function (n) {
-    it('#1', function (done) {
+  describe('getPathTags', n => {
+    it('#1', done => {
       Code.expect(utils.getPathTags('/test1/test2')).to.be.deep.equal(['test1'])
       Code.expect(utils.getPathTags('/test1/test2/test3')).to.be.deep.equal(['test1'])
       Code.expect(utils.getPathTags('/test1/test2/test3', 2)).to.be.deep.equal(['test1/test2'])
@@ -536,28 +534,36 @@ describe('utils', function () {
     })
   })
 
-  describe('getResponseDescription', function () {
-    it('#1', function (done) {
+  describe('getResponseDescription', () => {
+    it('#1', done => {
       Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
       Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName', description: 'test'}))).to.equal('test')
       done()
     })
   })
 
-  describe('getTags', function () {
-    it('#1', function (done) {
+  describe('getTags', () => {
+    it('#1', done => {
       Code.expect(utils.getTags({tags: []})).to.deep.equal([])
       Code.expect(utils.getTags({tags: { test: 'test123' }})).to.deep.equal([{name: 'test', description: 'test123'}])
       Code.expect(utils.getTags({tags: [{ name: 'test', description: 'test123' }]})).to.deep.equal([{name: 'test', description: 'test123'}])
-      var example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
+      const example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
       Code.expect(utils.getTags({tags: [example]})).to.deep.equal([example])
       done()
     })
 
-    it('#2', function (done) {
-      var example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
-      Joi.assert(utils.getTags({tags: [example]}), Joi.array().items(schema.Tag), 'Tag schema doesnt fit')
-      Joi.assert(utils.getTags({tags: { test: 'test123' }}), Joi.array().items(schema.Tag), 'Tag schema doesnt fit')
+    it('#2', done => {
+      const example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
+      Joi.assert(
+        utils.getTags({tags: [example]}),
+        Joi.array().items(schema.Tag),
+        'Tag schema doesnt fit'
+      )
+      Joi.assert(
+        utils.getTags({tags: { test: 'test123' }}),
+        Joi.array().items(schema.Tag),
+        'Tag schema doesnt fit'
+      )
       done()
     })
   })

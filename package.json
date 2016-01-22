@@ -5,7 +5,7 @@
   "author": "Timo Behrmann",
   "repository": {
     "type": "git",
-    "url": "http://github.com/z0mt3c/hapi-swaggered.git"
+    "url": "git+ssh://git@github.com/z0mt3c/hapi-swaggered.git"
   },
   "bugs": {
     "url": "https://github.com/z0mt3c/hapi-swaggered/issues"
@@ -40,6 +40,10 @@
     "posttest": "npm run lint"
   },
   "peerDependencies": {
-    "hapi": ">= 7.x.x"
+    "hapi": ">= 10.x.x"
+  },
+  "homepage": "https://github.com/z0mt3c/hapi-swaggered#readme",
+  "directories": {
+    "test": "test"
   }
 }
