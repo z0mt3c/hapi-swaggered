@@ -39,14 +39,14 @@ const internals = {
 }
 
 describe('resources', () => {
-  it('check setup', done => {
+  it('check setup', (done) => {
     const resources = internals.resources(baseRoute)
     expect(resources).to.exist()
     expect(resources.paths['/testEndpoint'].get).to.exist()
     done()
   })
 
-  it('filtering', done => {
+  it('filtering', (done) => {
     const route1 = Hoek.applyToDefaults(baseRoute, {config: {tags: ['myTestTag']}})
     const route2 = Hoek.applyToDefaults(baseRoute, {method: 'POST', config: {tags: ['myTestTag', 'requiredTag']}})
     let resources = internals.resources([route1, route2], {}, 'requiredTag')
@@ -58,21 +58,21 @@ describe('resources', () => {
     done()
   })
 
-  it('tags are exposed', done => {
+  it('tags are exposed', (done) => {
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: ['myTestTag']}}))
     expect(resources).to.exist()
     expect(resources.paths['/testEndpoint'].get).to.deep.include({tags: ['myTestTag']})
     done()
   })
 
-  it('notes->description and description->summary are exposed', done => {
+  it('notes->description and description->summary are exposed', (done) => {
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {notes: 'my notes', description: 'my description'}}))
     expect(resources).to.exist()
     expect(resources.paths['/testEndpoint'].get).to.deep.include({summary: 'my description', description: 'my notes'})
     done()
   })
 
-  it('deprecation', done => {
+  it('deprecation', (done) => {
     const tags = ['myTestTag', 'deprecated']
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: tags}}))
     expect(resources).to.exist()
@@ -80,7 +80,7 @@ describe('resources', () => {
     done()
   })
 
-  it('stripPrefix', done => {
+  it('stripPrefix', (done) => {
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {path: '/api/foo/bar'}), {stripPrefix: '/api'})
     expect(resources).to.exist()
     expect(resources.paths['/api/foo/bar']).to.not.exist()
@@ -88,7 +88,7 @@ describe('resources', () => {
     done()
   })
 
-  it('stripPrefix for ROOT', done => {
+  it('stripPrefix for ROOT', (done) => {
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {path: '/api'}), {stripPrefix: '/api'})
     expect(resources).to.exist()
     expect(resources.paths['/api']).to.not.exist()
@@ -97,7 +97,7 @@ describe('resources', () => {
   })
 
   describe('params', () => {
-    it('simple', done => {
+    it('simple', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
         config: {
@@ -124,7 +124,7 @@ describe('resources', () => {
   })
 
   describe('produces', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
         config: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
@@ -145,7 +145,7 @@ describe('resources', () => {
   })
 
   describe('custom params', () => {
-    it('allows params that start with x-', done => {
+    it('allows params that start with x-', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         config: {
@@ -170,7 +170,7 @@ describe('resources', () => {
 
   describe('responses', () => {
     // TODO: description, test with primary types + arrays
-    it('only response model', done => {
+    it('only response model', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         config: {
@@ -195,7 +195,7 @@ describe('resources', () => {
       done()
     })
 
-    it('array response type', done => {
+    it('array response type', (done) => {
       const sameModel = Joi.array().items(Joi.string().description('name')).description('test')
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
@@ -225,7 +225,7 @@ describe('resources', () => {
 
       done()
     })
-    it('primitive response type', done => {
+    it('primitive response type', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         config: {
@@ -249,7 +249,7 @@ describe('resources', () => {
       done()
     })
 
-    it('plugin options without model', done => {
+    it('plugin options without model', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         config: {
@@ -278,7 +278,7 @@ describe('resources', () => {
       done()
     })
 
-    it('plugin options with model', done => {
+    it('plugin options with model', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         config: {
@@ -306,7 +306,7 @@ describe('resources', () => {
       done()
     })
 
-    it('plugin options with operationId', done => {
+    it('plugin options with operationId', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         config: {
@@ -326,7 +326,7 @@ describe('resources', () => {
   })
 
   describe('header', () => {
-    it('simple', done => {
+    it('simple', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
         config: {validate: {headers: Joi.object({bar: Joi.string().description('test').required()})}}
@@ -348,7 +348,7 @@ describe('resources', () => {
   })
 
   describe('query', () => {
-    it('simple', done => {
+    it('simple', (done) => {
       const params = {
         bar: Joi.string().description('test').required(),
         foo: Joi.number().integer().min(20).max(30).default(2).required(),
@@ -407,7 +407,7 @@ describe('resources', () => {
       done()
     })
 
-    it('drop any', done => {
+    it('drop any', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         config: {
@@ -427,10 +427,10 @@ describe('resources', () => {
   })
 
   describe('form', () => {
-    it('simple', done => {
+    it('simple', (done) => {
       _.each(
         ['application/x-www-form-urlencoded', 'multipart/form-data'],
-        mimeType => {
+        (mimeType) => {
           const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
             method: 'post',
             path: '/foo/{bar}',
@@ -456,10 +456,10 @@ describe('resources', () => {
       done()
     })
 
-    it('nested', done => {
+    it('nested', (done) => {
       _.each(
         ['application/x-www-form-urlencoded', 'multipart/form-data'],
-        mimeType => {
+        (mimeType) => {
           const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
             method: 'post',
             path: '/foo/{bar}',
@@ -488,7 +488,7 @@ describe('resources', () => {
   })
 
   describe('payload', () => {
-    it('simple', done => {
+    it('simple', (done) => {
       const expectedParam = {
         name: 'TestModel',
         required: true,
@@ -516,7 +516,7 @@ describe('resources', () => {
       done()
     })
 
-    it('primitive', done => {
+    it('primitive', (done) => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         method: 'post',
@@ -540,7 +540,7 @@ describe('resources', () => {
       done()
     })
 
-    it('array of primitive', done => {
+    it('array of primitive', (done) => {
       const expectedParam = {
         name: 'Test',
         in: 'body',
@@ -580,7 +580,7 @@ describe('resources', () => {
       done()
     })
 
-    it('array of primitive', done => {
+    it('array of primitive', (done) => {
       const expectedParam = {
         name: 'Array',
         in: 'body',
@@ -621,7 +621,7 @@ describe('resources', () => {
       done()
     })
 
-    it('array of undefined', done => {
+    it('array of undefined', (done) => {
       const expectedParam = {
         name: 'Array',
         in: 'body',
@@ -660,7 +660,7 @@ describe('resources', () => {
       done()
     })
 
-    it('array of objects', done => {
+    it('array of objects', (done) => {
       const expectedParam = {
         name: 'Array',
         in: 'body',

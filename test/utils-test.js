@@ -14,7 +14,7 @@ const schema = require('../lib/schema')
 
 describe('utils', () => {
   describe('getRequestConnection', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       expect(utils.getRequestConnection({connection: 'a', server: 'b'})).to.equal('a')
       expect(utils.getRequestConnection({server: 'b'})).to.equal('b')
       expect(utils.getRequestConnection({})).to.not.exist()
@@ -23,7 +23,7 @@ describe('utils', () => {
   })
 
   describe('getRouteModifiers', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       expect(utils.getRoutesModifiers({config: 'test'})).to.equal('test')
       expect(utils.getRoutesModifiers({realm: {modifiers: 'test'}})).to.equal('test')
       expect(utils.getRoutesModifiers({})).to.not.exist()
@@ -32,7 +32,7 @@ describe('utils', () => {
   })
 
   describe('firstCharToUpperCase', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.firstCharToUpperCase(null)).to.equal(null)
       Code.expect(utils.firstCharToUpperCase('')).to.equal('')
       Code.expect(utils.firstCharToUpperCase('a')).to.equal('A')
@@ -42,7 +42,7 @@ describe('utils', () => {
   })
 
   describe('sanitizePath', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.sanitizePath('/')).to.equal('/')
       Code.expect(utils.sanitizePath('/test')).to.equal('/test')
       Code.expect(utils.sanitizePath('/test/{a}')).to.equal('/test/{a}')
@@ -53,7 +53,7 @@ describe('utils', () => {
   })
 
   describe('getCurrentSettings', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       const settings = {
         source: 'plugin',
         settings: {
@@ -78,7 +78,7 @@ describe('utils', () => {
       })
       done()
     })
-    it('#2: tags', done => {
+    it('#2: tags', (done) => {
       Code.expect(utils.getCurrentSettings({}, {})).to.deep.equal({
         tags: []
       })
@@ -96,7 +96,7 @@ describe('utils', () => {
   })
 
   describe('stripRoutesPrefix', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.stripRoutesPrefix(null)).to.be.null
       Code.expect(utils.stripRoutesPrefix([])).to.have.length(0)
       Code.expect(utils.stripRoutesPrefix([{
@@ -114,7 +114,7 @@ describe('utils', () => {
   })
 
   describe('generateNameFromSchema', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.generateNameFromSchema({
         _inner: {
           children: [{
@@ -139,7 +139,7 @@ describe('utils', () => {
       done()
     })
 
-    it('#2 Integration', done => {
+    it('#2 Integration', (done) => {
       const schema = Joi.object().keys({
         name: Joi.string(),
         email: Joi.string()
@@ -154,7 +154,7 @@ describe('utils', () => {
       done()
     })
 
-    it('#3 Primitives', done => {
+    it('#3 Primitives', (done) => {
       Code.expect(utils.generateNameFromSchema(Joi.string())).to.equal('String')
       Code.expect(utils.generateNameFromSchema(Joi.number())).to.equal('Number')
       Code.expect(utils.generateNameFromSchema(Joi.number().integer())).to.equal('Integer')
@@ -163,14 +163,14 @@ describe('utils', () => {
   })
 
   describe('generateNameWithFallback', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       const schema = Joi.object().keys({name: Joi.string()})
       Code.expect(utils.generateNameWithFallback(schema)).to.equal('NameModel')
       done()
     })
   })
 
-  it('filterRoutesByRequiredTags', done => {
+  it('filterRoutesByRequiredTags', (done) => {
     const routes = [{
       path: '/dev/null',
       method: 'get',
@@ -213,7 +213,7 @@ describe('utils', () => {
     done()
   })
 
-  it('filterRoutesByTagSelection', done => {
+  it('filterRoutesByTagSelection', (done) => {
     const routes = [{
       path: '/dev/null',
       method: 'get',
@@ -259,7 +259,7 @@ describe('utils', () => {
   })
 
   describe('parseTags', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.parseTags(null)).to.deep.equal(null)
       Code.expect(utils.parseTags('')).to.deep.equal(null)
       Code.expect(utils.parseTags([])).to.deep.equal(null)
@@ -308,7 +308,7 @@ describe('utils', () => {
   })
 
   describe('filterRoutesByPrefix', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       const extractAPIKeys = utils.filterRoutesByPrefix([{
         path: '/',
         method: 'get'
@@ -339,7 +339,7 @@ describe('utils', () => {
   })
 
   describe('groupRoutesByPath', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       const extractAPIKeys = utils.groupRoutesByPath([{
         path: '/',
         method: 'get'
@@ -376,7 +376,7 @@ describe('utils', () => {
   })
 
   describe('extractAPIKeys', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       const extractAPIKeys = utils.extractAPIKeys([{
         path: '/',
         method: 'get'
@@ -395,7 +395,7 @@ describe('utils', () => {
       done()
     })
 
-    it('#2', done => {
+    it('#2', (done) => {
       const extractAPIKeys = utils.extractAPIKeys([{
         path: '/'
       }, {
@@ -416,7 +416,7 @@ describe('utils', () => {
   })
 
   describe('generateFallbackName', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.generateFallbackName(null)).to.equal(null)
       Code.expect(utils.generateFallbackName(undefined)).to.equal(null)
       Code.expect(utils.generateFallbackName('')).to.equal(null)
@@ -429,15 +429,15 @@ describe('utils', () => {
   })
 
   describe('generateRouteNickname', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.generateRouteNickname({method: 'get', path: '/path/to/{somthing}'})).to.equal('get_path_to__somthing_')
       done()
     })
   })
 
   describe('isPrimitiveSwaggerType', () => {
-    it('#1', done => {
-      _.each(['integer', 'number', 'string', 'boolean', 'string'], type => {
+    it('#1', (done) => {
+      _.each(['integer', 'number', 'string', 'boolean', 'string'], (type) => {
         Code.expect(utils.isPrimitiveSwaggerType(type)).to.equal(true)
       })
 
@@ -451,7 +451,7 @@ describe('utils', () => {
   })
 
   describe('setNotEmpty', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value')
       Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value')
       Code.expect(utils.setNotEmpty({}, 'key', undefined).key).not.to.exist()
@@ -462,7 +462,7 @@ describe('utils', () => {
   })
 
   describe('getPrimitiveType', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.getPrimitiveType(Joi.string())).to.be.equal('string')
       Code.expect(utils.getPrimitiveType(Joi.number())).to.be.equal('number')
       Code.expect(utils.getPrimitiveType(Joi.number().integer())).to.be.equal('integer')
@@ -470,7 +470,7 @@ describe('utils', () => {
     })
   })
   describe('isSupportedSchema', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.isSupportedSchema(Joi.string())).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.array())).to.be.true()
       Code.expect(utils.isSupportedSchema(Joi.boolean())).to.be.true()
@@ -491,7 +491,7 @@ describe('utils', () => {
   })
 
   describe('getMeta', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
       Code.expect(utils.getMeta({_settings: {className: 'myClassName'}}, 'className')).to.be.equal('myClassName')
       Code.expect(utils.getMeta(undefined, 'className')).to.be.equal(undefined)
@@ -501,14 +501,14 @@ describe('utils', () => {
   })
 
   describe('getSettings', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
       done()
     })
   })
 
-  describe('getPathPrefix', n => {
-    it('#1', done => {
+  describe('getPathPrefix', (n) => {
+    it('#1', (done) => {
       Code.expect(utils.getPathPrefix('/test1/test2')).to.be.equal('test1')
       Code.expect(utils.getPathPrefix('/test1/test2/test3')).to.be.equal('test1')
       Code.expect(utils.getPathPrefix('/test1/test2/test3', 2)).to.be.equal('test1/test2')
@@ -520,8 +520,8 @@ describe('utils', () => {
     })
   })
 
-  describe('getPathTags', n => {
-    it('#1', done => {
+  describe('getPathTags', (n) => {
+    it('#1', (done) => {
       Code.expect(utils.getPathTags('/test1/test2')).to.be.deep.equal(['test1'])
       Code.expect(utils.getPathTags('/test1/test2/test3')).to.be.deep.equal(['test1'])
       Code.expect(utils.getPathTags('/test1/test2/test3', 2)).to.be.deep.equal(['test1/test2'])
@@ -535,7 +535,7 @@ describe('utils', () => {
   })
 
   describe('getResponseDescription', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
       Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName', description: 'test'}))).to.equal('test')
       done()
@@ -543,7 +543,7 @@ describe('utils', () => {
   })
 
   describe('getTags', () => {
-    it('#1', done => {
+    it('#1', (done) => {
       Code.expect(utils.getTags({tags: []})).to.deep.equal([])
       Code.expect(utils.getTags({tags: { test: 'test123' }})).to.deep.equal([{name: 'test', description: 'test123'}])
       Code.expect(utils.getTags({tags: [{ name: 'test', description: 'test123' }]})).to.deep.equal([{name: 'test', description: 'test123'}])
@@ -552,7 +552,7 @@ describe('utils', () => {
       done()
     })
 
-    it('#2', done => {
+    it('#2', (done) => {
       const example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
       Joi.assert(
         utils.getTags({tags: [example]}),
