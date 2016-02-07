@@ -31,7 +31,7 @@
     "coveralls": "^2.11.4",
     "hapi": "^13.0.0",
     "lab": "^8.0.0",
-    "standard": "^6.0.1",
+    "standard": "^6.0.2",
     "wreck": "^7.0.0"
   },
   "scripts": {
