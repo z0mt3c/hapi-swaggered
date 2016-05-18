@@ -627,5 +627,25 @@ describe('definitions', () => {
       helper.testDefinition(schema, result)
       done()
     })
+
+    it('object', (done) => {
+      const definitions = {}
+      const reference = generator.newModel(Joi.object({
+        name: Joi.string().example('Frog').required()
+      }).meta({
+        className: 'Pet'
+      }).example({ name: 'Cat' }), definitions)
+      console.log(definitions)
+
+      expect(reference).to.deep.include({'$ref': '#/definitions/Pet'})
+      expect(definitions.Pet).to.exist()
+      expect(definitions.Pet).to.deep.include({
+        required: ['name'],
+        properties: {name: {type: 'string', example: 'Frog'}},
+        example: { name: 'Cat' }
+      })
+
+      done()
+    })
   })
 })
