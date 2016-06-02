@@ -32,7 +32,7 @@
     "hapi": "^13.0.0",
     "lab": "^10.1.0",
     "standard": "^6.0.3",
-    "wreck": "^7.0.0"
+    "wreck": "^8.0.0"
   },
   "scripts": {
     "lint": "standard",
