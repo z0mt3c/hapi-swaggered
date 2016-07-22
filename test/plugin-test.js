@@ -293,7 +293,7 @@ describe('plugin', () => {
         expect(res.statusCode).to.exist()
         expect(res.statusCode).to.equal(200)
         Joi.assert(res.result, schemas.Swagger)
-        expect(res.result).to.deep.include({swagger: '2.0', paths: {}, definitions: {}})
+        expect(res.result).to.include({swagger: '2.0', paths: {}, definitions: {}})
         done()
       })
     })
@@ -304,7 +304,7 @@ describe('plugin', () => {
         expect(res.statusCode).to.exist()
         expect(res.statusCode).to.equal(200)
         Joi.assert(res.result, schemas.Swagger)
-        expect(res.result).to.deep.include({
+        expect(res.result).to.include({
           swagger: '2.0',
           definitions: {},
           paths: {
@@ -333,7 +333,7 @@ describe('plugin', () => {
           produces: ['application/json']
         }
 
-        expect(res.result).to.deep.include({
+        expect(res.result).to.include({
           swagger: '2.0',
           definitions: {},
           paths: {
@@ -367,7 +367,7 @@ describe('plugin', () => {
         )
         server.inject('/swagger', (res) => {
           expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['foo'])
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['foo'])
           done()
         })
       })
@@ -391,7 +391,7 @@ describe('plugin', () => {
         )
         server.inject('/swagger', (res) => {
           expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['foo/bar'])
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['foo/bar'])
           done()
         })
       })
@@ -415,7 +415,7 @@ describe('plugin', () => {
         )
         server.inject('/swagger', (res) => {
           expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['test'])
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['test'])
           done()
         })
       })
@@ -439,7 +439,7 @@ describe('plugin', () => {
         )
         server.inject('/swagger', (res) => {
           expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['api', 'test'])
+          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['api', 'test'])
           done()
         })
       })
@@ -466,7 +466,7 @@ describe('plugin', () => {
           )
           server.inject('/swagger', (res) => {
             expect(res.statusCode).to.equal(200)
-            expect(res.result.paths['/foo/bar/test/it'].get.tags).to.deep.equal(['api'])
+            expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['api'])
             done()
           })
         })

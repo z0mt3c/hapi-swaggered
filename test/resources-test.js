@@ -61,14 +61,14 @@ describe('resources', () => {
   it('tags are exposed', (done) => {
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: ['myTestTag']}}))
     expect(resources).to.exist()
-    expect(resources.paths['/testEndpoint'].get).to.deep.include({tags: ['myTestTag']})
+    expect(resources.paths['/testEndpoint'].get).to.include({tags: ['myTestTag']})
     done()
   })
 
   it('notes->description and description->summary are exposed', (done) => {
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {notes: 'my notes', description: 'my description'}}))
     expect(resources).to.exist()
-    expect(resources.paths['/testEndpoint'].get).to.deep.include({summary: 'my description', description: 'my notes'})
+    expect(resources.paths['/testEndpoint'].get).to.include({summary: 'my description', description: 'my notes'})
     done()
   })
 
@@ -76,7 +76,7 @@ describe('resources', () => {
     const tags = ['myTestTag', 'deprecated']
     const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: tags}}))
     expect(resources).to.exist()
-    expect(resources.paths['/testEndpoint'].get).to.deep.include({tags: tags, deprecated: true})
+    expect(resources.paths['/testEndpoint'].get).to.include({tags: tags, deprecated: true})
     done()
   })
 
@@ -110,8 +110,8 @@ describe('resources', () => {
         }
       }))
 
-      expect(resources.paths['/foo/{bar}'].get.produces).to.deep.equal(['application/pdf'])
-      expect(resources.paths['/foo/{bar}'].get.parameters).to.deep.equal([{
+      expect(resources.paths['/foo/{bar}'].get.produces).to.equal(['application/pdf'])
+      expect(resources.paths['/foo/{bar}'].get.parameters).to.equal([{
         required: true,
         description: 'test',
         type: 'string',
@@ -130,7 +130,7 @@ describe('resources', () => {
         config: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
       }))
 
-      expect(resources.paths['/foo/{bar}'].get).to.deep.include({
+      expect(resources.paths['/foo/{bar}'].get).to.include({
         parameters: [{
           required: true,
           description: 'test',
@@ -188,7 +188,7 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foo'].get.responses).to.deep.include({
+      expect(resources.paths['/foo'].get.responses).to.include({
         default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
         500: {description: '', schema: {$ref: '#/definitions/BarModel'}}
       })
@@ -215,7 +215,7 @@ describe('resources', () => {
       expect(resources).to.exist()
 
       const sameResponse = {description: 'test', schema: {type: 'array', items: {type: 'string'}, description: 'test'}}
-      expect(resources.paths['/foo'].get.responses).to.deep.equal({
+      expect(resources.paths['/foo'].get.responses).to.equal({
         default: sameResponse,
         500: sameResponse,
         501: {description: 'test1', schema: {type: 'array', description: 'test1', items: { type: 'string' }}},
@@ -240,7 +240,7 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foo'].get.responses).to.deep.equal({
+      expect(resources.paths['/foo'].get.responses).to.equal({
         default: {description: 'test', schema: {type: 'string', description: 'test'}},
         500: {description: '', schema: {type: 'number', description: undefined}},
         501: {description: 'test', schema: {type: 'integer', description: 'test'}}
@@ -270,7 +270,7 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foo'].get.responses).to.deep.include({
+      expect(resources.paths['/foo'].get.responses).to.include({
         default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
         500: {description: 'Internal Server Error', schema: { type: 'string' }}
       })
@@ -298,7 +298,7 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foo'].get.responses).to.deep.include({
+      expect(resources.paths['/foo'].get.responses).to.include({
         default: {description: 'Bad Request', schema: {$ref: '#/definitions/BarModel'}},
         500: {description: 'Internal Server Error'}
       })
@@ -333,7 +333,7 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foo/{bar}'].get).to.deep.include({
+      expect(resources.paths['/foo/{bar}'].get).to.include({
         parameters: [{
           required: true,
           description: 'test',
@@ -370,7 +370,7 @@ describe('resources', () => {
       const parameters = resources.paths['/foo'].get.parameters
       expect(parameters).to.have.length(_.keys(params).length - 1)
 
-      expect(parameters).to.deep.include({
+      expect(parameters).to.include({
         required: true,
         description: 'test',
         type: 'string',
@@ -378,7 +378,7 @@ describe('resources', () => {
         in: 'query'
       })
 
-      expect(parameters).to.deep.include({
+      expect(parameters).to.include({
         required: true,
         default: 2,
         minimum: 20,
@@ -388,7 +388,7 @@ describe('resources', () => {
         in: 'query'
       })
 
-      expect(parameters).to.deep.include({
+      expect(parameters).to.include({
         required: false,
         type: 'array',
         items: {type: 'string'},
@@ -396,7 +396,7 @@ describe('resources', () => {
         in: 'query'
       })
 
-      expect(parameters).to.deep.include({
+      expect(parameters).to.include({
         required: false,
         type: 'array',
         items: {type: 'string'},
@@ -441,7 +441,7 @@ describe('resources', () => {
           }))
 
           expect(resources).to.exist()
-          expect(resources.paths['/foo/{bar}'].post).to.deep.include({
+          expect(resources.paths['/foo/{bar}'].post).to.include({
             parameters: [{
               required: true,
               description: 'test',
@@ -470,7 +470,7 @@ describe('resources', () => {
           }))
 
           expect(resources).to.exist()
-          expect(resources.paths['/foo/{bar}'].post).to.deep.include({
+          expect(resources.paths['/foo/{bar}'].post).to.include({
             parameters: [{
               required: true,
               description: 'test',
@@ -508,7 +508,7 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foo'].post).to.deep.include({
+      expect(resources.paths['/foo'].post).to.include({
         parameters: [expectedParam]
       })
       expect(resources.definitions.TestModel).to.exist()
@@ -524,7 +524,7 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foo'].post.parameters).to.deep.equal([
+      expect(resources.paths['/foo'].post.parameters).to.equal([
         {
           'required': false,
           'description': 'string!',
@@ -567,11 +567,11 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foobar/test'].post).to.deep.include({
+      expect(resources.paths['/foobar/test'].post).to.include({
         parameters: [expectedParam]
       })
       expect(resources.definitions.Test).to.exist()
-      expect(resources.definitions.Test).to.deep.include({
+      expect(resources.definitions.Test).to.include({
         type: 'array',
         description: 'foobar',
         items: {type: 'string'}
@@ -607,12 +607,12 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foobar/test'].post).to.deep.include({
+      expect(resources.paths['/foobar/test'].post).to.include({
         parameters: [expectedParam]
       })
 
       expect(resources.definitions.Array).to.exist()
-      expect(resources.definitions.Array).to.deep.equal({
+      expect(resources.definitions.Array).to.equal({
         type: 'array',
         description: 'foobar',
         items: {type: 'string'}
@@ -646,12 +646,12 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foobar/test'].post).to.deep.include({
+      expect(resources.paths['/foobar/test'].post).to.include({
         parameters: [expectedParam]
       })
 
       expect(resources.definitions.Array).to.exist()
-      expect(resources.definitions.Array).to.deep.equal({
+      expect(resources.definitions.Array).to.equal({
         type: 'array',
         description: 'foobar',
         items: {type: 'string'}
@@ -687,12 +687,12 @@ describe('resources', () => {
       }))
 
       expect(resources).to.exist()
-      expect(resources.paths['/foobar/test'].post).to.deep.include({
+      expect(resources.paths['/foobar/test'].post).to.include({
         parameters: [expectedParam]
       })
 
       expect(resources.definitions.Array).to.exist()
-      expect(resources.definitions.Array).to.deep.equal({
+      expect(resources.definitions.Array).to.equal({
         type: 'array',
         description: 'foobar',
         items: {$ref: '#/definitions/NameModel'}

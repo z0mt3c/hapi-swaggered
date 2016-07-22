@@ -22,7 +22,7 @@ const helper = {
     const desc = generator.fromJoiSchema(schema, definitionResults)
     expect(desc).to.exist()
     Joi.assert(definitionResults, Joi.object({}).pattern(/.*/, schemas.Definition))
-    expect(definitionResults).to.deep.equal(definition)
+    expect(definitionResults).to.equal(definition)
   }
 }
 
@@ -36,9 +36,9 @@ describe('definitions', () => {
         className: 'Pet'
       }), definitions)
 
-      expect(reference).to.deep.include({'$ref': '#/definitions/Pet'})
+      expect(reference).to.include({'$ref': '#/definitions/Pet'})
       expect(definitions.Pet).to.exist()
-      expect(definitions.Pet).to.deep.include({
+      expect(definitions.Pet).to.include({
         required: ['name'],
         properties: {name: {type: 'string'}}
       })
@@ -59,8 +59,8 @@ describe('definitions', () => {
     it('primitive', (done) => {
       const definitions = {}
       const reference = generator.newModel(Joi.string(), definitions)
-      expect(reference).to.deep.include({'type': 'string'})
-      expect(definitions).to.deep.equal({})
+      expect(reference).to.include({'type': 'string'})
+      expect(definitions).to.equal({})
       done()
     })
   })
