@@ -68,7 +68,7 @@ describe('utils', () => {
       }
       Code.expect(utils.getCurrentSettings(null)).to.equal(null)
       Code.expect(utils.getCurrentSettings(settings)).to.equal(settings)
-      Code.expect(utils.getCurrentSettings(settings, serverSettings)).to.deep.equal({
+      Code.expect(utils.getCurrentSettings(settings, serverSettings)).to.equal({
         source: 'server',
         settings: {
           plugin: true,
@@ -79,17 +79,17 @@ describe('utils', () => {
       done()
     })
     it('#2: tags', (done) => {
-      Code.expect(utils.getCurrentSettings({}, {})).to.deep.equal({
+      Code.expect(utils.getCurrentSettings({}, {})).to.equal({
         tags: []
       })
 
       Code.expect(utils.getCurrentSettings(
         {tags: [{ name: '1', description: '2' }]},
-        {tags: [{ name: '2', description: '2' }]})).to.deep.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
+        {tags: [{ name: '2', description: '2' }]})).to.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
 
       Code.expect(utils.getCurrentSettings(
         {tags: { '1': '2' }},
-        {tags: { '2': '2' }})).to.deep.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
+        {tags: { '2': '2' }})).to.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
 
       done()
     })
@@ -260,46 +260,46 @@ describe('utils', () => {
 
   describe('parseTags', () => {
     it('#1', (done) => {
-      Code.expect(utils.parseTags(null)).to.deep.equal(null)
-      Code.expect(utils.parseTags('')).to.deep.equal(null)
-      Code.expect(utils.parseTags([])).to.deep.equal(null)
-      Code.expect(utils.parseTags(['api'])).to.deep.equal({
+      Code.expect(utils.parseTags(null)).to.equal(null)
+      Code.expect(utils.parseTags('')).to.equal(null)
+      Code.expect(utils.parseTags([])).to.equal(null)
+      Code.expect(utils.parseTags(['api'])).to.equal({
         included: ['api'],
         excluded: []
       })
-      Code.expect(utils.parseTags(['api'].join(','))).to.deep.equal({
+      Code.expect(utils.parseTags(['api'].join(','))).to.equal({
         included: ['api'],
         excluded: []
       })
-      Code.expect(utils.parseTags(['+api'])).to.deep.equal({
+      Code.expect(utils.parseTags(['+api'])).to.equal({
         included: ['api'],
         excluded: []
       })
-      Code.expect(utils.parseTags(['+api'].join(','))).to.deep.equal({
+      Code.expect(utils.parseTags(['+api'].join(','))).to.equal({
         included: ['api'],
         excluded: []
       })
-      Code.expect(utils.parseTags(['-api'])).to.deep.equal({
+      Code.expect(utils.parseTags(['-api'])).to.equal({
         included: [],
         excluded: ['api']
       })
-      Code.expect(utils.parseTags(['-api'].join(','))).to.deep.equal({
+      Code.expect(utils.parseTags(['-api'].join(','))).to.equal({
         included: [],
         excluded: ['api']
       })
-      Code.expect(utils.parseTags(['-api', '+beta'])).to.deep.equal({
+      Code.expect(utils.parseTags(['-api', '+beta'])).to.equal({
         included: ['beta'],
         excluded: ['api']
       })
-      Code.expect(utils.parseTags(['-api', '+beta'].join(','))).to.deep.equal({
+      Code.expect(utils.parseTags(['-api', '+beta'].join(','))).to.equal({
         included: ['beta'],
         excluded: ['api']
       })
-      Code.expect(utils.parseTags(['+api', '+beta'])).to.deep.equal({
+      Code.expect(utils.parseTags(['+api', '+beta'])).to.equal({
         included: ['api', 'beta'],
         excluded: []
       })
-      Code.expect(utils.parseTags(['+api', '+beta'].join(','))).to.deep.equal({
+      Code.expect(utils.parseTags(['+api', '+beta'].join(','))).to.equal({
         included: ['api', 'beta'],
         excluded: []
       })
@@ -323,7 +323,7 @@ describe('utils', () => {
         method: 'get'
       }], 'dev')
 
-      Code.expect(extractAPIKeys).to.deep.equal([{
+      Code.expect(extractAPIKeys).to.equal([{
         path: '/dev',
         method: 'post'
       }, {
@@ -354,7 +354,7 @@ describe('utils', () => {
         method: 'get'
       }])
 
-      Code.expect(extractAPIKeys).to.deep.equal({
+      Code.expect(extractAPIKeys).to.equal({
         '/': [{
           path: '/',
           method: 'get'
@@ -391,7 +391,7 @@ describe('utils', () => {
         method: 'get'
       }])
 
-      Code.expect(extractAPIKeys).to.deep.equal(['/dev'])
+      Code.expect(extractAPIKeys).to.equal(['/dev'])
       done()
     })
 
@@ -410,7 +410,7 @@ describe('utils', () => {
         path: '/dev/null'
       }])
 
-      Code.expect(extractAPIKeys).to.deep.equal(['/asdf', '/dev', '/zdsa'])
+      Code.expect(extractAPIKeys).to.equal(['/asdf', '/dev', '/zdsa'])
       done()
     })
   })
@@ -522,14 +522,14 @@ describe('utils', () => {
 
   describe('getPathTags', (n) => {
     it('#1', (done) => {
-      Code.expect(utils.getPathTags('/test1/test2')).to.be.deep.equal(['test1'])
-      Code.expect(utils.getPathTags('/test1/test2/test3')).to.be.deep.equal(['test1'])
-      Code.expect(utils.getPathTags('/test1/test2/test3', 2)).to.be.deep.equal(['test1/test2'])
-      Code.expect(utils.getPathTags('/test1', 5)).to.be.deep.equal(['test1'])
-      Code.expect(utils.getPathTags('/test1', -1)).to.be.deep.equal(['test1'])
-      Code.expect(utils.getPathTags('/', -1)).to.be.deep.equal([])
-      Code.expect(utils.getPathTags('', -1)).to.be.deep.equal([])
-      Code.expect(utils.getPathTags(null, -1)).to.be.deep.equal([])
+      Code.expect(utils.getPathTags('/test1/test2')).to.be.equal(['test1'])
+      Code.expect(utils.getPathTags('/test1/test2/test3')).to.be.equal(['test1'])
+      Code.expect(utils.getPathTags('/test1/test2/test3', 2)).to.be.equal(['test1/test2'])
+      Code.expect(utils.getPathTags('/test1', 5)).to.be.equal(['test1'])
+      Code.expect(utils.getPathTags('/test1', -1)).to.be.equal(['test1'])
+      Code.expect(utils.getPathTags('/', -1)).to.be.equal([])
+      Code.expect(utils.getPathTags('', -1)).to.be.equal([])
+      Code.expect(utils.getPathTags(null, -1)).to.be.equal([])
       done()
     })
   })
@@ -544,11 +544,11 @@ describe('utils', () => {
 
   describe('getTags', () => {
     it('#1', (done) => {
-      Code.expect(utils.getTags({tags: []})).to.deep.equal([])
-      Code.expect(utils.getTags({tags: { test: 'test123' }})).to.deep.equal([{name: 'test', description: 'test123'}])
-      Code.expect(utils.getTags({tags: [{ name: 'test', description: 'test123' }]})).to.deep.equal([{name: 'test', description: 'test123'}])
+      Code.expect(utils.getTags({tags: []})).to.equal([])
+      Code.expect(utils.getTags({tags: { test: 'test123' }})).to.equal([{name: 'test', description: 'test123'}])
+      Code.expect(utils.getTags({tags: [{ name: 'test', description: 'test123' }]})).to.equal([{name: 'test', description: 'test123'}])
       const example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
-      Code.expect(utils.getTags({tags: [example]})).to.deep.equal([example])
+      Code.expect(utils.getTags({tags: [example]})).to.equal([example])
       done()
     })
 
