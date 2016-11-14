@@ -181,6 +181,13 @@ To assign custom names to your Models use the Joi.meta() option (in previous joi
 Joi.object({}).meta({ className: 'FooBar' })
 ```
 
+### Type naming
+To override the type a Joi model should be interpreted as, use the Joi.meta() option like above. This is especially useful when utilizing the extend and coerce features of Joi schema definition
+
+```js
+Joi.object({}).meta({ swaggerType: string })
+```
+
 ### File upload (Hapi 8)
 To achieve a file upload your route should look like as follows. (Important parts are the swaggerType in the Joi options as well as the allowed payload)
 
