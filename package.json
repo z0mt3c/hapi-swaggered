@@ -23,7 +23,7 @@
   },
   "dependencies": {
     "hoek": "^4.0.1",
-    "joi": "^9.0.1",
+    "joi": "^10.2.1",
     "lodash": "^4.0.0"
   },
   "devDependencies": {
