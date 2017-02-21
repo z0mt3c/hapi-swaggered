@@ -311,7 +311,7 @@ describe('plugin', () => {
             '/testEndpoint': {
               get: {
                 tags: ['test'],
-                responses: { default: {} },
+                responses: { default: { 'description': '' } },
                 produces: ['application/json']
               }
             }
@@ -329,7 +329,7 @@ describe('plugin', () => {
 
         const operation = {
           tags: ['test'],
-          responses: { default: {} },
+          responses: { default: { 'description': '' } },
           produces: ['application/json']
         }
 
