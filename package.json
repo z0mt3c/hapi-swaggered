@@ -22,17 +22,17 @@
     "node": ">=4.0.0"
   },
   "dependencies": {
-    "hoek": "^4.0.1",
-    "joi": "^9.0.1",
-    "lodash": "^4.0.0"
+    "hoek": "^4.1.0",
+    "joi": "^10.2.2",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
-    "code": "^3.0.1",
-    "coveralls": "^2.11.4",
-    "hapi": "^13.0.0",
-    "lab": "^10.1.0",
-    "standard": "^7.1.2",
-    "wreck": "^8.0.0"
+    "code": "^4.0.0",
+    "coveralls": "^2.11.16",
+    "hapi": "^16.1.0",
+    "lab": "^12.1.0",
+    "standard": "^8.6.0",
+    "wreck": "^10.0.0"
   },
   "scripts": {
     "lint": "standard",
