@@ -5,12 +5,6 @@ script:
   - "make test-cov"
 matrix:
   include:
-    - node_js: '4'
-      before_install: npm -g i npm@2
+    - node_js: '6'
       after_script: 'make test-cov-coveralls || exit 0'
-    - node_js: '4'
-      before_install: npm -g i npm@3
-    - node_js: '5'
-      before_install: npm -g i npm@2
-    - node_js: '5'
-      before_install: npm -g i npm@3
+    - node_js: 'node'
