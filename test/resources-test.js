@@ -286,7 +286,8 @@ describe('resources', () => {
             'hapi-swaggered': {
               responses: {
                 default: {
-                  description: 'Bad Request', schema: Joi.object({
+                  description: 'Bad Request',
+                  schema: Joi.object({
                     bar: Joi.string().description('test').required()
                   })
                 },
