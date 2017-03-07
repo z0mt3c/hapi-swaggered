@@ -635,11 +635,10 @@ describe('definitions', () => {
       }).meta({
         className: 'Pet'
       }).example({ name: 'Cat' }), definitions)
-      console.log(definitions)
 
-      expect(reference).to.deep.include({'$ref': '#/definitions/Pet'})
+      expect(reference).to.include({'$ref': '#/definitions/Pet'})
       expect(definitions.Pet).to.exist()
-      expect(definitions.Pet).to.deep.include({
+      expect(definitions.Pet).to.include({
         required: ['name'],
         properties: {name: {type: 'string', example: 'Frog'}},
         example: { name: 'Cat' }
