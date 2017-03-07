@@ -97,7 +97,7 @@ describe('utils', () => {
 
   describe('stripRoutesPrefix', () => {
     it('#1', (done) => {
-      Code.expect(utils.stripRoutesPrefix(null)).to.be.null
+      Code.expect(utils.stripRoutesPrefix(null)).to.be.null()
       Code.expect(utils.stripRoutesPrefix([])).to.have.length(0)
       Code.expect(utils.stripRoutesPrefix([{
         path: '/api/test'
