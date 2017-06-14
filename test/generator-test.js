@@ -163,6 +163,30 @@ describe('definitions', () => {
       done()
     })
 
+    it('has model description', (done) => {
+      const schema = Joi.object({
+        test: Joi.object().max(1).meta({ description: 'an object' })
+      }).meta({ className: 'Pet1', description: 'a pet' })
+
+      const result = {
+        'EmptyModel': {
+          'description': 'an object',
+          'properties': {}
+        },
+        'Pet1': {
+          'description': 'a pet',
+          'properties': {
+            'test': {
+              '$ref': '#/definitions/EmptyModel'
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
     it('collectionFormat', (done) => {
       const schema = Joi.object({
         test: Joi.array().items(Joi.object()).meta({collectionFormat: 'multi'})
