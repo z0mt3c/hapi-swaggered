@@ -181,6 +181,13 @@ To assign custom names to your Models use the Joi.meta() option (in previous joi
 Joi.object({}).meta({ className: 'FooBar' })
 ```
 
+### Model description
+To assign a description to your Models use the Joi.meta() option like above
+
+```js
+Joi.object({}).meta({ description: 'A description of FooBar' })
+```
+
 ### Type naming
 To override the type a Joi model should be interpreted as, use the Joi.meta() option like above. This is especially useful when utilizing the extend and coerce features of Joi schema definition
 
