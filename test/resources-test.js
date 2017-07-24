@@ -181,7 +181,7 @@ describe('resources', () => {
             status: {
               500: Joi.object({
                 bar: Joi.string().description('test').required()
-              })
+              }).description('test')
             }
           }
         }
@@ -190,7 +190,7 @@ describe('resources', () => {
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.include({
         default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
-        500: {description: '', schema: {$ref: '#/definitions/BarModel'}}
+        500: {description: 'test', schema: {$ref: '#/definitions/BarModel'}}
       })
       done()
     })

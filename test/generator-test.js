@@ -163,10 +163,34 @@ describe('definitions', () => {
       done()
     })
 
-    it('has model description', (done) => {
+    it('has model meta-description', (done) => {
       const schema = Joi.object({
         test: Joi.object().max(1).meta({ description: 'an object' })
       }).meta({ className: 'Pet1', description: 'a pet' })
+
+      const result = {
+        'EmptyModel': {
+          'description': 'an object',
+          'properties': {}
+        },
+        'Pet1': {
+          'description': 'a pet',
+          'properties': {
+            'test': {
+              '$ref': '#/definitions/EmptyModel'
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
+
+    it('has model description', (done) => {
+      const schema = Joi.object({
+        test: Joi.object().max(1).description('an object')
+      }).description('a pet').meta({ className: 'Pet1' })
 
       const result = {
         'EmptyModel': {
@@ -237,7 +261,7 @@ describe('definitions', () => {
 
       const result = {
         Pet: {
-          // 'description': 'true',
+          'description': 'true',
           'properties': {
             'booleanValue': {
               'type': 'boolean'

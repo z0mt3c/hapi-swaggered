@@ -534,10 +534,10 @@ describe('utils', () => {
     })
   })
 
-  describe('getResponseDescription', () => {
+  describe('getDescription', () => {
     it('#1', (done) => {
-      Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
-      Code.expect(utils.getResponseDescription(Joi.object().meta({className: 'myClassName', description: 'test'}))).to.equal('test')
+      Code.expect(utils.getDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
+      Code.expect(utils.getDescription(Joi.object().meta({className: 'myClassName', description: 'test'}))).to.equal('test')
       done()
     })
   })
