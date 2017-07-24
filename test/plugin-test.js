@@ -283,7 +283,8 @@ describe('plugin', () => {
           },
           tags: {
             'serverDescription': 'myDesc2'
-          }
+          },
+          routeConfig: {}
         }
       }, done)
     })
