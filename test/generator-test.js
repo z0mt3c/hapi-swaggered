@@ -694,5 +694,40 @@ describe('definitions', () => {
 
       done()
     })
+
+    it('$ref', (done) => {
+      const schema = Joi.object({
+        currentPassword: Joi.string().required().description('current password'),
+        newPassword: Joi.string().required().description('new password'),
+        confirmPassword: Joi.string().required().valid(Joi.ref('newPassword')).description('new password again')
+      })
+
+      const result = {
+        'CurrentPasswordNewPasswordConfirmPasswordModel': {
+          'required': [
+            'currentPassword',
+            'newPassword',
+            'confirmPassword'
+          ],
+          'properties': {
+            'currentPassword': {
+              'type': 'string',
+              'description': 'current password'
+            },
+            'newPassword': {
+              'type': 'string',
+              'description': 'new password'
+            },
+            'confirmPassword': {
+              'type': 'string',
+              'description': 'new password again'
+            }
+          }
+        }
+      }
+
+      helper.testDefinition(schema, result)
+      done()
+    })
   })
 })
