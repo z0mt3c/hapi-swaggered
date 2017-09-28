@@ -373,6 +373,41 @@ describe('utils', () => {
       })
       done()
     })
+
+    it('#2', (done) => {
+      const routesWithOptionalPathParams = utils.groupRoutesByPath([{
+        path: '/test',
+        method: 'get'
+      }, {
+        path: '/test/{nonOptionalParam}/{optionalParam?}',
+        method: 'get'
+      }, {
+        path: '/test/{nonOptionalParam}/{optionalParam?}',
+        method: 'put'
+      }])
+
+      Code.expect(routesWithOptionalPathParams).to.equal({
+        '/test': [{
+          path: '/test',
+          method: 'get'
+        }],
+        '/test/{nonOptionalParam}': [{
+          path: '/test/{nonOptionalParam}',
+          method: 'get'
+        }, {
+          path: '/test/{nonOptionalParam}',
+          method: 'put'
+        }],
+        '/test/{nonOptionalParam}/{optionalParam}': [{
+          path: '/test/{nonOptionalParam}/{optionalParam?}',
+          method: 'get'
+        }, {
+          path: '/test/{nonOptionalParam}/{optionalParam?}',
+          method: 'put'
+        }]
+      })
+      done()
+    })
   })
 
   describe('extractAPIKeys', () => {
@@ -564,6 +599,31 @@ describe('utils', () => {
         Joi.array().items(schema.Tag),
         'Tag schema doesnt fit'
       )
+      done()
+    })
+  })
+
+  describe('adjustOptionalPathParams', () => {
+    it('#1', (done) => {
+      const testParams = [{
+        required: true,
+        type: 'string',
+        name: 'paramOne',
+        in: 'path'
+      },
+      {
+        required: true,
+        type: 'string',
+        name: 'paramTwo',
+        in: 'path'
+      }]
+      Code.expect(utils.adjustOptionalPathParams('/test/{paramOne}/{paramTwo}', testParams)).to.equal(testParams)
+      Code.expect(utils.adjustOptionalPathParams('/test/{paramOne}', testParams)).to.equal([{
+        required: true,
+        type: 'string',
+        name: 'paramOne',
+        in: 'path'
+      }])
       done()
     })
   })
