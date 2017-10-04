@@ -701,5 +701,24 @@ describe('resources', () => {
 
       done()
     })
+
+    it('function', (done) => {
+      const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
+        path: '/foobar/test',
+        method: 'post',
+        config: {
+          tags: ['api'],
+          validate: {
+            payload: (value, next) => next(null, value)
+          }
+        }
+      }))
+
+      expect(resources).to.exist()
+      expect(resources.paths['/foobar/test']).to.exist()
+      expect(resources.paths['/foobar/test'].post.parameters).not.to.exist()
+
+      done()
+    })
   })
 })
