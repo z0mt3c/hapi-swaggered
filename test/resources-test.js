@@ -17,7 +17,7 @@ const Hapi = require('hapi')
 const baseRoute = {
   method: 'GET',
   path: '/testEndpoint',
-  config: {
+  options: {
     tags: ['api', 'test'],
     handler: function (request, reply) {
       reply({})
@@ -46,8 +46,8 @@ describe('resources', () => {
   })
 
   it('filtering', () => {
-    const route1 = Hoek.applyToDefaults(baseRoute, {config: {tags: ['myTestTag']}})
-    const route2 = Hoek.applyToDefaults(baseRoute, {method: 'POST', config: {tags: ['myTestTag', 'requiredTag']}})
+    const route1 = Hoek.applyToDefaults(baseRoute, {options: {tags: ['myTestTag']}})
+    const route2 = Hoek.applyToDefaults(baseRoute, {method: 'POST', options: {tags: ['myTestTag', 'requiredTag']}})
     let resources = internals.resources([route1, route2], {}, 'requiredTag')
     expect(resources.paths['/testEndpoint']).to.only.include('post')
     resources = internals.resources([route1, route2], {}, '-requiredTag')
@@ -57,20 +57,20 @@ describe('resources', () => {
   })
 
   it('tags are exposed', () => {
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: ['myTestTag']}}))
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {options: {tags: ['myTestTag']}}))
     expect(resources).to.exist()
     expect(resources.paths['/testEndpoint'].get).to.include({tags: ['myTestTag']})
   })
 
   it('notes->description and description->summary are exposed', () => {
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {notes: 'my notes', description: 'my description'}}))
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {options: {notes: 'my notes', description: 'my description'}}))
     expect(resources).to.exist()
     expect(resources.paths['/testEndpoint'].get).to.include({summary: 'my description', description: 'my notes'})
   })
 
   it('deprecation', () => {
     const tags = ['myTestTag', 'deprecated']
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {config: {tags: tags}}))
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {options: {tags: tags}}))
     expect(resources).to.exist()
     expect(resources.paths['/testEndpoint'].get).to.include({tags: tags, deprecated: true})
   })
@@ -93,7 +93,7 @@ describe('resources', () => {
     it('simple', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
-        config: {
+        options: {
           plugins: {
             'hapi-swaggered': {
               produces: ['application/pdf']
@@ -118,7 +118,7 @@ describe('resources', () => {
     it('#1', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
-        config: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
+        options: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
       }))
 
       expect(resources.paths['/foo/{bar}'].get).to.include({
@@ -137,7 +137,7 @@ describe('resources', () => {
     it('allows params that start with x-', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           plugins: {
             'hapi-swaggered': {
               custom: {
@@ -160,7 +160,7 @@ describe('resources', () => {
     it('only response model', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           response: {
             schema: Joi.object({
               bar: Joi.string().description('test').required()
@@ -185,7 +185,7 @@ describe('resources', () => {
       const sameModel = Joi.array().items(Joi.string().description('name')).description('test')
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           response: {
             schema: sameModel,
             status: {
@@ -212,7 +212,7 @@ describe('resources', () => {
     it('primitive response type', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           response: {
             schema: Joi.string().description('test'),
             status: {
@@ -234,7 +234,7 @@ describe('resources', () => {
     it('plugin options without model', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           plugins: {
             'hapi-swaggered': {
               responses: {
@@ -261,7 +261,7 @@ describe('resources', () => {
     it('plugin options with model', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           plugins: {
             'hapi-swaggered': {
               responses: {
@@ -288,7 +288,7 @@ describe('resources', () => {
     it('plugin options with operationId', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           plugins: {
             'hapi-swaggered': {
               operationId: 'fooTest'
@@ -306,7 +306,7 @@ describe('resources', () => {
     it('simple', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
-        config: {validate: {headers: Joi.object({bar: Joi.string().description('test').required()})}}
+        options: {validate: {headers: Joi.object({bar: Joi.string().description('test').required()})}}
       }))
 
       expect(resources).to.exist()
@@ -334,7 +334,7 @@ describe('resources', () => {
 
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           validate: {
             query: Joi.object(params)
           }
@@ -383,7 +383,7 @@ describe('resources', () => {
     it('drop any', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
-        config: {
+        options: {
           validate: {
             query: Joi.object({
               any: Joi.any()
@@ -406,7 +406,7 @@ describe('resources', () => {
           const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
             method: 'post',
             path: '/foo/{bar}',
-            config: {
+            options: {
               validate: {payload: Joi.object({bar: Joi.string().description('test').required()})},
               payload: {allow: [mimeType]}
             }
@@ -433,7 +433,7 @@ describe('resources', () => {
           const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
             method: 'post',
             path: '/foo/{bar}',
-            config: {
+            options: {
               validate: {payload: Joi.object({bar: Joi.string().description('test').required(), foo: Joi.object({ bar: Joi.string().description('test').required() })})},
               payload: {allow: [mimeType]}
             }
@@ -472,7 +472,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         method: 'post',
-        config: {validate: {payload: Joi.object({bar: Joi.string().description('test').required()}).description('foobar').required().meta({className: 'TestModel'})}}
+        options: {validate: {payload: Joi.object({bar: Joi.string().description('test').required()}).description('foobar').required().meta({className: 'TestModel'})}}
       }))
 
       expect(resources).to.exist()
@@ -486,7 +486,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         method: 'post',
-        config: {validate: {payload: Joi.string().description('string!')}}
+        options: {validate: {payload: Joi.string().description('string!')}}
       }))
 
       expect(resources).to.exist()
@@ -520,7 +520,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foobar/test',
         method: 'post',
-        config: {
+        options: {
           tags: ['api'],
           validate: {
             payload: Joi.array().items(
@@ -558,7 +558,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foobar/test',
         method: 'post',
-        config: {
+        options: {
           tags: ['api'],
           validate: {
             payload: Joi.array().items(
@@ -597,7 +597,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foobar/test',
         method: 'post',
-        config: {
+        options: {
           tags: ['api'],
           validate: {
             payload: Joi.array().description('foobar').required()
@@ -634,7 +634,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foobar/test',
         method: 'post',
-        config: {
+        options: {
           tags: ['api'],
           validate: {
             payload: Joi.array().items(
@@ -661,7 +661,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foobar/test',
         method: 'post',
-        config: {
+        options: {
           tags: ['api'],
           validate: {
             payload: (value, next) => next(null, value)
