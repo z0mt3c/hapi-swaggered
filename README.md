@@ -176,7 +176,7 @@ The hapi way:
 
 ```js
 {
-  config: {
+  options: {
     response: {
       schema: Joi.object({
         bar: Joi.string().description('test').required()
@@ -195,7 +195,7 @@ The plugin way without schemas:
 
 ```js
 {
-  config: {
+  options: {
     plugins: {
       'hapi-swaggered': {
         responses: {
@@ -217,7 +217,7 @@ The plugin way with schemas:
 
 ```js
 {
-  config: {
+  options: {
     plugins: {
       'hapi-swaggered': {
         responses: {
@@ -238,7 +238,7 @@ Specify an operationId for a route:
 
 ```js
 {
-  config: {
+  options: {
     plugins: {
       'hapi-swaggered': {
         operationId: 'testRoute'
