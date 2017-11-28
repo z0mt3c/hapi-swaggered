@@ -1,7 +1,9 @@
-# hapi-swaggered
+# hapi-swaggered 3.x
 Yet another hapi plugin providing swagger compliant API specifications (swagger specs 2.0) based on routes and joi schemas to be used with swagger-ui.
 
 Supports hapi 17.x and up
+
+For earlier versions check [hapi-swaggered 2.x](https://github.com/z0mt3c/hapi-swaggered/blob/2.x/README.md) 
 
 [![Build Status](https://img.shields.io/travis/z0mt3c/hapi-swaggered/master.svg)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Coverage Status](https://img.shields.io/coveralls/z0mt3c/hapi-swaggered/master.svg)](https://coveralls.io/r/z0mt3c/hapi-swaggered?branch=master)
@@ -11,7 +13,7 @@ Supports hapi 17.x and up
 
 ## Install
 ```bash
-npm install hapi-swaggered --save
+npm install hapi-swaggered@next --save
 ```
 
 ## Similar swagger-projects for hapi
