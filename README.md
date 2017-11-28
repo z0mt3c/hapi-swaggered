@@ -1,7 +1,7 @@
 # hapi-swaggered
 Yet another hapi plugin providing swagger compliant API specifications (swagger specs 2.0) based on routes and joi schemas to be used with swagger-ui.
 
-Supports hapi 10.x and up
+Supports hapi 17.x and up
 
 [![Build Status](https://img.shields.io/travis/z0mt3c/hapi-swaggered/master.svg)](https://travis-ci.org/z0mt3c/hapi-swaggered)
 [![Coverage Status](https://img.shields.io/coveralls/z0mt3c/hapi-swaggered/master.svg)](https://coveralls.io/r/z0mt3c/hapi-swaggered?branch=master)
@@ -54,91 +54,85 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to false
 * `auth`: authentication configuration [hapijs documentation](https://github.com/hapijs/hapi/blob/master/API.md#route-options) (default to undefined)
 
-## Example (Hapi 9 and 10)
+## Example
 Example configuration for hapi-swaggered + hapi-swaggered-ui
 
 ```js
-var Hapi = require('hapi')
+const Hapi = require('hapi');
 
-var server = new Hapi.Server()
-server.connection({
-  port: 8000,
-  labels: ['api']
-})
+const server = Hapi.Server({ port: 8000 });
 
-server.register([
-  require('inert'),
-  require('vision'),
-  {
-    register: require('hapi-swaggered'),
-    options: {
-      tags: {
-        'foobar/test': 'Example foobar description'
-      },
-      info: {
+(async () => {
+  await server.register([
+    require('inert'),
+    require('vision'),
+    {
+      plugin: require('hapi-swaggered'),
+      options: {
+        tags: {
+          'foobar/test': 'Example foobar description'
+        },
+        info: {
+          title: 'Example API',
+          description: 'Powered by node, hapi, joi, hapi-swaggered, hapi-swaggered-ui and swagger-ui',
+          version: '1.0'
+        }
+      }
+    },
+    {
+      plugin: require('hapi-swaggered-ui'),
+      options: {
         title: 'Example API',
-        description: 'Powered by node, hapi, joi, hapi-swaggered, hapi-swaggered-ui and swagger-ui',
-        version: '1.0'
+        path: '/docs',
+        authorization: {
+          field: 'apiKey',
+          scope: 'query', // header works as well
+          // valuePrefix: 'bearer '// prefix incase
+          defaultValue: 'demoKey',
+          placeholder: 'Enter your apiKey here'
+        },
+        swaggerOptions: {
+          validatorUrl: null
+        }
       }
     }
-  },
-  {
-    register: require('hapi-swaggered-ui'),
-    options: {
-      title: 'Example API',
-      path: '/docs',
-      authorization: {
-        field: 'apiKey',
-        scope: 'query', // header works as well
-        // valuePrefix: 'bearer '// prefix incase
-        defaultValue: 'demoKey',
-        placeholder: 'Enter your apiKey here'
-      },
-      swaggerOptions: {
-        validatorUrl: null
-      }
-    }
-  }], {
-    select: 'api'
-  }, function (err) {
-  if (err) {
-    throw err
+  ]);
+})();
+
+server.route({
+  path: '/',
+  method: 'GET',
+  handler (request, h) {
+    h.redirect('/docs');
   }
+});
 
-  server.route({
-    path: '/',
-    method: 'GET',
-    handler: function (request, reply) {
-      reply.redirect('/docs')
-    }
-  })
+(async () => {
+  await server.start();
+  console.log('started on http://localhost:8000')
 
-  server.start(function () {
-    console.log('started on http://localhost:8000')
-  })
-})
+})();
 ```
-
 
 Demo Routes
 ```js
 server.route({
   path: '/foobar/test',
   method: 'GET',
-  config: {
+  options: {
     tags: ['api'],
     description: 'My route description',
     notes: 'My route notes',
-    handler: function (request, reply) {
-      reply({})
+    handler () {
+      return {};
     }
   }
-})
+});
 
 server.route({
   path: '/foobar/{foo}/{bar}',
   method: 'GET',
-  config: {
+  options: {
     tags: ['api'],
     validate: {
       params: {
@@ -146,31 +140,11 @@ server.route({
         bar: Joi.string().required()
       }
     },
-    handler: function (request, reply) {
-      reply({})
+    handler () {
+      return {};
     }
   }
-})
-```
-
-## Overwriting configuration on server level (Hapi 8)
-Some configurations can be overwritten on connection level:
-
-```js
-var Hapi = require('hapi')
-var server = new Hapi.Server()
-server.connection({
-  port: 8000,
-  labels: ['api'],
-  app: {
-    swagger: {
-      info: {
-        title: 'Example API',
-        description: 'Tiny hapi-swaggered example'
-      }
-    }
-  }
-})
+});
 ```
 
 ## Features
@@ -178,45 +152,21 @@ server.connection({
 To assign custom names to your Models use the Joi.meta() option (in previous joi versions Joi.options() may be used)
 
 ```js
-Joi.object({}).meta({ className: 'FooBar' })
+Joi.object({}).meta({ className: 'FooBar' });
 ```
 
 ### Model description
 To assign a description to your Models use the Joi.meta() option like above
 
 ```js
-Joi.object({}).meta({ description: 'A description of FooBar' })
+Joi.object({}).meta({ description: 'A description of FooBar' });
 ```
 
 ### Type naming
 To override the type a Joi model should be interpreted as, use the Joi.meta() option like above. This is especially useful when utilizing the extend and coerce features of Joi schema definition
 
 ```js
-Joi.object({}).meta({ swaggerType: string })
-```
-
-### File upload (Hapi 8)
-To achieve a file upload your route should look like as follows. (Important parts are the swaggerType in the Joi options as well as the allowed payload)
-
-```js
-server.route({
-  method: 'POST',
-  path: '/test/fileUpload',
-  config: {
-    tags: ['api'],
-    validate: {
-      payload: Joi.object().keys({ name: Joi.string(), file: Joi.object().meta({ swaggerType: 'file' }) })
-    },
-    handler: function (request, reply) {
-      // handle file upload as specified in payload.output
-      reply({ name: request.payload.name })
-    },
-    payload: {
-      allow: 'multipart/form-data',
-      output: 'data'|'stream'|'file'
-    }
-  }
-})
+Joi.object({}).meta({ swaggerType: string });
 ```
 
 ### Document responses
@@ -226,7 +176,7 @@ The hapi way:
 
 ```js
 {
-  config: {
+  options: {
     response: {
       schema: Joi.object({
         bar: Joi.string().description('test').required()
@@ -245,7 +195,7 @@ The plugin way without schemas:
 
 ```js
 {
-  config: {
+  options: {
     plugins: {
       'hapi-swaggered': {
         responses: {
@@ -267,7 +217,7 @@ The plugin way with schemas:
 
 ```js
 {
-  config: {
+  options: {
     plugins: {
       'hapi-swaggered': {
         responses: {
@@ -288,7 +238,7 @@ Specify an operationId for a route:
 
 ```js
 {
-  config: {
+  options: {
     plugins: {
       'hapi-swaggered': {
         operationId: 'testRoute'
@@ -307,9 +257,6 @@ For example:
   * will only show apis and routes with tag public AND/OR beta.
 * `?tags=public,-beta (equal to ?tags=+public,-beta)`
   * will only show apis and routes with tag public AND NOT beta.
-
-## Hapi 8 usage
-Please have a look at a previous [README](https://github.com/z0mt3c/hapi-swaggered/tree/v2.2.2#example-hapi-8).
 
 ## Known issues
 ### No response types

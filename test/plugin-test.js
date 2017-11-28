@@ -11,127 +11,101 @@ const Joi = require('joi')
 
 const Hapi = require('hapi')
 const Hoek = require('hoek')
-const index = require('../')
+const plugin = require('../')
 const schemas = require('../lib/schema')
 
 const baseRoute = {
   method: 'GET',
   path: '/testEndpoint',
-  config: {
+  options: {
     tags: ['api', 'test'],
-    handler: function (request, reply) {
-      reply({})
+    handler () {
+      return {}
     }
   }
 }
 
 describe('plugin', () => {
   describe('init', () => {
-    it('no options', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
+    it('no options', async () => {
+      const server = Hapi.Server({ port: 80 })
+      const options = { plugin }
 
-      server.register({
-        register: index
-      }, (err) => {
-        expect(err).to.not.exist()
-        done()
-      })
+      await expect(server.register(options)).not.to.reject()
     })
 
-    it('empty options', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-
-      server.register({
-        register: index,
+    it('empty options', async () => {
+      const server = Hapi.Server({ port: 80 })
+      const options = {
+        plugin,
         options: { responseValidation: true }
-      }, (err) => {
-        expect(err).to.not.exist()
-        done()
-      })
+      }
+
+      await expect(server.register(options)).not.to.reject()
     })
 
-    it('with route prefix', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-
-      server.register({
-        register: index,
+    it('with route prefix', async () => {
+      const server = Hapi.Server({ port: 80 })
+      const options = {
+        plugin,
         options: {
           stripPrefix: '/api'
-        }
-      }, {
+        },
         routes: {
           prefix: '/api/test123'
-        }
-      }, (err) => {
-        expect(err).to.not.exist()
-        done()
-      })
-    })
-
-    it('with route prefix and base path', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-
-      server.register({
-        register: index,
-        options: {
-          stripPrefix: '/api',
-          basePath: '/test'
-        }
-      }, {
-        routes: {
-          prefix: '/api/test123'
-        }
-      }, (err) => {
-        expect(err).to.not.exist()
-        done()
-      })
-    })
-
-    it('without response validation', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-
-      server.register({
-        register: index,
-        options: {
-          responseValidation: false
-        }
-      }, {
-        routes: {
-          prefix: '/api/test123'
-        }
-      }, (err) => {
-        expect(err).to.not.exist()
-        done()
-      })
-    })
-
-    it('broken info', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-
-      const options = {
-        register: index,
-        options: {
-          info: {bull: 'shit'}
         }
       }
 
-      const reply = function () {}
-      expect(server.register.bind(server.pack, options, reply)).to.throw()
-      done()
+      await expect(server.register(options)).not.to.reject()
     })
 
-    it('valid info', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-
+    it('with route prefix and base path', async () => {
+      const server = Hapi.Server({ port: 80 })
       const options = {
-        register: index,
+        plugin,
+        options: {
+          stripPrefix: '/api',
+          basePath: '/test'
+        },
+        routes: {
+          prefix: '/api/test123'
+        }
+      }
+
+      await expect(server.register(options)).not.to.reject()
+    })
+
+    it('without response validation', async () => {
+      const server = Hapi.Server({ port: 80 })
+      const options = {
+        plugin,
+        options: {
+          responseValidation: false
+        },
+        routes: {
+          prefix: '/api/test123'
+        }
+      }
+
+      await expect(server.register(options)).not.to.reject()
+    })
+
+    it('broken info', async () => {
+      const server = Hapi.Server({ port: 80 })
+      const options = {
+        plugin,
+        options: {
+          info: { bull: 'shit' }
+        }
+      }
+
+      await expect(server.register(options)).to.reject()
+    })
+
+    it('valid info', async () => {
+      const server = Hapi.Server({ port: 80 })
+      const options = {
+        plugin,
         options: {
           info: {
             title: 'Overwritten',
@@ -141,141 +115,107 @@ describe('plugin', () => {
         }
       }
 
-      server.register(options, (err) => {
-        expect(err).to.not.exist()
-        done()
-      })
+      await expect(server.register(options)).not.to.reject()
     })
   })
 
   describe('settings', () => {
-    it('with cache', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
-        options: { responseValidation: true }
-      }, () => {
-        server.route(Hoek.applyToDefaults(baseRoute, {}))
-        const call = function (next) {
-          server.inject('/swagger', (res) => {
-            expect(res.statusCode).to.exist()
-            expect(res.statusCode).to.equal(200)
-            Joi.assert(res.result, schemas.Swagger)
-            expect(res.result).to.exist()
-            expect(res.result.paths).to.exist()
-            expect(res.result.paths['/testEndpoint']).to.exist()
-            expect(res.result.paths['/testEndpoint'].get).to.exist()
-            next()
-          })
-        }
+    it('with cache', async () => {
+      const server = Hapi.Server({ port: 80 })
 
-        call(() => {
-          call(done)
-        })
+      await server.register({
+        plugin,
+        options: { responseValidation: true }
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, {}))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.exist()
+      expect(res.statusCode).to.equal(200)
+      Joi.assert(res.result, schemas.Swagger)
+      expect(res.result).to.exist()
+      expect(res.result.paths).to.exist()
+      expect(res.result.paths['/testEndpoint']).to.exist()
+      expect(res.result.paths['/testEndpoint'].get).to.exist()
     })
 
-    it('without cache', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    it('without cache', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: {
           cache: false
         }
-      }, () => {
-        server.route(Hoek.applyToDefaults(baseRoute, {}))
-
-        const call = function (next) {
-          server.inject('/swagger', (res) => {
-            expect(res.statusCode).to.exist()
-            expect(res.statusCode).to.equal(200)
-            Joi.assert(res.result, schemas.Swagger)
-            expect(res.result).to.exist()
-            expect(res.result.paths).to.exist()
-            expect(res.result.paths['/testEndpoint']).to.exist()
-            expect(res.result.paths['/testEndpoint'].get).to.exist()
-            next()
-          })
-        }
-
-        call(() => {
-          call(done)
-        })
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, {}))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.exist()
+      expect(res.statusCode).to.equal(200)
+      Joi.assert(res.result, schemas.Swagger)
+      expect(res.result).to.exist()
+      expect(res.result.paths).to.exist()
+      expect(res.result.paths['/testEndpoint']).to.exist()
+      expect(res.result.paths['/testEndpoint'].get).to.exist()
     })
 
-    it('basePath', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    it('basePath', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: {
           basePath: '/test'
         }
-      }, () => {
-        server.route(Hoek.applyToDefaults(baseRoute, {}))
-
-        const call = function (next) {
-          server.inject('/swagger', (res) => {
-            expect(res.statusCode).to.exist()
-            expect(res.statusCode).to.equal(200)
-            Joi.assert(res.result, schemas.Swagger)
-            expect(res.result).to.exist()
-            expect(res.result.paths).to.exist()
-            expect(res.result.basePath).to.exist()
-            expect(res.result.basePath).to.equal('/test')
-            next()
-          })
-        }
-
-        call(() => {
-          call(done)
-        })
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, {}))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.exist()
+      expect(res.statusCode).to.equal(200)
+      Joi.assert(res.result, schemas.Swagger)
+      expect(res.result).to.exist()
+      expect(res.result.paths).to.exist()
+      expect(res.result.basePath).to.exist()
+      expect(res.result.basePath).to.equal('/test')
     })
 
-    it('basePath with stripPrefix', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    it('basePath with stripPrefix', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: {
           stripPrefix: '/testEndpoint',
           basePath: '/test'
         }
-      }, () => {
-        server.route(Hoek.applyToDefaults(baseRoute, {}))
-
-        const call = function (next) {
-          server.inject('/swagger', (res) => {
-            expect(res.statusCode).to.exist()
-            expect(res.statusCode).to.equal(200)
-            Joi.assert(res.result, schemas.Swagger)
-            expect(res.result).to.exist()
-            expect(res.result.paths).to.exist()
-            expect(res.result.basePath).to.exist()
-            expect(res.result.basePath).to.equal('/test/testEndpoint')
-            next()
-          })
-        }
-
-        call(() => {
-          call(done)
-        })
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, {}))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.exist()
+      expect(res.statusCode).to.equal(200)
+      Joi.assert(res.result, schemas.Swagger)
+      expect(res.result).to.exist()
+      expect(res.result.paths).to.exist()
+      expect(res.result.basePath).to.exist()
+      expect(res.result.basePath).to.equal('/test/testEndpoint')
     })
   })
 
   describe('/swagger', () => {
     let server
 
-    lab.beforeEach((done) => {
-      server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    lab.beforeEach(async () => {
+      server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: {
           cache: false,
           tagging: {
@@ -286,192 +226,166 @@ describe('plugin', () => {
           },
           routeConfig: {}
         }
-      }, done)
-    })
-
-    it('empty', (done) => {
-      server.inject('/swagger', (res) => {
-        expect(res.statusCode).to.exist()
-        expect(res.statusCode).to.equal(200)
-        Joi.assert(res.result, schemas.Swagger)
-        expect(res.result).to.include({swagger: '2.0', paths: {}, definitions: {}})
-        done()
       })
     })
 
-    it('simple', (done) => {
+    it('empty', async () => {
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.exist()
+      expect(res.statusCode).to.equal(200)
+      Joi.assert(res.result, schemas.Swagger)
+      expect(res.result).to.include({swagger: '2.0', paths: {}, definitions: {}})
+    })
+
+    it('simple', async () => {
       server.route(Hoek.applyToDefaults(baseRoute, {}))
-      server.inject('/swagger', (res) => {
-        expect(res.statusCode).to.exist()
-        expect(res.statusCode).to.equal(200)
-        Joi.assert(res.result, schemas.Swagger)
-        expect(res.result).to.include({
-          swagger: '2.0',
-          definitions: {},
-          paths: {
-            '/testEndpoint': {
-              get: {
-                tags: ['test'],
-                responses: { default: { 'description': '' } },
-                produces: ['application/json']
-              }
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.exist()
+      expect(res.statusCode).to.equal(200)
+      Joi.assert(res.result, schemas.Swagger)
+      expect(res.result).to.include({
+        swagger: '2.0',
+        definitions: {},
+        paths: {
+          '/testEndpoint': {
+            get: {
+              tags: ['test'],
+              responses: { default: { 'description': '' } },
+              produces: ['application/json']
             }
           }
-        })
-        done()
+        }
       })
     })
 
-    it('wildcard', (done) => {
+    it('wildcard', async () => {
       server.route(Hoek.applyToDefaults(baseRoute, { method: '*' }))
-      server.inject('/swagger', (res) => {
-        expect(res.statusCode).to.exist()
-        expect(res.statusCode).to.equal(200)
+      const res = await server.inject('/swagger')
 
-        const operation = {
-          tags: ['test'],
-          responses: { default: { 'description': '' } },
-          produces: ['application/json']
-        }
+      expect(res.statusCode).to.exist()
+      expect(res.statusCode).to.equal(200)
 
-        expect(res.result).to.include({
-          swagger: '2.0',
-          definitions: {},
-          paths: {
-            '/testEndpoint': {
-              get: operation,
-              put: operation,
-              post: operation,
-              delete: operation,
-              patch: operation
-            }
+      const operation = {
+        tags: ['test'],
+        responses: { default: { 'description': '' } },
+        produces: ['application/json']
+      }
+
+      expect(res.result).to.include({
+        swagger: '2.0',
+        definitions: {},
+        paths: {
+          '/testEndpoint': {
+            get: operation,
+            put: operation,
+            post: operation,
+            delete: operation,
+            patch: operation
           }
-        })
-
-        Joi.assert(res.result, schemas.Swagger)
-        done()
+        }
       })
+
+      Joi.assert(res.result, schemas.Swagger)
     })
   })
 
   describe('tagging', () => {
-    it('mode: path (default), pathLevel: 1 (default)', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    it('mode: path (default), pathLevel: 1 (default)', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: { responseValidation: true }
-      }, (err) => {
-        expect(err).to.not.exist()
-        server.route(
-          Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' })
-        )
-        server.inject('/swagger', (res) => {
-          expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['foo'])
-          done()
-        })
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.equal(200)
+      expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['foo'])
     })
 
-    it('mode: path, pathLevel: 2', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    it('mode: path, pathLevel: 2', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: {
           tagging: {
             mode: 'path',
             pathLevel: 2
           }
         }
-      }, (err) => {
-        expect(err).to.not.exist()
-        server.route(
-          Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' })
-        )
-        server.inject('/swagger', (res) => {
-          expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['foo/bar'])
-          done()
-        })
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.equal(200)
+      expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['foo/bar'])
     })
 
-    it('mode: tags, stripRequiredTags: true', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    it('mode: tags, stripRequiredTags: true', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: {
           tagging: {
             mode: 'tags',
             stripRequiredTags: true
           }
         }
-      }, (err) => {
-        expect(err).to.not.exist()
-        server.route(
-          Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' })
-        )
-        server.inject('/swagger', (res) => {
-          expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['test'])
-          done()
-        })
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.equal(200)
+      expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['test'])
     })
 
-    it('mode: tags, stripRequiredTags: false', (done) => {
-      const server = new Hapi.Server()
-      server.connection({port: 80})
-      server.register({
-        register: index,
+    it('mode: tags, stripRequiredTags: false', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
         options: {
           tagging: {
             mode: 'tags',
             stripRequiredTags: false
           }
         }
-      }, (err) => {
-        expect(err).to.not.exist()
-        server.route(
-          Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' })
-        )
-        server.inject('/swagger', (res) => {
-          expect(res.statusCode).to.equal(200)
-          expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['api', 'test'])
-          done()
-        })
       })
+
+      server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.equal(200)
+      expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['api', 'test'])
     })
 
-    it(
-      'mode: tags, stripRequiredTags: false, stripAdditionalTags: [test]',
-      (done) => {
-        const server = new Hapi.Server()
-        server.connection({port: 80})
-        server.register({
-          register: index,
-          options: {
-            tagging: {
-              mode: 'tags',
-              stripRequiredTags: false,
-              stripAdditionalTags: ['test']
-            }
+    it('mode: tags, stripRequiredTags: false, stripAdditionalTags: [test]', async () => {
+      const server = Hapi.Server({ port: 80 })
+
+      await server.register({
+        plugin,
+        options: {
+          tagging: {
+            mode: 'tags',
+            stripRequiredTags: false,
+            stripAdditionalTags: ['test']
           }
-        }, (err) => {
-          expect(err).to.not.exist()
-          server.route(
-            Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' })
-          )
-          server.inject('/swagger', (res) => {
-            expect(res.statusCode).to.equal(200)
-            expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['api'])
-            done()
-          })
-        })
-      }
-    )
+        }
+      })
+
+      server.route(Hoek.applyToDefaults(baseRoute, { method: 'get', path: '/foo/bar/test/it' }))
+      const res = await server.inject('/swagger')
+
+      expect(res.statusCode).to.equal(200)
+      expect(res.result.paths['/foo/bar/test/it'].get.tags).to.equal(['api'])
+    })
   })
 })

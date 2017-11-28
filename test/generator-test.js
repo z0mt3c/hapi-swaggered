@@ -28,7 +28,7 @@ const helper = {
 
 describe('definitions', () => {
   describe('newModel', () => {
-    it('object', (done) => {
+    it('object', () => {
       const definitions = {}
       const reference = generator.newModel(Joi.object({
         name: Joi.string().required()
@@ -42,31 +42,27 @@ describe('definitions', () => {
         required: ['name'],
         properties: {name: {type: 'string'}}
       })
-
-      done()
     })
 
-    it('array', (done) => {
+    it('array', () => {
       const definitions = {}
       const model = Joi.array().items(Joi.string()).meta({
         className: 'Pet'
       })
       const reference = generator.newModel.bind(this, model, definitions)
       expect(reference).to.throw(Error, 'generator.newModel does not support array schema')
-      done()
     })
 
-    it('primitive', (done) => {
+    it('primitive', () => {
       const definitions = {}
       const reference = generator.newModel(Joi.string(), definitions)
       expect(reference).to.include({'type': 'string'})
       expect(definitions).to.equal({})
-      done()
     })
   })
 
   describe('simple', () => {
-    it('simple schema', (done) => {
+    it('simple schema', () => {
       const schema = Joi.object({
         name: Joi.string().required()
       }).meta({
@@ -87,10 +83,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('extended', (done) => {
+    it('extended', () => {
       const schema = Joi.object({
         huntingSkill: Joi.string().default('lazy').description('The measured skill for hunting').valid('clueless', 'lazy', 'adventerous', 'aggressive'),
         packName: Joi.string().default('theHounds').min(3).max(20).description('the name of the pack the dog is from'),
@@ -128,10 +123,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('object max', (done) => {
+    it('object max', () => {
       const schema = Joi.object({
         test: Joi.object().max(1),
         test2: Joi.array().items(Joi.object()).max(1)
@@ -160,10 +154,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('has model meta-description', (done) => {
+    it('has model meta-description', () => {
       const schema = Joi.object({
         test: Joi.object().max(1).meta({ description: 'an object' })
       }).meta({ className: 'Pet1', description: 'a pet' })
@@ -184,10 +177,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('has model description', (done) => {
+    it('has model description', () => {
       const schema = Joi.object({
         test: Joi.object().max(1).description('an object')
       }).description('a pet').meta({ className: 'Pet1' })
@@ -208,10 +200,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('collectionFormat', (done) => {
+    it('collectionFormat', () => {
       const schema = Joi.object({
         test: Joi.array().items(Joi.object()).meta({collectionFormat: 'multi'})
       }).meta({
@@ -236,10 +227,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('multiple properties', (done) => {
+    it('multiple properties', () => {
       const schema = Joi.object({
         booleanValue: Joi.boolean(),
         byteValue: Joi.string().meta({format: 'byte'}),
@@ -335,12 +325,11 @@ describe('definitions', () => {
         }
       }
       helper.testDefinition(schema, result)
-      done()
     })
   })
 
   describe('array', () => {
-    it('simple type', (done) => {
+    it('simple type', () => {
       const schema = Joi.object({
         id: Joi.number().integer().meta({
           format: 'int64'
@@ -374,10 +363,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('array of array of primitive', (done) => {
+    it('array of array of primitive', () => {
       const schema = Joi.object({
         dimensions: Joi.array().items(Joi.array().items(Joi.string())).required()
       }).meta({
@@ -404,10 +392,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('array of array of array of complex', (done) => {
+    it('array of array of array of complex', () => {
       const schema = Joi.object({
         dimensions: Joi.array().items(Joi.array().items(Joi.array().items(Joi.object({
           name: Joi.string()
@@ -446,10 +433,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('no inclusion type', (done) => {
+    it('no inclusion type', () => {
       const schema = Joi.object({
         id: Joi.number().integer().meta({
           format: 'int64'
@@ -480,10 +466,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('ref', (done) => {
+    it('ref', () => {
       const schema = Joi.object({
         id: Joi.number().integer().meta({
           format: 'int64'
@@ -524,12 +509,11 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
   })
 
   describe('specials', () => {
-    it('name through options.className', (done) => {
+    it('name through options.className', () => {
       const definitions = {}
       const schema = Joi.object({
         name: Joi.string().required()
@@ -551,10 +535,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result, definitions)
-      done()
     })
 
-    it('duplicate models', (done) => {
+    it('duplicate models', () => {
       const definitions = {
         Pet: {}
       }
@@ -580,10 +563,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result, definitions)
-      done()
     })
 
-    it('name from schema', (done) => {
+    it('name from schema', () => {
       const schema = Joi.object({
         name: Joi.string().required()
       })
@@ -602,10 +584,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('swaggerType: primitive', (done) => {
+    it('swaggerType: primitive', () => {
       const schema = Joi.object({
         name: Joi.string().meta({swaggerType: 'test'})
       })
@@ -621,10 +602,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('swaggerType: dates', (done) => {
+    it('swaggerType: dates', () => {
       const schema = Joi.object({
         date: Joi.date(),
         dateAsInteger: Joi.date().meta({swaggerType: 'integer'}),
@@ -654,10 +634,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('swaggerType: complex', (done) => {
+    it('swaggerType: complex', () => {
       const schema = Joi.object({
         name: Joi.object().meta({swaggerType: 'test'})
       })
@@ -673,10 +652,9 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
 
-    it('object', (done) => {
+    it('object', () => {
       const definitions = {}
       const reference = generator.newModel(Joi.object({
         name: Joi.string().example('Frog').required()
@@ -691,11 +669,9 @@ describe('definitions', () => {
         properties: {name: {type: 'string', example: 'Frog'}},
         example: { name: 'Cat' }
       })
-
-      done()
     })
 
-    it('$ref', (done) => {
+    it('$ref', () => {
       const schema = Joi.object({
         currentPassword: Joi.string().required().description('current password'),
         newPassword: Joi.string().required().description('new password'),
@@ -727,7 +703,6 @@ describe('definitions', () => {
       }
 
       helper.testDefinition(schema, result)
-      done()
     })
   })
 })
