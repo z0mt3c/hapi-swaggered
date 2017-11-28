@@ -27,11 +27,11 @@
     "lodash": "^4.17.4"
   },
   "devDependencies": {
+    "code": "^5.1.2",
     "coveralls": "^3.0.0",
-    "hapi": "^17.0.2",
+    "hapi": "^17.1.1",
     "lab": "^15.1.2",
     "standard": "^10.0.3",
-    "code": "^5.1.2",
     "wreck": "^14.0.2"
   },
   "scripts": {
