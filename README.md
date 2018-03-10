@@ -55,6 +55,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 * `cache`: caching options for the swagger schema generation as specified in [`server.method()`](https://github.com/hapijs/hapi/blob/master/API.md#servermethodname-method-options) of hapi, defaults to: `{ expiresIn: 15 * 60 * 1000 }`
 * `responseValidation`: boolean, turn response validation on and off for hapi-swaggered routes, defaults to false
 * `auth`: authentication configuration [hapijs documentation](https://github.com/hapijs/hapi/blob/master/API.md#route-options) (default to undefined)
+* `securityDefinitions`: security definitions according to [swagger specs](https://github.com/swagger-api/swagger-spec/blob/master/versions/2.0.md]
 
 ## Example
 Example configuration for hapi-swaggered + hapi-swaggered-ui
@@ -105,7 +106,7 @@ server.route({
   path: '/',
   method: 'GET',
   handler (request, h) {
-    h.redirect('/docs');
+    h.response().redirect('/docs');
   }
 });
 
@@ -244,6 +245,20 @@ Specify an operationId for a route:
     plugins: {
       'hapi-swaggered': {
         operationId: 'testRoute'
+      }
+    }
+  }
+}
+```
+
+Specify an security options to a route / operation:
+
+```js
+{
+  options: {
+    plugins: {
+      'hapi-swaggered': {
+        security: {}
       }
     }
   }
