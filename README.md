@@ -63,9 +63,11 @@ Example configuration for hapi-swaggered + hapi-swaggered-ui
 ```js
 const Hapi = require('hapi');
 
-const server = Hapi.Server({ port: 8000 });
-
 (async () => {
+  const server = await new Hapi.Server({
+    port: 8000
+  })
+
   await server.register([
     require('inert'),
     require('vision'),
@@ -99,22 +101,23 @@ const server = Hapi.Server({ port: 8000 });
         }
       }
     }
-  ]);
-})();
+  ])
 
-server.route({
-  path: '/',
-  method: 'GET',
-  handler (request, h) {
-    h.response().redirect('/docs');
+  server.route({
+    path: '/',
+    method: 'GET',
+    handler (request, h) {
+      return h.response().redirect('/docs')
+    }
+  })
+
+  try {
+    await server.start()
+    console.log('Server running at:', server.info.uri)
+  } catch (err) {
+    console.log(err)
   }
-});
-
-(async () => {
-  await server.start();
-  console.log('started on http://localhost:8000')
-
-})();
+})()
 ```
 
 Demo Routes
