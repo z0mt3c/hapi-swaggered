@@ -1,7 +1,7 @@
 'use strict'
 
 const Lab = require('lab')
-let lab = exports.lab = Lab.script()
+const lab = exports.lab = Lab.script()
 const describe = lab.experiment
 const it = lab.test
 const Joi = require('joi')
