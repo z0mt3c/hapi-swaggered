@@ -533,7 +533,6 @@ describe('definitions', () => {
           ]
         }
       }
-
       helper.testDefinition(schema, result, definitions)
     })
 

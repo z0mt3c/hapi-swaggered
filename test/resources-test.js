@@ -31,8 +31,8 @@ const internals = {
     server.route(routes)
     const table = server.table()
     const myResources = resources(_.extend({}, defaults, {tagging: {mode: 'tags'}}, settings), table, tags)
-    Joi.assert(myResources.paths, Joi.object({}).pattern(/./g, schemas.Path))
-    Joi.assert(myResources.definitions, Joi.object({}).pattern(/./g, schemas.Definition))
+    Joi.assert(myResources.paths, Joi.object({}).pattern(/./, schemas.Path))
+    Joi.assert(myResources.definitions, Joi.object({}).pattern(/./, schemas.Definition))
 
     return myResources
   }
