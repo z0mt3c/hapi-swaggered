@@ -475,6 +475,12 @@ describe('utils', () => {
     })
   })
 
+  describe('getLabel', () => {
+    it('#1', () => {
+      Code.expect(utils.getLabel(Joi.object().label('myClassName'))).to.be.equal('myClassName')
+    })
+  })
+
   describe('getSettings', () => {
     it('#1', () => {
       Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')

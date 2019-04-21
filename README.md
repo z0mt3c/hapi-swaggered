@@ -155,10 +155,10 @@ server.route({
 
 ## Features
 ### Model naming
-To assign custom names to your Models use the Joi.meta() option (in previous joi versions Joi.options() may be used)
+To assign custom names to your Models use the Joi.label(string).
 
 ```js
-Joi.object({}).meta({ className: 'FooBar' });
+Joi.object({}).label('FooBar');
 ```
 
 ### Model description
