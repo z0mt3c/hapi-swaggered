@@ -27,10 +27,10 @@
     "lodash": "^4.17.5"
   },
   "devDependencies": {
+    "@hapi/hapi": "^17.9.0",
+    "@hapi/lab": "^21.0.0",
     "code": "^5.2.0",
     "coveralls": "^3.0.0",
-    "hapi": "^17.2.2",
-    "lab": "^15.3.1",
     "standard": "^11.0.0",
     "wreck": "^14.0.2"
   },
@@ -40,7 +40,7 @@
     "posttest": "npm run lint"
   },
   "peerDependencies": {
-    "hapi": ">= 17.0.0"
+    "@hapi/hapi": ">= 17.0.0"
   },
   "homepage": "https://github.com/z0mt3c/hapi-swaggered#readme",
   "directories": {

@@ -1,6 +1,6 @@
 'use strict'
 
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 let lab = exports.lab = Lab.script()
 const describe = lab.experiment
 const it = lab.test
@@ -12,7 +12,7 @@ const resources = require('../lib/resources')
 const schemas = require('../lib/schema')
 const _ = require('lodash')
 const defaults = _.pick(require('../lib/defaults'), ['supportedMethods', 'tagging'])
-const Hapi = require('hapi')
+const Hapi = require('@hapi/hapi')
 
 const baseRoute = {
   method: 'GET',

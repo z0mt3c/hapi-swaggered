@@ -61,7 +61,7 @@ This plugin does not include the [swagger-ui](https://github.com/wordnik/swagger
 Example configuration for hapi-swaggered + hapi-swaggered-ui
 
 ```js
-const Hapi = require('hapi');
+const Hapi = require('@hapi/hapi');
 
 (async () => {
   const server = await new Hapi.Server({

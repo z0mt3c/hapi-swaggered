@@ -1,6 +1,6 @@
 'use strict'
 
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 let lab = exports.lab = Lab.script()
 const describe = lab.experiment
 const it = lab.test

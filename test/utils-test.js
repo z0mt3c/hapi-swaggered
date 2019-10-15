@@ -1,6 +1,6 @@
 'use strict'
 
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 let lab = exports.lab = Lab.script()
 
 const describe = lab.experiment
@@ -135,13 +135,13 @@ describe('utils', () => {
       path: '/dev/null',
       method: 'get',
       settings: {
-        tags: ['Hapi']
+        tags: ['@hapi/hapi']
       }
     }, {
       path: '/dev/null',
       method: 'get',
       settings: {
-        tags: ['api', 'Hapi']
+        tags: ['api', '@hapi/hapi']
       }
     }, {
       path: '/dev/null',
@@ -164,8 +164,8 @@ describe('utils', () => {
       method: 'get'
     }]
 
-    Code.expect(utils.filterRoutesByRequiredTags(routes, ['Hapi'])).to.have.length(2)
-    Code.expect(utils.filterRoutesByRequiredTags(routes, ['Hapi', 'api'])).to.have.length(1)
+    Code.expect(utils.filterRoutesByRequiredTags(routes, ['@hapi/hapi'])).to.have.length(2)
+    Code.expect(utils.filterRoutesByRequiredTags(routes, ['@hapi/hapi', 'api'])).to.have.length(1)
     // TODO: hm?
     Code.expect(utils.filterRoutesByRequiredTags(routes, [])).to.have.length(6)
     Code.expect(utils.filterRoutesByRequiredTags(routes, null)).to.have.length(6)
@@ -176,13 +176,13 @@ describe('utils', () => {
       path: '/dev/null',
       method: 'get',
       settings: {
-        tags: ['Hapi']
+        tags: ['@hapi/hapi']
       }
     }, {
       path: '/dev/null',
       method: 'get',
       settings: {
-        tags: ['api', 'Hapi']
+        tags: ['api', '@hapi/hapi']
       }
     }, {
       path: '/dev/null',
@@ -209,8 +209,8 @@ describe('utils', () => {
     Code.expect(utils.filterRoutesByTagSelection(routes, null, [])).to.have.length(6)
     Code.expect(utils.filterRoutesByTagSelection(routes, [], null)).to.have.length(6)
     Code.expect(utils.filterRoutesByTagSelection(routes, null, null)).to.have.length(6)
-    Code.expect(utils.filterRoutesByTagSelection(routes, ['Hapi'], [])).to.have.length(2)
-    Code.expect(utils.filterRoutesByTagSelection(routes, ['Hapi'], ['api'])).to.have.length(1)
+    Code.expect(utils.filterRoutesByTagSelection(routes, ['@hapi/hapi'], [])).to.have.length(2)
+    Code.expect(utils.filterRoutesByTagSelection(routes, ['@hapi/hapi'], ['api'])).to.have.length(1)
     Code.expect(utils.filterRoutesByTagSelection(routes, [], ['api'])).to.have.length(4)
   })
 

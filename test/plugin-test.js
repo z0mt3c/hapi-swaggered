@@ -1,6 +1,6 @@
 'use strict'
 
-const Lab = require('lab')
+const Lab = require('@hapi/lab')
 let lab = exports.lab = Lab.script()
 
 const describe = lab.experiment
@@ -9,7 +9,7 @@ const Code = require('code')
 const expect = Code.expect
 const Joi = require('joi')
 
-const Hapi = require('hapi')
+const Hapi = require('@hapi/hapi')
 const Hoek = require('hoek')
 const plugin = require('../')
 const schemas = require('../lib/schema')
