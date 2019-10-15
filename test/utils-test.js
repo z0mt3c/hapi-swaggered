@@ -433,6 +433,8 @@ describe('utils', () => {
     it('#1', () => {
       Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value')
       Code.expect(utils.setNotEmpty({}, 'key', 'value').key).to.be.equal('value')
+      Code.expect(utils.setNotEmpty({}, 'key', 10).key).to.be.equal(10)
+      Code.expect(utils.setNotEmpty({}, 'key', false).key).to.be.equal(false)
       Code.expect(utils.setNotEmpty({}, 'key', undefined).key).not.to.exist()
       Code.expect(utils.setNotEmpty({}, 'key', null).key).not.to.exist()
       Code.expect(utils.setNotEmpty({}, 'key', []).key).not.to.exist()
@@ -472,6 +474,8 @@ describe('utils', () => {
       Code.expect(utils.getMeta({_settings: {className: 'myClassName'}}, 'className')).to.be.equal('myClassName')
       Code.expect(utils.getMeta(undefined, 'className')).to.be.equal(undefined)
       Code.expect(utils.getMeta(null, 'className')).to.be.equal(undefined)
+      Code.expect(utils.getMeta({}, 'className')).to.be.equal(undefined)
+      Code.expect(utils.getMeta({_settings: {}}, 'className')).to.be.equal(undefined)
     })
   })
 
