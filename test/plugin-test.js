@@ -1,7 +1,7 @@
 'use strict'
 
 const Lab = require('lab')
-let lab = exports.lab = Lab.script()
+const lab = exports.lab = Lab.script()
 
 const describe = lab.experiment
 const it = lab.test
@@ -222,7 +222,7 @@ describe('plugin', () => {
             mode: 'tags'
           },
           tags: {
-            'serverDescription': 'myDesc2'
+            serverDescription: 'myDesc2'
           },
           routeConfig: {}
         }
@@ -235,7 +235,7 @@ describe('plugin', () => {
       expect(res.statusCode).to.exist()
       expect(res.statusCode).to.equal(200)
       Joi.assert(res.result, schemas.Swagger)
-      expect(res.result).to.include({swagger: '2.0', paths: {}, definitions: {}})
+      expect(res.result).to.include({ swagger: '2.0', paths: {}, definitions: {} })
     })
 
     it('simple', async () => {
@@ -252,7 +252,7 @@ describe('plugin', () => {
           '/testEndpoint': {
             get: {
               tags: ['test'],
-              responses: { default: { 'description': '' } },
+              responses: { default: { description: '' } },
               produces: ['application/json']
             }
           }
@@ -269,7 +269,7 @@ describe('plugin', () => {
 
       const operation = {
         tags: ['test'],
-        responses: { default: { 'description': '' } },
+        responses: { default: { description: '' } },
         produces: ['application/json']
       }
 

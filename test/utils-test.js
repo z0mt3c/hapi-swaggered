@@ -1,7 +1,7 @@
 'use strict'
 
 const Lab = require('lab')
-let lab = exports.lab = Lab.script()
+const lab = exports.lab = Lab.script()
 
 const describe = lab.experiment
 const it = lab.test
@@ -53,12 +53,12 @@ describe('utils', () => {
       })
 
       Code.expect(utils.getCurrentSettings(
-        {tags: [{ name: '1', description: '2' }]},
-        {tags: [{ name: '2', description: '2' }]})).to.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
+        { tags: [{ name: '1', description: '2' }] },
+        { tags: [{ name: '2', description: '2' }] })).to.equal({ tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }] })
 
       Code.expect(utils.getCurrentSettings(
-        {tags: { '1': '2' }},
-        {tags: { '2': '2' }})).to.equal({tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }]})
+        { tags: { 1: '2' } },
+        { tags: { 2: '2' } })).to.equal({ tags: [{ name: '1', description: '2' }, { name: '2', description: '2' }] })
     })
   })
 
@@ -125,7 +125,7 @@ describe('utils', () => {
 
   describe('generateNameWithFallback', () => {
     it('#1', () => {
-      const schema = Joi.object().keys({name: Joi.string()})
+      const schema = Joi.object().keys({ name: Joi.string() })
       Code.expect(utils.generateNameWithFallback(schema)).to.equal('NameModel')
     })
   })
@@ -412,7 +412,7 @@ describe('utils', () => {
 
   describe('generateRouteNickname', () => {
     it('#1', () => {
-      Code.expect(utils.generateRouteNickname({method: 'get', path: '/path/to/{somthing}'})).to.equal('get_path_to__somthing_')
+      Code.expect(utils.generateRouteNickname({ method: 'get', path: '/path/to/{somthing}' })).to.equal('get_path_to__somthing_')
     })
   })
 
@@ -436,6 +436,8 @@ describe('utils', () => {
       Code.expect(utils.setNotEmpty({}, 'key', undefined).key).not.to.exist()
       Code.expect(utils.setNotEmpty({}, 'key', null).key).not.to.exist()
       Code.expect(utils.setNotEmpty({}, 'key', []).key).not.to.exist()
+      Code.expect(utils.setNotEmpty({}, 'key', 0).key).to.exist()
+      Code.expect(utils.setNotEmpty({}, 'key', false).key).to.exist()
     })
   })
 
@@ -468,8 +470,8 @@ describe('utils', () => {
 
   describe('getMeta', () => {
     it('#1', () => {
-      Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
-      Code.expect(utils.getMeta({_settings: {className: 'myClassName'}}, 'className')).to.be.equal('myClassName')
+      Code.expect(utils.getMeta(Joi.object().meta({ className: 'myClassName' }), 'className')).to.be.equal('myClassName')
+      Code.expect(utils.getMeta({ _settings: { className: 'myClassName' } }, 'className')).to.be.equal('myClassName')
       Code.expect(utils.getMeta(undefined, 'className')).to.be.equal(undefined)
       Code.expect(utils.getMeta(null, 'className')).to.be.equal(undefined)
     })
@@ -477,7 +479,7 @@ describe('utils', () => {
 
   describe('getSettings', () => {
     it('#1', () => {
-      Code.expect(utils.getMeta(Joi.object().meta({className: 'myClassName'}), 'className')).to.be.equal('myClassName')
+      Code.expect(utils.getMeta(Joi.object().meta({ className: 'myClassName' }), 'className')).to.be.equal('myClassName')
     })
   })
 
@@ -508,29 +510,29 @@ describe('utils', () => {
 
   describe('getDescription', () => {
     it('#1', () => {
-      Code.expect(utils.getDescription(Joi.object().meta({className: 'myClassName'}))).to.not.exist()
-      Code.expect(utils.getDescription(Joi.object().meta({className: 'myClassName', description: 'test'}))).to.equal('test')
+      Code.expect(utils.getDescription(Joi.object().meta({ className: 'myClassName' }))).to.not.exist()
+      Code.expect(utils.getDescription(Joi.object().meta({ className: 'myClassName', description: 'test' }))).to.equal('test')
     })
   })
 
   describe('getTags', () => {
     it('#1', () => {
-      Code.expect(utils.getTags({tags: []})).to.equal([])
-      Code.expect(utils.getTags({tags: { test: 'test123' }})).to.equal([{name: 'test', description: 'test123'}])
-      Code.expect(utils.getTags({tags: [{ name: 'test', description: 'test123' }]})).to.equal([{name: 'test', description: 'test123'}])
-      const example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
-      Code.expect(utils.getTags({tags: [example]})).to.equal([example])
+      Code.expect(utils.getTags({ tags: [] })).to.equal([])
+      Code.expect(utils.getTags({ tags: { test: 'test123' } })).to.equal([{ name: 'test', description: 'test123' }])
+      Code.expect(utils.getTags({ tags: [{ name: 'test', description: 'test123' }] })).to.equal([{ name: 'test', description: 'test123' }])
+      const example = { name: 'test', description: 'test123', externalDocs: { description: 'Find out more about our store', url: 'http://swagger.io' } }
+      Code.expect(utils.getTags({ tags: [example] })).to.equal([example])
     })
 
     it('#2', () => {
-      const example = {name: 'test', description: 'test123', externalDocs: {description: 'Find out more about our store', url: 'http://swagger.io'}}
+      const example = { name: 'test', description: 'test123', externalDocs: { description: 'Find out more about our store', url: 'http://swagger.io' } }
       Joi.assert(
-        utils.getTags({tags: [example]}),
+        utils.getTags({ tags: [example] }),
         Joi.array().items(schema.Tag),
         'Tag schema doesnt fit'
       )
       Joi.assert(
-        utils.getTags({tags: { test: 'test123' }}),
+        utils.getTags({ tags: { test: 'test123' } }),
         Joi.array().items(schema.Tag),
         'Tag schema doesnt fit'
       )

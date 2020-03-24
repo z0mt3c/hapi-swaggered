@@ -1,7 +1,7 @@
 'use strict'
 
 const Lab = require('lab')
-let lab = exports.lab = Lab.script()
+const lab = exports.lab = Lab.script()
 const describe = lab.experiment
 const it = lab.test
 const Code = require('code')
@@ -27,12 +27,12 @@ const baseRoute = {
 
 const internals = {
   resources (routes, settings, tags) {
-    const server = Hapi.Server({port: 80})
+    const server = Hapi.Server({ port: 80 })
     server.route(routes)
     const table = server.table()
-    const myResources = resources(_.extend({}, defaults, {tagging: {mode: 'tags'}}, settings), table, tags)
-    Joi.assert(myResources.paths, Joi.object({}).pattern(/./g, schemas.Path))
-    Joi.assert(myResources.definitions, Joi.object({}).pattern(/./g, schemas.Definition))
+    const myResources = resources(_.extend({}, defaults, { tagging: { mode: 'tags' } }, settings), table, tags)
+    Joi.assert(myResources.paths, Joi.object({}).pattern(/.*/, schemas.Path))
+    Joi.assert(myResources.definitions, Joi.object({}).pattern(/.*/, schemas.Definition))
 
     return myResources
   }
@@ -46,44 +46,44 @@ describe('resources', () => {
   })
 
   it('filtering', () => {
-    const route1 = Hoek.applyToDefaults(baseRoute, {options: {tags: ['myTestTag']}})
-    const route2 = Hoek.applyToDefaults(baseRoute, {method: 'POST', options: {tags: ['myTestTag', 'requiredTag']}})
+    const route1 = Hoek.applyToDefaults(baseRoute, { options: { tags: ['myTestTag'] } })
+    const route2 = Hoek.applyToDefaults(baseRoute, { method: 'POST', options: { tags: ['myTestTag', 'requiredTag'] } })
     let resources = internals.resources([route1, route2], {}, 'requiredTag')
     expect(resources.paths['/testEndpoint']).to.only.include('post')
     resources = internals.resources([route1, route2], {}, '-requiredTag')
     expect(resources.paths['/testEndpoint']).to.only.include('get')
-    resources = internals.resources([route1, route2], {requiredTags: ['requiredTag']})
+    resources = internals.resources([route1, route2], { requiredTags: ['requiredTag'] })
     expect(resources.paths['/testEndpoint']).to.only.include('post')
   })
 
   it('tags are exposed', () => {
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {options: {tags: ['myTestTag']}}))
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, { options: { tags: ['myTestTag'] } }))
     expect(resources).to.exist()
-    expect(resources.paths['/testEndpoint'].get).to.include({tags: ['myTestTag']})
+    expect(resources.paths['/testEndpoint'].get).to.include({ tags: ['myTestTag'] })
   })
 
   it('notes->description and description->summary are exposed', () => {
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {options: {notes: 'my notes', description: 'my description'}}))
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, { options: { notes: 'my notes', description: 'my description' } }))
     expect(resources).to.exist()
-    expect(resources.paths['/testEndpoint'].get).to.include({summary: 'my description', description: 'my notes'})
+    expect(resources.paths['/testEndpoint'].get).to.include({ summary: 'my description', description: 'my notes' })
   })
 
   it('deprecation', () => {
     const tags = ['myTestTag', 'deprecated']
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {options: {tags: tags}}))
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, { options: { tags: tags } }))
     expect(resources).to.exist()
-    expect(resources.paths['/testEndpoint'].get).to.include({tags: tags, deprecated: true})
+    expect(resources.paths['/testEndpoint'].get).to.include({ tags: tags, deprecated: true })
   })
 
   it('stripPrefix', () => {
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {path: '/api/foo/bar'}), {stripPrefix: '/api'})
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, { path: '/api/foo/bar' }), { stripPrefix: '/api' })
     expect(resources).to.exist()
     expect(resources.paths['/api/foo/bar']).to.not.exist()
     expect(resources.paths['/foo/bar']).to.exist()
   })
 
   it('stripPrefix for ROOT', () => {
-    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {path: '/api'}), {stripPrefix: '/api'})
+    const resources = internals.resources(Hoek.applyToDefaults(baseRoute, { path: '/api' }), { stripPrefix: '/api' })
     expect(resources).to.exist()
     expect(resources.paths['/api']).to.not.exist()
     expect(resources.paths['/']).to.not.exist()
@@ -99,7 +99,7 @@ describe('resources', () => {
               produces: ['application/pdf']
             }
           },
-          validate: {params: Joi.object({bar: Joi.string().description('test').required()})}
+          validate: { params: Joi.object({ bar: Joi.string().description('test').required() }) }
         }
       }))
 
@@ -118,7 +118,7 @@ describe('resources', () => {
     it('#1', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
-        options: {validate: {params: Joi.object({bar: Joi.string().description('test').required()})}}
+        options: { validate: { params: Joi.object({ bar: Joi.string().description('test').required() }) } }
       }))
 
       expect(resources.paths['/foo/{bar}'].get).to.include({
@@ -176,8 +176,8 @@ describe('resources', () => {
 
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.include({
-        default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
-        500: {description: 'test', schema: {$ref: '#/definitions/BarModel'}}
+        default: { description: 'test', schema: { $ref: '#/definitions/BarModel' } },
+        500: { description: 'test', schema: { $ref: '#/definitions/BarModel' } }
       })
     })
 
@@ -192,7 +192,7 @@ describe('resources', () => {
               500: sameModel,
               501: Joi.array().description('test1'),
               502: Joi.array().items(Joi.number().integer()).description('num'),
-              503: Joi.array().items(Joi.object({ name: Joi.string() }).meta({className: 'TestModel'})).description('num')
+              503: Joi.array().items(Joi.object({ name: Joi.string() }).meta({ className: 'TestModel' })).description('num')
             }
           }
         }
@@ -200,13 +200,13 @@ describe('resources', () => {
 
       expect(resources).to.exist()
 
-      const sameResponse = {description: 'test', schema: {type: 'array', items: {type: 'string'}, description: 'test'}}
+      const sameResponse = { description: 'test', schema: { type: 'array', items: { type: 'string' }, description: 'test' } }
       expect(resources.paths['/foo'].get.responses).to.equal({
         default: sameResponse,
         500: sameResponse,
-        501: {description: 'test1', schema: {type: 'array', description: 'test1', items: { type: 'string' }}},
-        502: {description: 'num', schema: {type: 'array', items: {type: 'integer'}, description: 'num'}},
-        503: {description: 'num', schema: {type: 'array', description: 'num', 'items': { $ref: '#/definitions/TestModel' }}}
+        501: { description: 'test1', schema: { type: 'array', description: 'test1', items: { type: 'string' } } },
+        502: { description: 'num', schema: { type: 'array', items: { type: 'integer' }, description: 'num' } },
+        503: { description: 'num', schema: { type: 'array', description: 'num', items: { $ref: '#/definitions/TestModel' } } }
       })
     })
     it('primitive response type', () => {
@@ -225,9 +225,9 @@ describe('resources', () => {
 
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.equal({
-        default: {description: 'test', schema: {type: 'string', description: 'test'}},
-        500: {description: '', schema: {type: 'number', description: undefined}},
-        501: {description: 'test', schema: {type: 'integer', description: 'test'}}
+        default: { description: 'test', schema: { type: 'string', description: 'test' } },
+        500: { description: '', schema: { type: 'number', description: undefined } },
+        501: { description: 'test', schema: { type: 'integer', description: 'test' } }
       })
     })
 
@@ -238,8 +238,8 @@ describe('resources', () => {
           plugins: {
             'hapi-swaggered': {
               responses: {
-                default: {description: 'Bad Request'},
-                500: {description: 'Internal Server Error', type: 'string'}
+                default: { description: 'Bad Request' },
+                500: { description: 'Internal Server Error', type: 'string' }
               }
             }
           },
@@ -253,8 +253,8 @@ describe('resources', () => {
 
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.include({
-        default: {description: 'test', schema: {$ref: '#/definitions/BarModel'}},
-        500: {description: 'Internal Server Error', schema: { type: 'string' }}
+        default: { description: 'test', schema: { $ref: '#/definitions/BarModel' } },
+        500: { description: 'Internal Server Error', schema: { type: 'string' } }
       })
     })
 
@@ -271,7 +271,7 @@ describe('resources', () => {
                     bar: Joi.string().description('test').required()
                   })
                 },
-                500: {description: 'Internal Server Error'}
+                500: { description: 'Internal Server Error' }
               }
             }
           }
@@ -280,8 +280,8 @@ describe('resources', () => {
 
       expect(resources).to.exist()
       expect(resources.paths['/foo'].get.responses).to.include({
-        default: {description: 'Bad Request', schema: {$ref: '#/definitions/BarModel'}},
-        500: {description: 'Internal Server Error'}
+        default: { description: 'Bad Request', schema: { $ref: '#/definitions/BarModel' } },
+        500: { description: 'Internal Server Error' }
       })
     })
 
@@ -306,7 +306,7 @@ describe('resources', () => {
     it('simple', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo/{bar}',
-        options: {validate: {headers: Joi.object({bar: Joi.string().description('test').required()})}}
+        options: { validate: { headers: Joi.object({ bar: Joi.string().description('test').required() }) } }
       }))
 
       expect(resources).to.exist()
@@ -328,7 +328,7 @@ describe('resources', () => {
         bar: Joi.string().description('test').required(),
         foo: Joi.number().integer().min(20).max(30).default(2).required(),
         array: Joi.array().items(Joi.string()),
-        arrayOfObjects: Joi.array().items(Joi.object({bar: Joi.string().description('test').required()})),
+        arrayOfObjects: Joi.array().items(Joi.object({ bar: Joi.string().description('test').required() })),
         any: Joi.any()
       }
 
@@ -366,7 +366,7 @@ describe('resources', () => {
       expect(parameters).to.include({
         required: false,
         type: 'array',
-        items: {type: 'string'},
+        items: { type: 'string' },
         name: 'array',
         in: 'query'
       })
@@ -374,7 +374,7 @@ describe('resources', () => {
       expect(parameters).to.include({
         required: false,
         type: 'array',
-        items: {type: 'string'},
+        items: { type: 'string' },
         name: 'array',
         in: 'query'
       })
@@ -407,8 +407,8 @@ describe('resources', () => {
             method: 'post',
             path: '/foo/{bar}',
             options: {
-              validate: {payload: Joi.object({bar: Joi.string().description('test').required()})},
-              payload: {allow: [mimeType]}
+              validate: { payload: Joi.object({ bar: Joi.string().description('test').required() }) },
+              payload: { allow: [mimeType] }
             }
           }))
 
@@ -434,8 +434,8 @@ describe('resources', () => {
             method: 'post',
             path: '/foo/{bar}',
             options: {
-              validate: {payload: Joi.object({bar: Joi.string().description('test').required(), foo: Joi.object({ bar: Joi.string().description('test').required() })})},
-              payload: {allow: [mimeType]}
+              validate: { payload: Joi.object({ bar: Joi.string().description('test').required(), foo: Joi.object({ bar: Joi.string().description('test').required() }) }) },
+              payload: { allow: [mimeType] }
             }
           }))
 
@@ -472,7 +472,7 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         method: 'post',
-        options: {validate: {payload: Joi.object({bar: Joi.string().description('test').required()}).description('foobar').required().meta({className: 'TestModel'})}}
+        options: { validate: { payload: Joi.object({ bar: Joi.string().description('test').required() }).description('foobar').required().meta({ className: 'TestModel' }) } }
       }))
 
       expect(resources).to.exist()
@@ -486,19 +486,19 @@ describe('resources', () => {
       const resources = internals.resources(Hoek.applyToDefaults(baseRoute, {
         path: '/foo',
         method: 'post',
-        options: {validate: {payload: Joi.string().description('string!')}}
+        options: { validate: { payload: Joi.string().description('string!') } }
       }))
 
       expect(resources).to.exist()
       expect(resources.paths['/foo'].post.parameters).to.equal([
         {
-          'required': false,
-          'description': 'string!',
-          'in': 'body',
-          'name': 'Payload',
-          'schema': {
-            'type': 'string',
-            'description': 'string!'
+          required: false,
+          description: 'string!',
+          in: 'body',
+          name: 'Payload',
+          schema: {
+            type: 'string',
+            description: 'string!'
           }
         }
       ])
@@ -525,7 +525,7 @@ describe('resources', () => {
           validate: {
             payload: Joi.array().items(
               Joi.string()
-            ).description('foobar').required().meta({className: 'Test'})
+            ).description('foobar').required().meta({ className: 'Test' })
           }
         }
       }))
@@ -538,7 +538,7 @@ describe('resources', () => {
       expect(resources.definitions.Test).to.include({
         type: 'array',
         description: 'foobar',
-        items: {type: 'string'}
+        items: { type: 'string' }
       })
     })
 
@@ -577,7 +577,7 @@ describe('resources', () => {
       expect(resources.definitions.Array).to.equal({
         type: 'array',
         description: 'foobar',
-        items: {type: 'string'}
+        items: { type: 'string' }
       })
     })
 
@@ -614,7 +614,7 @@ describe('resources', () => {
       expect(resources.definitions.Array).to.equal({
         type: 'array',
         description: 'foobar',
-        items: {type: 'string'}
+        items: { type: 'string' }
       })
     })
 
@@ -638,7 +638,7 @@ describe('resources', () => {
           tags: ['api'],
           validate: {
             payload: Joi.array().items(
-              Joi.object({name: Joi.string()})
+              Joi.object({ name: Joi.string() })
             ).description('foobar').required()
           }
         }
@@ -653,7 +653,7 @@ describe('resources', () => {
       expect(resources.definitions.Array).to.equal({
         type: 'array',
         description: 'foobar',
-        items: {$ref: '#/definitions/NameModel'}
+        items: { $ref: '#/definitions/NameModel' }
       })
     })
 

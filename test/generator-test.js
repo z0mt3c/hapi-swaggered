@@ -1,7 +1,7 @@
 'use strict'
 
 const Lab = require('lab')
-let lab = exports.lab = Lab.script()
+const lab = exports.lab = Lab.script()
 
 const describe = lab.experiment
 const it = lab.test
@@ -36,11 +36,11 @@ describe('definitions', () => {
         className: 'Pet'
       }), definitions)
 
-      expect(reference).to.include({'$ref': '#/definitions/Pet'})
+      expect(reference).to.include({ $ref: '#/definitions/Pet' })
       expect(definitions.Pet).to.exist()
       expect(definitions.Pet).to.include({
         required: ['name'],
-        properties: {name: {type: 'string'}}
+        properties: { name: { type: 'string' } }
       })
     })
 
@@ -56,7 +56,7 @@ describe('definitions', () => {
     it('primitive', () => {
       const definitions = {}
       const reference = generator.newModel(Joi.string(), definitions)
-      expect(reference).to.include({'type': 'string'})
+      expect(reference).to.include({ type: 'string' })
       expect(definitions).to.equal({})
     })
   })
@@ -70,13 +70,13 @@ describe('definitions', () => {
       })
 
       const result = {
-        'Pet': {
-          'properties': {
-            'name': {
-              'type': 'string'
+        Pet: {
+          properties: {
+            name: {
+              type: 'string'
             }
           },
-          'required': [
+          required: [
             'name'
           ]
         }
@@ -89,34 +89,34 @@ describe('definitions', () => {
       const schema = Joi.object({
         huntingSkill: Joi.string().default('lazy').description('The measured skill for hunting').valid('clueless', 'lazy', 'adventerous', 'aggressive'),
         packName: Joi.string().default('theHounds').min(3).max(20).description('the name of the pack the dog is from'),
-        packSize: Joi.number().integer().default(0).min(0).max(10).description('the size of the pack the dog is from').meta({format: 'int32'})
+        packSize: Joi.number().integer().default(0).min(0).max(10).description('the size of the pack the dog is from').meta({ format: 'int32' })
       }).meta({
         className: 'Pet1'
       })
 
       const result = {
-        'Pet1': {
-          'properties': {
-            'huntingSkill': {
-              'type': 'string',
-              'default': 'lazy',
-              'description': 'The measured skill for hunting',
-              'enum': ['clueless', 'lazy', 'adventerous', 'aggressive']
+        Pet1: {
+          properties: {
+            huntingSkill: {
+              type: 'string',
+              default: 'lazy',
+              description: 'The measured skill for hunting',
+              enum: ['clueless', 'lazy', 'adventerous', 'aggressive']
             },
-            'packName': {
-              'type': 'string',
-              'default': 'theHounds',
-              'description': 'the name of the pack the dog is from',
-              'minLength': 3,
-              'maxLength': 20
+            packName: {
+              type: 'string',
+              default: 'theHounds',
+              description: 'the name of the pack the dog is from',
+              minLength: 3,
+              maxLength: 20
             },
-            'packSize': {
-              'type': 'integer',
-              'format': 'int32',
-              'default': 0,
-              'description': 'the size of the pack the dog is from',
-              'minimum': 0,
-              'maximum': 10
+            packSize: {
+              type: 'integer',
+              format: 'int32',
+              default: 0,
+              description: 'the size of the pack the dog is from',
+              minimum: 0,
+              maximum: 10
             }
           }
         }
@@ -134,20 +134,20 @@ describe('definitions', () => {
       })
 
       const result = {
-        'EmptyModel': {
-          'properties': {}
+        EmptyModel: {
+          properties: {}
         },
-        'Pet1': {
-          'properties': {
-            'test': {
-              '$ref': '#/definitions/EmptyModel'
+        Pet1: {
+          properties: {
+            test: {
+              $ref: '#/definitions/EmptyModel'
             },
-            'test2': {
-              'type': 'array',
-              'items': {
-                '$ref': '#/definitions/EmptyModel'
+            test2: {
+              type: 'array',
+              items: {
+                $ref: '#/definitions/EmptyModel'
               },
-              'maximum': 1
+              maximum: 1
             }
           }
         }
@@ -162,15 +162,15 @@ describe('definitions', () => {
       }).meta({ className: 'Pet1', description: 'a pet' })
 
       const result = {
-        'EmptyModel': {
-          'description': 'an object',
-          'properties': {}
+        EmptyModel: {
+          description: 'an object',
+          properties: {}
         },
-        'Pet1': {
-          'description': 'a pet',
-          'properties': {
-            'test': {
-              '$ref': '#/definitions/EmptyModel'
+        Pet1: {
+          description: 'a pet',
+          properties: {
+            test: {
+              $ref: '#/definitions/EmptyModel'
             }
           }
         }
@@ -185,15 +185,15 @@ describe('definitions', () => {
       }).description('a pet').meta({ className: 'Pet1' })
 
       const result = {
-        'EmptyModel': {
-          'description': 'an object',
-          'properties': {}
+        EmptyModel: {
+          description: 'an object',
+          properties: {}
         },
-        'Pet1': {
-          'description': 'a pet',
-          'properties': {
-            'test': {
-              '$ref': '#/definitions/EmptyModel'
+        Pet1: {
+          description: 'a pet',
+          properties: {
+            test: {
+              $ref: '#/definitions/EmptyModel'
             }
           }
         }
@@ -204,23 +204,23 @@ describe('definitions', () => {
 
     it('collectionFormat', () => {
       const schema = Joi.object({
-        test: Joi.array().items(Joi.object()).meta({collectionFormat: 'multi'})
+        test: Joi.array().items(Joi.object()).meta({ collectionFormat: 'multi' })
       }).meta({
         className: 'Pet1'
       })
 
       const result = {
-        'EmptyModel': {
-          'properties': {}
+        EmptyModel: {
+          properties: {}
         },
-        'Pet1': {
-          'properties': {
-            'test': {
-              'type': 'array',
-              'items': {
-                '$ref': '#/definitions/EmptyModel'
+        Pet1: {
+          properties: {
+            test: {
+              type: 'array',
+              items: {
+                $ref: '#/definitions/EmptyModel'
               },
-              'collectionFormat': 'multi'
+              collectionFormat: 'multi'
             }
           }
         }
@@ -232,18 +232,18 @@ describe('definitions', () => {
     it('multiple properties', () => {
       const schema = Joi.object({
         booleanValue: Joi.boolean(),
-        byteValue: Joi.string().meta({format: 'byte'}),
-        dateTimeValue: Joi.string().meta({format: 'date-time'}),
+        byteValue: Joi.string().meta({ format: 'byte' }),
+        dateTimeValue: Joi.string().meta({ format: 'date-time' }),
         numberValue: Joi.number(),
         integerValue: Joi.number().integer(),
-        int32Value: Joi.number().integer().meta({format: 'int32'}),
-        int64Value: Joi.number().integer().meta({format: 'int64'}),
+        int32Value: Joi.number().integer().meta({ format: 'int32' }),
+        int64Value: Joi.number().integer().meta({ format: 'int64' }),
         stringValue: Joi.string(),
         booleanArrayValue: Joi.array().items(Joi.boolean()),
-        byteArrayValue: Joi.array().items(Joi.string().meta({format: 'byte'})),
-        dateTimeArrayValue: Joi.array().items(Joi.string().meta({format: 'date-time'})),
-        int32ArrayValue: Joi.array().items(Joi.number().integer().meta({format: 'int32'})),
-        int64ArrayValue: Joi.array().items(Joi.number().integer().meta({format: 'int64'})),
+        byteArrayValue: Joi.array().items(Joi.string().meta({ format: 'byte' })),
+        dateTimeArrayValue: Joi.array().items(Joi.string().meta({ format: 'date-time' })),
+        int32ArrayValue: Joi.array().items(Joi.number().integer().meta({ format: 'int32' })),
+        int64ArrayValue: Joi.array().items(Joi.number().integer().meta({ format: 'int64' })),
         stringArrayValue: Joi.array().items(Joi.string())
       }).meta({
         className: 'Pet'
@@ -251,74 +251,74 @@ describe('definitions', () => {
 
       const result = {
         Pet: {
-          'description': 'true',
-          'properties': {
-            'booleanValue': {
-              'type': 'boolean'
+          description: 'true',
+          properties: {
+            booleanValue: {
+              type: 'boolean'
             },
-            'byteValue': {
-              'type': 'string',
-              'format': 'byte'
+            byteValue: {
+              type: 'string',
+              format: 'byte'
             },
-            'dateTimeValue': {
-              'type': 'string',
-              'format': 'date-time'
+            dateTimeValue: {
+              type: 'string',
+              format: 'date-time'
             },
-            'numberValue': {
-              'type': 'number'
+            numberValue: {
+              type: 'number'
             },
-            'integerValue': {
-              'type': 'integer'
+            integerValue: {
+              type: 'integer'
             },
-            'int32Value': {
-              'type': 'integer',
-              'format': 'int32'
+            int32Value: {
+              type: 'integer',
+              format: 'int32'
             },
-            'int64Value': {
-              'type': 'integer',
-              'format': 'int64'
+            int64Value: {
+              type: 'integer',
+              format: 'int64'
             },
-            'stringValue': {
-              'type': 'string'
+            stringValue: {
+              type: 'string'
             },
-            'booleanArrayValue': {
-              'type': 'array',
-              'items': {
-                'type': 'boolean'
+            booleanArrayValue: {
+              type: 'array',
+              items: {
+                type: 'boolean'
               }
             },
-            'byteArrayValue': {
-              'type': 'array',
-              'items': {
-                'type': 'string',
-                'format': 'byte'
+            byteArrayValue: {
+              type: 'array',
+              items: {
+                type: 'string',
+                format: 'byte'
               }
             },
-            'dateTimeArrayValue': {
-              'type': 'array',
-              'items': {
-                'type': 'string',
-                'format': 'date-time'
+            dateTimeArrayValue: {
+              type: 'array',
+              items: {
+                type: 'string',
+                format: 'date-time'
               }
             },
-            'int32ArrayValue': {
-              'type': 'array',
-              'items': {
-                'type': 'integer',
-                'format': 'int32'
+            int32ArrayValue: {
+              type: 'array',
+              items: {
+                type: 'integer',
+                format: 'int32'
               }
             },
-            'int64ArrayValue': {
-              'type': 'array',
-              'items': {
-                'type': 'integer',
-                'format': 'int64'
+            int64ArrayValue: {
+              type: 'array',
+              items: {
+                type: 'integer',
+                format: 'int64'
               }
             },
-            'stringArrayValue': {
-              'type': 'array',
-              'items': {
-                'type': 'string'
+            stringArrayValue: {
+              type: 'array',
+              items: {
+                type: 'string'
               }
             }
           }
@@ -343,19 +343,19 @@ describe('definitions', () => {
 
       const result = {
         Array: {
-          'required': [
+          required: [
             'id'
           ],
-          'properties': {
-            'id': {
-              'type': 'integer',
-              'format': 'int64'
+          properties: {
+            id: {
+              type: 'integer',
+              format: 'int64'
             },
-            'childrensAges': {
-              'type': 'array',
-              'items': {
-                'type': 'integer',
-                'format': 'int32'
+            childrensAges: {
+              type: 'array',
+              items: {
+                type: 'integer',
+                format: 'int32'
               }
             }
           }
@@ -374,16 +374,16 @@ describe('definitions', () => {
 
       const result = {
         Array: {
-          'required': [
+          required: [
             'dimensions'
           ],
-          'properties': {
-            'dimensions': {
-              'type': 'array',
-              'items': {
-                'type': 'array',
-                'items': {
-                  'type': 'string'
+          properties: {
+            dimensions: {
+              type: 'array',
+              items: {
+                type: 'array',
+                items: {
+                  type: 'string'
                 }
               }
             }
@@ -405,25 +405,25 @@ describe('definitions', () => {
 
       const result = {
         Child: {
-          'properties': {
-            'name': {
-              'type': 'string'
+          properties: {
+            name: {
+              type: 'string'
             }
           }
         },
         Array: {
-          'required': [
+          required: [
             'dimensions'
           ],
-          'properties': {
-            'dimensions': {
-              'type': 'array',
-              'items': {
-                'type': 'array',
-                'items': {
-                  'type': 'array',
-                  'items': {
-                    '$ref': '#/definitions/Child'
+          properties: {
+            dimensions: {
+              type: 'array',
+              items: {
+                type: 'array',
+                items: {
+                  type: 'array',
+                  items: {
+                    $ref: '#/definitions/Child'
                   }
                 }
               }
@@ -447,18 +447,18 @@ describe('definitions', () => {
 
       const result = {
         Array: {
-          'required': [
+          required: [
             'id'
           ],
-          'properties': {
-            'id': {
-              'type': 'integer',
-              'format': 'int64'
+          properties: {
+            id: {
+              type: 'integer',
+              format: 'int64'
             },
-            'childrensAges': {
-              'type': 'array',
-              'items': {
-                'type': 'string'
+            childrensAges: {
+              type: 'array',
+              items: {
+                type: 'string'
               }
             }
           }
@@ -475,7 +475,7 @@ describe('definitions', () => {
         }).required(),
         children: Joi.array().items(Joi.object({
           name: Joi.string().required()
-        }).meta({className: 'Person'}))
+        }).meta({ className: 'Person' }))
       }).meta({
         className: 'Array'
       })
@@ -490,18 +490,18 @@ describe('definitions', () => {
           }
         },
         Array: {
-          'required': [
+          required: [
             'id'
           ],
-          'properties': {
-            'id': {
-              'type': 'integer',
-              'format': 'int64'
+          properties: {
+            id: {
+              type: 'integer',
+              format: 'int64'
             },
-            'children': {
-              'type': 'array',
-              'items': {
-                '$ref': '#/definitions/Person'
+            children: {
+              type: 'array',
+              items: {
+                $ref: '#/definitions/Person'
               }
             }
           }
@@ -522,13 +522,13 @@ describe('definitions', () => {
       })
 
       const result = {
-        'Pet123': {
-          'properties': {
-            'name': {
-              'type': 'string'
+        Pet123: {
+          properties: {
+            name: {
+              type: 'string'
             }
           },
-          'required': [
+          required: [
             'name'
           ]
         }
@@ -549,14 +549,14 @@ describe('definitions', () => {
       })
 
       const result = {
-        'Pet': {},
-        'Pet_2': {
-          'properties': {
-            'name': {
-              'type': 'string'
+        Pet: {},
+        Pet_2: {
+          properties: {
+            name: {
+              type: 'string'
             }
           },
-          'required': [
+          required: [
             'name'
           ]
         }
@@ -571,13 +571,13 @@ describe('definitions', () => {
       })
 
       const result = {
-        'NameModel': {
-          'required': [
+        NameModel: {
+          required: [
             'name'
           ],
-          'properties': {
-            'name': {
-              'type': 'string'
+          properties: {
+            name: {
+              type: 'string'
             }
           }
         }
@@ -588,14 +588,14 @@ describe('definitions', () => {
 
     it('swaggerType: primitive', () => {
       const schema = Joi.object({
-        name: Joi.string().meta({swaggerType: 'test'})
+        name: Joi.string().meta({ swaggerType: 'test' })
       })
 
       const result = {
-        'NameModel': {
-          'properties': {
-            'name': {
-              'type': 'test'
+        NameModel: {
+          properties: {
+            name: {
+              type: 'test'
             }
           }
         }
@@ -607,19 +607,19 @@ describe('definitions', () => {
     it('swaggerType: dates', () => {
       const schema = Joi.object({
         date: Joi.date(),
-        dateAsInteger: Joi.date().meta({swaggerType: 'integer'}),
-        stringAsDate: Joi.string().meta({swaggerType: 'date'}),
-        dateAsNumber: Joi.date().meta({swaggerType: 'number'}),
-        dateAsBoolean: Joi.date().meta({swaggerType: 'boolean'}),
-        dateWithFormat: Joi.date().meta({format: 'date'}),
-        dateWithMeta: Joi.date().meta({swaggerType: 'string', format: 'date'}),
-        dateTimeWithMeta: Joi.date().meta({swaggerType: 'string', format: 'date-time'}),
-        dateTimeWithFormat: Joi.date().meta({format: 'date-time'})
+        dateAsInteger: Joi.date().meta({ swaggerType: 'integer' }),
+        stringAsDate: Joi.string().meta({ swaggerType: 'date' }),
+        dateAsNumber: Joi.date().meta({ swaggerType: 'number' }),
+        dateAsBoolean: Joi.date().meta({ swaggerType: 'boolean' }),
+        dateWithFormat: Joi.date().meta({ format: 'date' }),
+        dateWithMeta: Joi.date().meta({ swaggerType: 'string', format: 'date' }),
+        dateTimeWithMeta: Joi.date().meta({ swaggerType: 'string', format: 'date-time' }),
+        dateTimeWithFormat: Joi.date().meta({ format: 'date-time' })
       }).meta({ className: 'Test' })
 
       const result = {
-        'Test': {
-          'properties': {
+        Test: {
+          properties: {
             date: { type: 'string', format: 'date-time' },
             dateAsInteger: { type: 'integer' },
             stringAsDate: { type: 'date' },
@@ -638,14 +638,14 @@ describe('definitions', () => {
 
     it('swaggerType: complex', () => {
       const schema = Joi.object({
-        name: Joi.object().meta({swaggerType: 'test'})
+        name: Joi.object().meta({ swaggerType: 'test' })
       })
 
       const result = {
-        'NameModel': {
-          'properties': {
-            'name': {
-              'type': 'test'
+        NameModel: {
+          properties: {
+            name: {
+              type: 'test'
             }
           }
         }
@@ -662,11 +662,11 @@ describe('definitions', () => {
         className: 'Pet'
       }).example({ name: 'Cat' }), definitions)
 
-      expect(reference).to.include({'$ref': '#/definitions/Pet'})
+      expect(reference).to.include({ $ref: '#/definitions/Pet' })
       expect(definitions.Pet).to.exist()
       expect(definitions.Pet).to.include({
         required: ['name'],
-        properties: {name: {type: 'string', example: 'Frog'}},
+        properties: { name: { type: 'string', example: 'Frog' } },
         example: { name: 'Cat' }
       })
     })
@@ -679,24 +679,24 @@ describe('definitions', () => {
       })
 
       const result = {
-        'CurrentPasswordNewPasswordConfirmPasswordModel': {
-          'required': [
+        CurrentPasswordNewPasswordConfirmPasswordModel: {
+          required: [
             'currentPassword',
             'newPassword',
             'confirmPassword'
           ],
-          'properties': {
-            'currentPassword': {
-              'type': 'string',
-              'description': 'current password'
+          properties: {
+            currentPassword: {
+              type: 'string',
+              description: 'current password'
             },
-            'newPassword': {
-              'type': 'string',
-              'description': 'new password'
+            newPassword: {
+              type: 'string',
+              description: 'new password'
             },
-            'confirmPassword': {
-              'type': 'string',
-              'description': 'new password again'
+            confirmPassword: {
+              type: 'string',
+              description: 'new password again'
             }
           }
         }
