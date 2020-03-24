@@ -7,4 +7,6 @@ matrix:
   include:
     - node_js: '8'
       after_script: 'make test-cov-coveralls || exit 0'
+    - node_js: '10'
+    - node_js: '12'
     - node_js: 'node'
